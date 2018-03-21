@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "271651256983",
+    "firebase_url": "https://room-for-gitter.firebaseio.com",
+    "project_id": "room-for-gitter",
+    "storage_bucket": "room-for-gitter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:271651256983:android:ede1c61416aae80b",
+        "android_client_info": {
+          "package_name": "com.nestef.room"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "271651256983-d8nu68vmpip42df3enu4nivp1dr9ahff.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDd-cAq0BuYChgCfaHFMjJM724znSLyHiM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
