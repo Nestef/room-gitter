@@ -1,4 +1,4 @@
-package base;
+package com.nestef.room.base;
 
 import android.support.annotation.NonNull;
 
