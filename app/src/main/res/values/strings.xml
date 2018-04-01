@@ -6,4 +6,7 @@
     <string name="search_nav_title">Search</string>
     <string name="chats_nav_title">Private Chats</string>
     <string name="communities_nav_title">Communities</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

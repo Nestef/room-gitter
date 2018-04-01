@@ -7,10 +7,35 @@ import com.nestef.room.base.BaseView;
  */
 
 public interface MainContract {
-    interface ViewActions{
+    interface RoomViewActions {
 
     }
-    interface MainView extends BaseView {
+
+    interface RoomView extends BaseView {
+
+    }
+
+    interface SearchViewActions {
+
+    }
+
+    interface SearchView extends BaseView {
+
+    }
+
+    interface PeopleViewActions {
+
+    }
+
+    interface PeopleView extends BaseView {
+
+    }
+
+    interface CommunityViewActions {
+
+    }
+
+    interface CommunityView extends BaseView {
 
     }
 }
