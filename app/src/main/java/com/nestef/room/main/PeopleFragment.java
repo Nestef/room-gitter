@@ -18,6 +18,9 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView 
     public PeopleFragment() {
     }
 
+    public static PeopleFragment newInstance() {
+        return new PeopleFragment();
+    }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

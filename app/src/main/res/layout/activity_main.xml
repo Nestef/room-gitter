@@ -5,6 +5,11 @@
     android:layout_height="match_parent"
     tools:context="com.nestef.room.main.MainActivity">
 
+    <FrameLayout
+        android:id="@+id/fragment_switcher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <include layout="@layout/navigation_bar" />
 
 </android.support.design.widget.CoordinatorLayout>

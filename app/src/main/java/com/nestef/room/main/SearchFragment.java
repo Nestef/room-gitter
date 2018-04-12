@@ -13,6 +13,10 @@ public class SearchFragment extends Fragment implements MainContract.SearchView 
     public SearchFragment() {
     }
 
+    public static SearchFragment newInstance() {
+        return new SearchFragment();
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

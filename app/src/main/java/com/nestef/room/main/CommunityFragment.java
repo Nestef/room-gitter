@@ -18,6 +18,10 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
 
     }
 
+    public static CommunityFragment newInstance() {
+        return new CommunityFragment();
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

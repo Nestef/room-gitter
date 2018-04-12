@@ -17,6 +17,9 @@ public class RoomFragment extends Fragment implements MainContract.RoomView {
     public RoomFragment() {
     }
 
+    public static RoomFragment newInstance() {
+        return new RoomFragment();
+    }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
