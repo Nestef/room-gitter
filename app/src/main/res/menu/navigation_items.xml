@@ -2,7 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white"
-
     app:bbn_itemColorActive="@color/colorPrimary">
     <item
         android:id="@+id/room_nav_item"
