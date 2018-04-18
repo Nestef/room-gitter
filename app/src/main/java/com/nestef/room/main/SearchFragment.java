@@ -22,7 +22,12 @@ public class SearchFragment extends Fragment implements MainContract.SearchView 
     }
 
     public static SearchFragment newInstance() {
-        return new SearchFragment();
+
+        Bundle args = new Bundle();
+
+        SearchFragment fragment = new SearchFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
 
