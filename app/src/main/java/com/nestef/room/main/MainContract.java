@@ -1,6 +1,9 @@
 package com.nestef.room.main;
 
 import com.nestef.room.base.BaseView;
+import com.nestef.room.model.Room;
+
+import java.util.List;
 
 /**
  * Created by Noah Steffes on 3/23/18.
@@ -12,6 +15,7 @@ public interface MainContract {
     }
 
     interface RoomView extends BaseView {
+        void showRooms(List<Room> rooms);
 
     }
 

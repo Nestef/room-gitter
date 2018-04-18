@@ -5,5 +5,10 @@ package com.nestef.room.base;
  */
 
 public interface BaseView {
+    void showLoadingIndicator();
+
+    void hideLoadingIndicator();
+
+    void showEmpty();
 
 }

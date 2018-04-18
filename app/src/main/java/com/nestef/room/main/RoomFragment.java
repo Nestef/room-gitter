@@ -12,6 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.nestef.room.R;
+import com.nestef.room.model.Room;
+
+import java.util.List;
 
 /**
  * Created by Noah Steffes on 3/25/18.
@@ -25,8 +28,12 @@ public class RoomFragment extends Fragment implements MainContract.RoomView {
     }
 
     public static RoomFragment newInstance() {
-        return new RoomFragment();
+        Bundle args = new Bundle();
+        RoomFragment fragment = new RoomFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,5 +47,25 @@ public class RoomFragment extends Fragment implements MainContract.RoomView {
         Toolbar toolbar = rootView.findViewById(R.id.default_toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         return rootView;
+    }
+
+    @Override
+    public void showRooms(List<Room> rooms) {
+        
+    }
+
+    @Override
+    public void showLoadingIndicator() {
+
+    }
+
+    @Override
+    public void hideLoadingIndicator() {
+
+    }
+
+    @Override
+    public void showEmpty() {
+
     }
 }
