@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- List Item dimensions -->
     <dimen name="list_vertical_margin">8dp</dimen>
+    <dimen name="list_item_start_padding">16dp</dimen>
+    <dimen name="list_item_height">72dp</dimen>
+    <dimen name="list_item_text_start">72dp</dimen>
+    <dimen name="list_item_text_end">16dp</dimen>
+    <dimen name="list_item_text_vertical">20dp</dimen>
+    <!-- List item text size-->
+    <dimen name="list_item_title">16sp</dimen>
+    <dimen name="list_item_subtitle">14sp</dimen>
+
 </resources>
