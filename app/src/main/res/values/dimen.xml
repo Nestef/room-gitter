@@ -3,7 +3,7 @@
     <!-- List Item dimensions -->
     <dimen name="list_vertical_margin">8dp</dimen>
     <dimen name="list_item_start_padding">16dp</dimen>
-    <dimen name="list_item_height">72dp</dimen>
+    <dimen name="list_item_height">56dp</dimen>
     <dimen name="list_item_text_start">72dp</dimen>
     <dimen name="list_item_text_end">16dp</dimen>
     <dimen name="list_item_text_vertical">20dp</dimen>

@@ -1,11 +1,13 @@
 package com.nestef.room.model;
 
+import org.parceler.Parcel;
+
 import java.util.List;
 
 /**
  * Created by Noah Steffes on 4/16/18.
  */
-
+@Parcel
 public class Group {
     //Group ID.
     String id;

@@ -13,4 +13,5 @@
 
     <include layout="@layout/navigation_bar" />
 
+
 </android.support.design.widget.CoordinatorLayout>

@@ -2,54 +2,58 @@ package com.nestef.room.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.parceler.Parcel;
+
 import java.util.Date;
 import java.util.List;
 
 /**
  * Created by Noah Steffes on 4/16/18.
  */
+@Parcel
 public class Room {
     //Room ID.
-    String id;
+    public String id;
     //Room name.
-    String name;
+    public String name;
     //Room topic. (default: GitHub repo description)
-    String topic;
-    String avatarUrl;
+    public String topic;
+    public String avatarUrl;
     //Room URI on Gitter.
-    String uri;
+    public String uri;
     //Indicates if the room is a one-to-one chat.
-    boolean oneToOne;
+    public boolean oneToOne;
     //Count of users in the room.
-    int userCount;
-    User user;
+    public int userCount;
+    public User user;
     //Number of unread messages for the current user.
-    int unreadItems;
+    public int unreadItems;
     // Number of unread mentions for the current user.
-    int mentions;
+    public int mentions;
     //Last time the current user accessed the room in ISO format.
-    Date lastAccessTime;
+    public Date lastAccessTime;
     //Indicates if the room is on of your favourites.
-    int favourite;
+    public int favourite;
     //Indicates if the current user has disabled notifications.
-    boolean lurk;
+    public boolean lurk;
     //Path to the room on gitter.
-    String url;
+    public String url;
     //Type of the room.
-    String githubType;
-    String security;
-    boolean noIndex;
+    public String githubType;
+    public String security;
+    public boolean premium;
+    public boolean noindex;
     //Tags that define the room.
-    List<String> tags;
+    public List<String> tags;
     //Temporary
-    Permission permissions;
-    boolean roomMember;
-    String groupId;
-    Group group;
+    public Permission permissions;
+    public boolean roomMember;
+    public String groupId;
+    public Group group;
     //Backend?
-    Backend backend;
+    public Backend backend;
     @JsonProperty("public")
-    boolean isPublic;
+    public boolean isPublic;
     //Room version.
-    int v;
+    public int v;
 }

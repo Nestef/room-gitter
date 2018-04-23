@@ -1,10 +1,13 @@
 package com.nestef.room.model;
 
+import org.parceler.Parcel;
+
 import java.util.List;
 
 /**
  * Created by Noah Steffes on 4/16/18.
  */
+@Parcel
 public class User {
     //Gitter User ID.
     String id;
