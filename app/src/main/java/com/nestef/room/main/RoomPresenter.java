@@ -7,8 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nestef.room.base.BasePresenter;
 import com.nestef.room.model.Room;
 
-import org.json.JSONArray;
-
 import java.util.List;
 
 /**
@@ -32,7 +30,6 @@ public class RoomPresenter extends BasePresenter<MainContract.RoomView> implemen
                 "{\"id\":\"53f3d83c163965c9bc1fefa1\",\"name\":\"ReactiveX/RxJava\",\"topic\":\"RxJava – Reactive Extensions for the JVM – a library for composing asynchronous and event-based programs using observable sequences for the Java VM.\",\"avatarUrl\":\"https://avatars-02.gitter.im/group/iv/3/57542c89c43b8c60197742b4\",\"uri\":\"ReactiveX/RxJava\",\"oneToOne\":false,\"userCount\":1340,\"unreadItems\":34,\"mentions\":0,\"lastAccessTime\":\"2018-03-19T14:20:00.456Z\",\"lurk\":false,\"url\":\"/ReactiveX/RxJava\",\"githubType\":\"REPO\",\"security\":\"PUBLIC\",\"noindex\":false,\"tags\":[\"java\",\"rxjava\",\"reactive\",\"extensions\",\"jvm\",\"library\"],\"roomMember\":true,\"groupId\":\"57542c89c43b8c60197742b4\",\"public\":true,\"v\":201},\n" +
                 "{\"id\":\"5790a3a2c2f0db084a24004d\",\"name\":\"gitterHQ/api\",\"topic\":\"Gitter API and Libraries\",\"avatarUrl\":\"https://avatars-01.gitter.im/group/iv/3/57542c12c43b8c601976fa66\",\"uri\":\"gitterHQ/api\",\"oneToOne\":false,\"userCount\":85,\"unreadItems\":0,\"mentions\":0,\"lastAccessTime\":\"2018-04-18T18:52:35.053Z\",\"lurk\":false,\"url\":\"/gitterHQ/api\",\"githubType\":\"REPO_CHANNEL\",\"security\":\"PUBLIC\",\"premium\":true,\"noindex\":false,\"tags\":[],\"roomMember\":true,\"groupId\":\"57542c12c43b8c601976fa66\",\"public\":true}]";
         try {
-            JSONArray object = new JSONArray(json);
             ObjectMapper mapper = new ObjectMapper();
             Log.d(TAG, "fetchRooms: json");
             List<Room> rooms = mapper.readValue(json, new TypeReference<List<Room>>() {
@@ -40,8 +37,6 @@ public class RoomPresenter extends BasePresenter<MainContract.RoomView> implemen
             mView.showRooms(rooms);
         } catch (Exception e) {
             e.printStackTrace();
-
         }
-
     }
 }

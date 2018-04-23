@@ -28,11 +28,11 @@ public interface MainContract {
     }
 
     interface PeopleViewActions {
-
+        void fetchChats();
     }
 
     interface PeopleView extends BaseView {
-
+        void showChats(List<Room> chats);
     }
 
     interface CommunityViewActions {
