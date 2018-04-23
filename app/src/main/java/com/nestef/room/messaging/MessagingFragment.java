@@ -35,4 +35,19 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
+
+    @Override
+    public void showLoadingIndicator() {
+
+    }
+
+    @Override
+    public void hideLoadingIndicator() {
+
+    }
+
+    @Override
+    public void showEmpty() {
+
+    }
 }

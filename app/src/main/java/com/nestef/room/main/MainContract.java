@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface MainContract {
     interface RoomViewActions {
-
+        void fetchRooms();
     }
 
     interface RoomView extends BaseView {

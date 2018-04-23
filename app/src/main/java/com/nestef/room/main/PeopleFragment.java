@@ -42,4 +42,19 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         return rootView;
     }
+
+    @Override
+    public void showLoadingIndicator() {
+
+    }
+
+    @Override
+    public void hideLoadingIndicator() {
+
+    }
+
+    @Override
+    public void showEmpty() {
+
+    }
 }

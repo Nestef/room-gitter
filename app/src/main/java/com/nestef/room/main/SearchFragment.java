@@ -48,4 +48,18 @@ public class SearchFragment extends Fragment implements MainContract.SearchView 
         return rootView;
     }
 
+    @Override
+    public void showLoadingIndicator() {
+
+    }
+
+    @Override
+    public void hideLoadingIndicator() {
+
+    }
+
+    @Override
+    public void showEmpty() {
+
+    }
 }

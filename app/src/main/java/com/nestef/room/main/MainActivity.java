@@ -24,10 +24,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        Fragment fragment = SearchFragment.newInstance();
+        Fragment fragment = RoomFragment.newInstance();
         FragmentTransaction f = getSupportFragmentManager().beginTransaction();
         f.add(fragmentId, fragment).commit();
-        mBottomNavigation.setDefaultSelectedIndex(1);
+        mBottomNavigation.setDefaultSelectedIndex(0);
         mBottomNavigation.setOnMenuItemClickListener(new BottomNavigation.OnMenuItemSelectionListener() {
             @Override
             public void onMenuItemSelect(int i, int i1, boolean b) {
