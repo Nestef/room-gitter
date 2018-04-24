@@ -1,6 +1,7 @@
 package com.nestef.room.main;
 
 import com.nestef.room.base.BaseView;
+import com.nestef.room.model.Group;
 import com.nestef.room.model.Room;
 
 import java.util.List;
@@ -36,10 +37,10 @@ public interface MainContract {
     }
 
     interface CommunityViewActions {
-
+        void fetchGroups();
     }
 
     interface CommunityView extends BaseView {
-
+        void showGroups(List<Group> groups);
     }
 }

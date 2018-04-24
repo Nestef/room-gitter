@@ -74,6 +74,12 @@ public class RoomFragment extends Fragment implements MainContract.RoomView {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.unsetView();
+    }
+
+    @Override
     public void showRooms(List<Room> rooms) {
         roomList.setLayoutManager(new LinearLayoutManager(getContext()));
         roomAdapter = new RoomAdapter(rooms);

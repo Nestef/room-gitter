@@ -73,6 +73,12 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView 
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.unsetView();
+    }
+
+    @Override
     public void showChats(List<Room> chats) {
         peopleList.setLayoutManager(new LinearLayoutManager(getContext()));
         roomAdapter = new RoomAdapter(chats);

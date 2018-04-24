@@ -6,7 +6,7 @@
     android:layout_height="@dimen/list_item_height">
 
     <ImageView
-        android:id="@+id/room_list_avatar"
+        android:id="@+id/group_list_item_avatar"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginStart="0dp"
@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/room_list_item_title"
+        android:id="@+id/group_list_item_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/list_item_text_end"
@@ -23,38 +23,15 @@
 
         android:gravity="center_vertical"
         android:textSize="@dimen/list_item_title"
-        app:layout_constraintStart_toEndOf="@id/r_guideline3"
+        app:layout_constraintStart_toEndOf="@id/g_guideline"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Title" />
 
-    <TextView
-        android:id="@+id/room_item_unread"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/list_item_text_end"
-        android:layout_marginStart="@dimen/list_item_text_end"
-        android:background="@color/colorAccent"
-        android:padding="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:textColor="@android:color/white"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="89" />
-
-
     <android.support.constraint.Guideline
-        android:id="@+id/r_guideline3"
+        android:id="@+id/g_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_begin="72dp" />
-
-    <android.support.constraint.Barrier
-        android:id="@+id/r_barrier2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="left"
-        app:constraint_referenced_ids="room_item_unread" />
-
 
 </android.support.constraint.ConstraintLayout>
