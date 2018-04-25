@@ -10,5 +10,7 @@
     <!-- List item text size-->
     <dimen name="list_item_title">16sp</dimen>
     <dimen name="list_item_subtitle">14sp</dimen>
+    <!-- Search fragment -->
+    <dimen name="suggestion_title_margin">16dp</dimen>
 
 </resources>
