@@ -29,11 +29,15 @@ import butterknife.Unbinder;
 public class CommunityFragment extends Fragment implements MainContract.CommunityView {
 
     private static final String TAG = "CommunityFragment";
+
+    private static final String TABLETBOOL = "tablet";
+
     @BindView(R.id.default_toolbar)
     Toolbar toolbar;
     @BindView(R.id.community_list)
     RecyclerView groupList;
 
+    private boolean isTablet;
     private Unbinder unbinder;
     private GroupAdapter groupAdapter;
     private CommunityPresenter presenter;
@@ -42,8 +46,9 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
 
     }
 
-    public static CommunityFragment newInstance() {
+    public static CommunityFragment newInstance(boolean isTablet) {
         Bundle args = new Bundle();
+        args.putBoolean(TABLETBOOL, isTablet);
         CommunityFragment fragment = new CommunityFragment();
         fragment.setArguments(args);
         return fragment;
@@ -53,6 +58,7 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = new CommunityPresenter();
+        isTablet = getArguments().getBoolean(TABLETBOOL);
     }
 
     @Nullable
@@ -62,7 +68,9 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
         Log.d(TAG, "onCreateView: ");
         unbinder = ButterKnife.bind(this, rootView);
         presenter.setView(this);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        if (!isTablet) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        }
         presenter.fetchGroups();
         return rootView;
     }

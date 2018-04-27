@@ -8,8 +8,10 @@
     <ImageView
         android:id="@+id/group_list_item_avatar"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginStart="0dp"
+        android:layout_height="0dp"
+        android:paddingBottom="@dimen/list_item_avatar_vertical_padding"
+        android:paddingStart="@dimen/list_item_avatar_start_padding"
+        android:paddingTop="@dimen/list_item_avatar_vertical_padding"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -19,12 +21,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/list_item_text_end"
-        android:layout_marginTop="@dimen/list_item_text_vertical"
-
-        android:gravity="center_vertical"
         android:textSize="@dimen/list_item_title"
         app:layout_constraintStart_toEndOf="@id/g_guideline"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:text="Title" />
 
     <android.support.constraint.Guideline
