@@ -22,6 +22,9 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigation mBottomNavigation;
     @BindInt(R.integer.is_tablet)
     int mIsTablet;
+    @android.support.annotation.Nullable
+    @BindView(R.id.default_toolbar)
+    Toolbar mDefaultToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
         Fragment fragment = RoomFragment.newInstance();
         FragmentTransaction f = getSupportFragmentManager().beginTransaction();
         f.add(fragmentId, fragment).commit();
+        if (isTablet()) {
+            setSupportActionBar(mDefaultToolbar);
+        }
         mBottomNavigation.setDefaultSelectedIndex(0);
         Log.d(TAG, "onCreate: is tablet" + isTablet());
         mBottomNavigation.setOnMenuItemClickListener(new BottomNavigation.OnMenuItemSelectionListener() {
@@ -43,14 +49,14 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     case 1:
                         getSupportFragmentManager().beginTransaction().replace(fragmentId, SearchFragment.newInstance()).commit();
-                        Log.d(TAG, "onMenuItemSelect:1:search");
+
                         return;
                     case 2:
                         getSupportFragmentManager().beginTransaction().replace(fragmentId, PeopleFragment.newInstance()).commit();
                         Log.d(TAG, "onMenuItemSelect: 2:People");
                         return;
                     case 3:
-                        getSupportFragmentManager().beginTransaction().replace(fragmentId, CommunityFragment.newInstance(isTablet())).commit();
+                        getSupportFragmentManager().beginTransaction().replace(fragmentId, CommunityFragment.newInstance()).commit();
                         Log.d(TAG, "onMenuItemSelect: 3: Community");
                         return;
                 }
@@ -69,8 +75,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void tabletSetup() {
-        Toolbar toolbar = findViewById(R.id.tablet_toolbar);
-        setSupportActionBar(toolbar);
+        // Toolbar toolbar = findViewById(R.id.tablet_toolbar);
+        // setSupportActionBar(toolbar);
 
     }
 

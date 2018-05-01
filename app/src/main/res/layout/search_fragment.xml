@@ -2,7 +2,8 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/search_box_margin">
 
     <include layout="@layout/search_actionbar" />
 
@@ -19,8 +20,8 @@
             android:orientation="vertical">
 
             <TextView
-                android:layout_marginStart="@dimen/suggestion_title_margin"
-                android:layout_marginTop="@dimen/suggestion_title_margin"
+                android:layout_marginStart="@dimen/suggestion_title_margin_start"
+                android:layout_marginTop="@dimen/suggestion_title_margin_top"
                 android:id="@+id/search_suggestion_text"
                 android:text="@string/suggestion_title"
                 android:layout_width="wrap_content"

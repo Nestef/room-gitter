@@ -19,6 +19,7 @@ import com.nestef.room.model.Room;
 
 import java.util.List;
 
+import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -31,10 +32,13 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView 
 
     private static final String TAG = "PeopleFragment";
 
-    @BindView(R.id.default_toolbar)
-    Toolbar toolbar;
     @BindView(R.id.people_list)
     RecyclerView peopleList;
+    @BindInt(R.integer.is_tablet)
+    int isTablet;
+    @Nullable
+    @BindView(R.id.default_toolbar)
+    Toolbar toolbar;
 
     private Unbinder unbinder;
     private RoomAdapter roomAdapter;
@@ -60,8 +64,10 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView 
         View rootView = inflater.inflate(R.layout.people_fragment, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         presenter.setView(this);
+        if (isTablet()) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        }
         Log.d(TAG, "onCreateView: ");
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         presenter.fetchChats();
         return rootView;
     }
@@ -97,5 +103,9 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView 
     @Override
     public void showEmpty() {
 
+    }
+
+    private boolean isTablet() {
+        return isTablet == 1;
     }
 }

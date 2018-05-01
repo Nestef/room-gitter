@@ -18,6 +18,7 @@ import com.nestef.room.model.Group;
 
 import java.util.List;
 
+import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -30,14 +31,15 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
 
     private static final String TAG = "CommunityFragment";
 
-    private static final String TABLETBOOL = "tablet";
-
-    @BindView(R.id.default_toolbar)
-    Toolbar toolbar;
     @BindView(R.id.community_list)
     RecyclerView groupList;
 
-    private boolean isTablet;
+    @Nullable
+    @BindView(R.id.default_toolbar)
+    Toolbar toolbar;
+    @BindInt(R.integer.is_tablet)
+    int isTablet;
+
     private Unbinder unbinder;
     private GroupAdapter groupAdapter;
     private CommunityPresenter presenter;
@@ -46,9 +48,8 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
 
     }
 
-    public static CommunityFragment newInstance(boolean isTablet) {
+    public static CommunityFragment newInstance() {
         Bundle args = new Bundle();
-        args.putBoolean(TABLETBOOL, isTablet);
         CommunityFragment fragment = new CommunityFragment();
         fragment.setArguments(args);
         return fragment;
@@ -58,7 +59,6 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = new CommunityPresenter();
-        isTablet = getArguments().getBoolean(TABLETBOOL);
     }
 
     @Nullable
@@ -68,9 +68,10 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
         Log.d(TAG, "onCreateView: ");
         unbinder = ButterKnife.bind(this, rootView);
         presenter.setView(this);
-        if (!isTablet) {
+        if (isTablet()) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         }
+
         presenter.fetchGroups();
         return rootView;
     }
@@ -108,6 +109,10 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
     @Override
     public void showEmpty() {
 
+    }
+
+    private boolean isTablet() {
+        return isTablet == 1;
     }
 
 

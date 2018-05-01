@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Search fragment -->
+    <dimen name="search_box_margin">8dp</dimen>
+    <dimen name="suggestion_title_margin_start">8dp</dimen>
+</resources>

@@ -18,6 +18,7 @@ import com.nestef.room.model.Room;
 
 import java.util.List;
 
+import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -30,10 +31,13 @@ public class RoomFragment extends Fragment implements MainContract.RoomView {
 
     private static final String TAG = "RoomFragment";
 
-    @BindView(R.id.default_toolbar)
-    Toolbar toolbar;
     @BindView(R.id.room_list)
     RecyclerView roomList;
+    @Nullable
+    @BindView(R.id.default_toolbar)
+    Toolbar toolbar;
+    @BindInt(R.integer.is_tablet)
+    int isTablet;
 
     private Unbinder unbinder;
     private RoomAdapter roomAdapter;
@@ -61,8 +65,10 @@ public class RoomFragment extends Fragment implements MainContract.RoomView {
         View rootView = inflater.inflate(R.layout.room_fragment, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         presenter.setView(this);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         Log.d(TAG, "onCreateView: ");
+        if (isTablet()) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        }
         presenter.fetchRooms();
         return rootView;
     }
@@ -99,5 +105,9 @@ public class RoomFragment extends Fragment implements MainContract.RoomView {
     @Override
     public void showEmpty() {
 
+    }
+
+    private boolean isTablet() {
+        return isTablet == 1;
     }
 }

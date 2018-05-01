@@ -12,11 +12,23 @@ import android.view.ViewGroup;
 
 import com.nestef.room.R;
 
+import butterknife.BindInt;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 
 public class SearchFragment extends Fragment implements MainContract.SearchView {
 
 
     private static final String TAG = "SearchFragment";
+
+    @BindView(R.id.search_toolbar)
+    Toolbar toolbar;
+    @BindInt(R.integer.is_tablet)
+    int isTablet;
+
+    Unbinder unbinder;
 
     public SearchFragment() {
     }
@@ -42,8 +54,10 @@ public class SearchFragment extends Fragment implements MainContract.SearchView 
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.search_fragment, container, false);
         Log.d(TAG, "onCreateView: ");
-        Toolbar toolbar = rootView.findViewById(R.id.search_toolbar);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        unbinder = ButterKnife.bind(this, rootView);
+        if (isTablet()) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        }
 
         return rootView;
     }
@@ -61,5 +75,9 @@ public class SearchFragment extends Fragment implements MainContract.SearchView 
     @Override
     public void showEmpty() {
 
+    }
+
+    private boolean isTablet() {
+        return isTablet == 1;
     }
 }
