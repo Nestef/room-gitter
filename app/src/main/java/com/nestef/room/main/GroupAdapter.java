@@ -24,10 +24,12 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
     private static final String TAG = GroupAdapter.class.getName();
 
     private List<Group> mGroups;
+    private GroupCallback mCallback;
 
     //Todo change to empty constructor
-    public GroupAdapter(List<Group> groups) {
+    public GroupAdapter(List<Group> groups, GroupCallback callback) {
         mGroups = groups;
+        mCallback = callback;
     }
 
     @NonNull
@@ -49,15 +51,27 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
         return mGroups.size();
     }
 
+    public interface GroupCallback {
+        void onClick(Group selectedGroup);
+    }
+
     class GroupViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.group_list_item_avatar)
         ImageView avatar;
         @BindView(R.id.group_list_item_title)
         TextView title;
 
+
         GroupViewHolder(View v) {
             super(v);
             ButterKnife.bind(this, v);
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mCallback.onClick(mGroups.get(getAdapterPosition()));
+                }
+            });
+
         }
 
     }

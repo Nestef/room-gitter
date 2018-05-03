@@ -1,17 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/default_actionbar" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/community_list"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/list_vertical_margin"
-        android:paddingTop="@dimen/list_vertical_margin"
-        app:layout_constraintTop_toBottomOf="@id/default_appbar" />
+        android:layout_height="match_parent">
 
-</android.support.constraint.ConstraintLayout>
+        <include layout="@layout/default_actionbar" />
+
+        <TextView
+            android:id="@+id/community_joined_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/community_title_start"
+            android:layout_marginTop="@dimen/community_title_top"
+            android:text="@string/community_joined_title"
+            app:layout_constraintBottom_toTopOf="@id/joined_room_list"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/default_appbar" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/joined_room_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/list_vertical_margin"
+            app:layout_constraintBottom_toTopOf="@+id/community_other_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/community_joined_title" />
+
+
+        <TextView
+            android:id="@+id/community_other_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/community_title_start"
+            android:layout_marginTop="@dimen/community_title_top"
+            android:text="@string/community_all_title"
+            app:layout_constraintBottom_toTopOf="@id/community_room_list"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/joined_room_list" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/community_room_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/list_vertical_margin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/community_other_title" />
+
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.v4.widget.NestedScrollView>

@@ -7,7 +7,9 @@
     <string name="chats_nav_title">Private Chats</string>
     <string name="communities_nav_title">Communities</string>
 
-
     <!-- Search Ui -->
     <string name="suggestion_title">Suggested Rooms</string>
+    <!-- Community fragment -->
+    <string name="community_joined_title">Your Rooms</string>
+    <string name="community_all_title">Other Rooms</string>
 </resources>

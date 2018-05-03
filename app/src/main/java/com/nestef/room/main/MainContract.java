@@ -36,11 +36,28 @@ public interface MainContract {
         void showChats(List<Room> chats);
     }
 
-    interface CommunityViewActions {
+    interface GroupsViewActions {
         void fetchGroups();
     }
 
-    interface CommunityView extends BaseView {
+    interface GroupsView extends BaseView {
         void showGroups(List<Group> groups);
     }
+
+    interface CommunityViewActions {
+        void fetchRooms();
+
+        void fetchJoinedRooms();
+
+        void fetchUnjoinedRooms();
+    }
+
+    interface CommunityView extends BaseView {
+        void showJoinedRooms(List<Room> joinedRooms);
+
+        void showJoinedRoomsEmpty();
+
+        void showUnjoinedRooms(List<Room> unjoinedRooms);
+    }
+
 }

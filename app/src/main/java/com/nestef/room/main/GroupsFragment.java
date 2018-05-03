@@ -1,5 +1,6 @@
 package com.nestef.room.main;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,15 +9,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.nestef.room.R;
 import com.nestef.room.model.Group;
-import com.nestef.room.model.Room;
-
-import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -26,33 +25,33 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 /**
- * Created by Noah Steffes on 5/2/18.
+ * Created by Noah Steffes on 4/1/18.
  */
-public class CommunityFragment extends Fragment implements MainContract.CommunityView {
 
+public class GroupsFragment extends Fragment implements MainContract.GroupsView, GroupAdapter.GroupCallback {
 
-    private static final String GROUP = "Group";
-    Unbinder unbinder;
-    CommunityPresenter presenter;
-    RoomAdapter joinedAdapter;
-    RoomAdapter communityAdapter;
+    private static final String TAG = "GroupsFragment";
 
+    @BindView(R.id.group_list)
+    RecyclerView groupList;
 
-    @BindView(R.id.community_room_list)
-    RecyclerView communityRoomList;
-    @BindView(R.id.joined_room_list)
-    RecyclerView joinedRoomList;
     @Nullable
     @BindView(R.id.default_toolbar)
     Toolbar toolbar;
     @BindInt(R.integer.is_tablet)
     int isTablet;
+    GroupsFragment.OnCommunitySelection mCallback;
+    private Unbinder unbinder;
+    private GroupAdapter groupAdapter;
+    private GroupsPresenter presenter;
 
-    public static CommunityFragment newInstance(Group group) {
+    public GroupsFragment() {
 
+    }
+
+    public static GroupsFragment newInstance() {
         Bundle args = new Bundle();
-        args.putParcelable(GROUP, Parcels.wrap(group));
-        CommunityFragment fragment = new CommunityFragment();
+        GroupsFragment fragment = new GroupsFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -60,21 +59,22 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new CommunityPresenter();
+        presenter = new GroupsPresenter();
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.community_fragment, container, false);
-        unbinder = ButterKnife.bind(this, view);
+        View rootView = inflater.inflate(R.layout.groups_fragment, container, false);
+        Log.d(TAG, "onCreateView: ");
+        unbinder = ButterKnife.bind(this, rootView);
         presenter.setView(this);
         if (isTablet()) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         }
-        presenter.fetchRooms();
-        return view;
+
+        presenter.fetchGroups();
+        return rootView;
     }
 
     @Override
@@ -89,6 +89,13 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
         presenter.unsetView();
     }
 
+    @Override
+    public void showGroups(List<Group> groups) {
+        groupList.setLayoutManager(new LinearLayoutManager(getContext()));
+        groupAdapter = new GroupAdapter(groups, this);
+        groupList.setAdapter(groupAdapter);
+
+    }
 
     @Override
     public void showLoadingIndicator() {
@@ -110,21 +117,26 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
     }
 
     @Override
-    public void showJoinedRooms(List<Room> joinedRooms) {
-        joinedRoomList.setLayoutManager(new LinearLayoutManager(getContext()));
-        joinedAdapter = new RoomAdapter(joinedRooms);
-        joinedRoomList.setAdapter(joinedAdapter);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mCallback = (GroupsFragment.OnCommunitySelection) getActivity();
+        } catch (ClassCastException e) {
+            throw new ClassCastException(getActivity().toString()
+                    + " must implement OnHeadlineSelectedListener");
+        }
+
     }
 
     @Override
-    public void showJoinedRoomsEmpty() {
-
+    public void onClick(Group selectedGroup) {
+        mCallback.onCommunitySelect(selectedGroup);
     }
 
-    @Override
-    public void showUnjoinedRooms(List<Room> unjoinedRooms) {
-        communityRoomList.setLayoutManager(new LinearLayoutManager(getContext()));
-        communityAdapter = new RoomAdapter(unjoinedRooms);
-        communityRoomList.setAdapter(communityAdapter);
+
+    public interface OnCommunitySelection {
+        void onCommunitySelect(Group group);
     }
+
+
 }

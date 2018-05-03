@@ -8,13 +8,14 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import com.nestef.room.R;
+import com.nestef.room.model.Group;
 
 import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.sephiroth.android.library.bottomnavigation.BottomNavigation;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GroupsFragment.OnCommunitySelection {
 
     private static final String TAG = "MainActivity";
     int fragmentId = R.id.fragment_switcher;
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(TAG, "onMenuItemSelect: 2:People");
                         return;
                     case 3:
-                        getSupportFragmentManager().beginTransaction().replace(fragmentId, CommunityFragment.newInstance()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(fragmentId, GroupsFragment.newInstance()).commit();
                         Log.d(TAG, "onMenuItemSelect: 3: Community");
                         return;
                 }
@@ -80,4 +81,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onCommunitySelect(Group group) {
+        getSupportFragmentManager().beginTransaction().replace(fragmentId, CommunityFragment.newInstance(group)).addToBackStack("communityfragment").commit();
+    }
 }
