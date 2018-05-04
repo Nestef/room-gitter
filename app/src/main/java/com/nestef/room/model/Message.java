@@ -8,34 +8,34 @@ import java.util.List;
  */
 public class Message {
     //ID of the message.
-    String id;
+    public String id;
     //Original message in plain-text/markdown.
-    String text;
+    public String text;
     //HTML formatted message.
-    String html;
+    public String html;
     //ISO formatted date of the message.
-    Date sent;
+    public Date sent;
     //ISO formatted date of the message if edited.
-    Date editedAt;
+    public Date editedAt;
     // (User)[user-resource] that sent the message.
-    User fromUser;
+    public User fromUser;
     //Boolean that indicates if the current user has read the message.
-    boolean unread;
+    public boolean unread;
     //Number of users that have read the message.
-    int readBy;
+    public int readBy;
     //todo add type
     //List of URLs present in the message.
-    List<Url> urls;
+    public List<Url> urls;
     //List of @Mentions in the message.
-    List<Mention> mentions;
+    public List<Mention> mentions;
     //List of #Issues referenced in the message.
-    List<Issue> issues;
+    public List<Issue> issues;
     //Metadata. This is currently not used for anything.
-    List meta;
+    public List meta;
     //Version.
-    int v;
+    public int v;
     //Stands for "Gravatar version" and is used for cache busting.
-    String gv;
+    public String gv;
 
 
 }

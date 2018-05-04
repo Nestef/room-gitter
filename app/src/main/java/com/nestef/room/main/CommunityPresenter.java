@@ -1230,7 +1230,7 @@ public class CommunityPresenter extends BasePresenter<MainContract.CommunityView
             ObjectMapper mapper = new ObjectMapper();
             List<Room> rooms = mapper.readValue(json, new TypeReference<List<Room>>() {
             });
-            List roms2 = rooms.subList(10, 15);
+            List<Room> roms2 = rooms.subList(10, 15);
 
             mView.showJoinedRooms(rooms);
             mView.showUnjoinedRooms(roms2);

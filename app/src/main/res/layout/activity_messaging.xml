@@ -5,6 +5,10 @@
     android:layout_height="match_parent"
     tools:context="com.nestef.room.messaging.MessagingActivity">
 
-    <include layout="@layout/messaging_fragment" />
+    <fragment
+        android:id="@+id/mf"
+        android:name="com.nestef.room.messaging.MessagingFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </android.support.constraint.ConstraintLayout>

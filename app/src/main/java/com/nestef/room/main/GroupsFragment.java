@@ -69,9 +69,8 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
         Log.d(TAG, "onCreateView: ");
         unbinder = ButterKnife.bind(this, rootView);
         presenter.setView(this);
-        if (isTablet()) {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        }
+        if (isTablet()) ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+
 
         presenter.fetchGroups();
         return rootView;

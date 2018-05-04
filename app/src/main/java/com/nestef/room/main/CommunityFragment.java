@@ -70,9 +70,8 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
         View view = inflater.inflate(R.layout.community_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
         presenter.setView(this);
-        if (isTablet()) {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        }
+        if (isTablet()) ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+
         presenter.fetchRooms();
         return view;
     }

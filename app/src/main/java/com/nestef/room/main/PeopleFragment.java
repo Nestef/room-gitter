@@ -64,9 +64,8 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView 
         View rootView = inflater.inflate(R.layout.people_fragment, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         presenter.setView(this);
-        if (isTablet()) {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        }
+        if (isTablet()) ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+
         Log.d(TAG, "onCreateView: ");
         presenter.fetchChats();
         return rootView;

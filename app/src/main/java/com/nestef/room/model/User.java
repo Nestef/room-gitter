@@ -10,19 +10,19 @@ import java.util.List;
 @Parcel
 public class User {
     //Gitter User ID.
-    String id;
+    public String id;
     // Gitter/GitHub username.
-    String username;
+    public String username;
     //Gitter/GitHub user real name.
-    String displayName;
+    public String displayName;
     //Path to the user on Gitter.
-    String url;
-    String avatarUrl;
+    public String url;
+    public String avatarUrl;
     //User avatar URI (small).
-    String avatarUrlSmall;
+    public String avatarUrlSmall;
     //User avatar URI (medium).
-    String avatarUrlMedium;
-    List<String> providers;
-    int v;
-    String gv;
+    public String avatarUrlMedium;
+    public List<String> providers;
+    public int v;
+    public String gv;
 }
