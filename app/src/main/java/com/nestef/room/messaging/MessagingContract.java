@@ -12,8 +12,18 @@ import java.util.List;
 public interface MessagingContract {
     interface ViewActions{
         void fetchMessages();
+
+        void fetchOlderMessages();
+
+        void sendMessage(String message);
+
+        void markRead(String messageId);
     }
     interface MessagingView extends BaseView{
         void showMessages(List<Message> messages);
+
+        void addNewMessages(List<Message> newMessages);
+
+        void showOlderMessages(List<Message> oldMessages);
     }
 }

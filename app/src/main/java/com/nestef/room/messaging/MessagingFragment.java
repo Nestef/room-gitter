@@ -71,6 +71,16 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
         presenter = new MessagingPresenter();
     }
 
+    @Override
+    public void addNewMessages(List<Message> newMessages) {
+        messageAdapter.addItems(newMessages);
+    }
+
+    @Override
+    public void showOlderMessages(List<Message> oldMessages) {
+
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -79,6 +89,12 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
         presenter.setView(this);
         if (!isTablet()) ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         presenter.fetchMessages();
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.tempNew();
+            }
+        });
         return view;
     }
 

@@ -31,4 +31,46 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
             i.printStackTrace();
         }
     }
+
+    @Override
+    public void fetchOlderMessages() {
+
+    }
+
+    @Override
+    public void sendMessage(String message) {
+
+    }
+
+    @Override
+    public void markRead(String messageId) {
+
+    }
+
+    public void tempNew() {
+        String neww = "[{\"id\":\"5a9f0de1e4ff28713a00985e\",\"text\":\"''' var foo = 2 '''\",\"html\":\"&#39;&#39;&#39; var foo = 2 &#39;&#39;&#39;\",\"sent\":\"2018-03-06T21:53:37.714Z\",\"fromUser\":{\"id\":\"58fe353dd73408ce4f5aa875\",\"username\":\"Nestef\",\"displayName\":\"Nestef\",\"url\":\"/Nestef\",\"avatarUrl\":\"https://avatars-04.gitter.im/gh/uv/4/Nestef\",\"avatarUrlSmall\":\"https://avatars2.githubusercontent.com/u/16714032?v=4&s=60\",\"avatarUrlMedium\":\"https://avatars2.githubusercontent.com/u/16714032?v=4&s=128\",\"v\":6,\"gv\":\"4\"},\"unread\":false,\"readBy\":0,\"urls\":[],\"mentions\":[],\"issues\":[],\"meta\":[],\"v\":1},{\"id\":\"5a9f0dfce4d1c63604cd5dc4\",\"text\":\"''' var foo = 2'''\",\"html\":\"&#39;&#39;&#39; var foo = 2&#39;&#39;&#39;\",\"sent\":\"2018-03-06T21:54:04.475Z\",\"fromUser\":{\"id\":\"58fe353dd73408ce4f5aa875\",\"username\":\"Nestef\",\"displayName\":\"Nestef\",\"url\":\"/Nestef\",\"avatarUrl\":\"https://avatars-04.gitter.im/gh/uv/4/Nestef\",\"avatarUrlSmall\":\"https://avatars2.githubusercontent.com/u/16714032?v=4&s=60\",\"avatarUrlMedium\":\"https://avatars2.githubusercontent.com/u/16714032?v=4&s=128\",\"v\":6,\"gv\":\"4\"},\"unread\":false,\"readBy\":0,\"urls\":[],\"mentions\":[],\"issues\":[],\"meta\":[],\"v\":1},{\"id\":\"5a9f0e12888332ee3a090343\",\"text\":\"``` var foo = 2```\",\"html\":\"<code>var foo = 2</code>\",\"sent\":\"2018-03-06T21:54:26.788Z\",\"fromUser\":{\"id\":\"58fe353dd73408ce4f5aa875\",\"username\":\"Nestef\",\"displayName\":\"Nestef\",\"url\":\"/Nestef\",\"avatarUrl\":\"https://avatars-04.gitter.im/gh/uv/4/Nestef\",\"avatarUrlSmall\":\"https://avatars2.githubusercontent.com/u/16714032?v=4&s=60\",\"avatarUrlMedium\":\"https://avatars2.githubusercontent.com/u/16714032?v=4&s=128\",\"v\":6,\"gv\":\"4\"},\"unread\":false,\"readBy\":0,\"urls\":[],\"mentions\":[],\"issues\":[],\"meta\":[],\"v\":1},{\"id\":\"5a9f0e2c53c1dbb743b06892\",\"text\":\"```var foo = 3```\",\"html\":\"<code>var foo = 3</code>\",\"sent\":\"2018-03-06T21:54:52.381Z\",\"fromUser\":{\"id\":\"58fe353dd73408ce4f5aa875\",\"username\":\"Nestef\",\"displayName\":\"Nestef\",\"url\":\"/Nestef\",\"avatarUrl\":\"https://avatars-04.gitter.im/gh/uv/4/Nestef\",\"avatarUrlSmall\":\"https://avatars2.githubusercontent.com/u/16714032?v=4&s=60\",\"avatarUrlMedium\":\"https://avatars2.githubusercontent.com/u/16714032?v=4&s=128\",\"v\":6,\"gv\":\"4\"},\"unread\":false,\"readBy\":0,\"urls\":[],\"mentions\":[],\"issues\":[],\"meta\":[],\"v\":1},{\"id\":\"5ad641f1012ff2bf681e8d53\",\"text\":\"This is a editing test\",\"html\":\"This is a editing test\",\"sent\":\"2018-04-17T18:50:25.245Z\",\"editedAt\":\"2018-04-17T18:50:33.124Z\",\"fromUser\":{\"id\":\"58fe353dd73408ce4f5aa875\",\"username\":\"Nestef\",\"displayName\":\"Nestef\",\"url\":\"/Nestef\",\"avatarUrl\":\"https://avatars-04.gitter.im/gh/uv/4/Nestef\",\"avatarUrlSmall\":\"https://avatars2.githubusercontent.com/u/16714032?v=4&s=60\",\"avatarUrlMedium\":\"https://avatars2.githubusercontent.com/u/16714032?v=4&s=128\",\"v\":6,\"gv\":\"4\"},\"unread\":false,\"readBy\":0,\"urls\":[],\"mentions\":[],\"issues\":[],\"meta\":[],\"v\":2},{\"id\":\"5ad7944f01a2b40f382ee438\",\"text\":\"> ''' var foo = 2'''    quote test\",\"html\":\"<blockquote>\\n&#39;&#39;&#39; var foo = 2&#39;&#39;&#39;    quote test</blockquote>\\n\",\"sent\":\"2018-04-18T18:54:07.460Z\",\"editedAt\":\"2018-04-18T18:54:47.849Z\",\"fromUser\":{\"id\":\"58fe353dd73408ce4f5aa875\",\"username\":\"Nestef\",\"displayName\":\"Nestef\",\"url\":\"/Nestef\",\"avatarUrl\":\"https://avatars-04.gitter.im/gh/uv/4/Nestef\",\"avatarUrlSmall\":\"https://avatars2.githubusercontent.com/u/16714032?v=4&s=60\",\"avatarUrlMedium\":\"https://avatars2.githubusercontent.com/u/16714032?v=4&s=128\",\"v\":6,\"gv\":\"4\"},\"unread\":false,\"readBy\":0,\"urls\":[],\"mentions\":[],\"issues\":[],\"meta\":[],\"v\":3},{\"id\":\"5ad7949a2dfcfffd2b2c8a93\",\"text\":\"> ''' var foo = 2''' \",\"html\":\"<blockquote>\\n&#39;&#39;&#39; var foo = 2&#39;&#39;&#39; </blockquote>\\n\",\"sent\":\"2018-04-18T18:55:22.423Z\",\"fromUser\":{\"id\":\"58fe353dd73408ce4f5aa875\",\"username\":\"Nestef\",\"displayName\":\"Nestef\",\"url\":\"/Nestef\",\"avatarUrl\":\"https://avatars-04.gitter.im/gh/uv/4/Nestef\",\"avatarUrlSmall\":\"https://avatars2.githubusercontent.com/u/16714032?v=4&s=60\",\"avatarUrlMedium\":\"https://avatars2.githubusercontent.com/u/16714032?v=4&s=128\",\"v\":6,\"gv\":\"4\"},\"unread\":false,\"readBy\":0,\"urls\":[],\"mentions\":[],\"issues\":[],\"meta\":[],\"v\":1},{\"id\":\"5ad7949e012ff2bf681e98f6\",\"text\":\"g\",\"html\":\"g\",\"sent\":\"2018-04-18T18:55:26.151Z\",\"fromUser\":{\"id\":\"58fe353dd73408ce4f5aa875\",\"username\":\"Nestef\",\"displayName\":\"Nestef\",\"url\":\"/Nestef\",\"avatarUrl\":\"https://avatars-04.gitter.im/gh/uv/4/Nestef\",\"avatarUrlSmall\":\"https://avatars2.githubusercontent.com/u/16714032?v=4&s=60\",\"avatarUrlMedium\":\"https://avatars2.githubusercontent.com/u/16714032?v=4&s=128\",\"v\":6,\"gv\":\"4\"},\"unread\":false,\"readBy\":0,\"urls\":[],\"mentions\":[],\"issues\":[],\"meta\":[],\"v\":1},{\"id\":\"5aeca35d03cafa797b290d1a\",\"text\":\"USB HD du if du Lou is to be able to lead his wife to the game and then your brand making it clear what the purpose of the shop is to get the best deal on the internet and the bold arrow to the right of the shop is a good idea for you to make your own choices and you can make a great deal for your business and your business is the best way to get your business to work with your business and your business is the best choice for your business and your business and the future success will provide your best investment goals in life for you to succeed with the best quality of the best customer care management in the market to achieve the goal of the shop to get you to succeed with the most competitive business and he \",\"html\":\"USB HD du if du Lou is to be able to lead his wife to the game and then your brand making it clear what the purpose of the shop is to get the best deal on the internet and the bold arrow to the right of the shop is a good idea for you to make your own choices and you can make a great deal for your business and your business is the best way to get your business to work with your business and your business is the best choice for your business and your business and the future success will provide your best investment goals in life for you to succeed with the best quality of the best customer care management in the market to achieve the goal of the shop to get you to succeed with the most competitive business and he \",\"sent\":\"2018-05-04T18:15:57.956Z\",\"fromUser\":{\"id\":\"58fe353dd73408ce4f5aa875\",\"username\":\"Nestef\",\"displayName\":\"Nestef\",\"url\":\"/Nestef\",\"avatarUrl\":\"https://avatars-04.gitter.im/gh/uv/4/Nestef\",\"avatarUrlSmall\":\"https://avatars2.githubusercontent.com/u/16714032?v=4&s=60\",\"avatarUrlMedium\":\"https://avatars2.githubusercontent.com/u/16714032?v=4&s=128\",\"v\":6,\"gv\":\"4\"},\"unread\":false,\"readBy\":0,\"urls\":[],\"mentions\":[],\"issues\":[],\"meta\":[],\"v\":1}]";
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            Log.d("mp", "fetchMessages: ");
+            List<Message> messages1 = mapper.readValue(neww, new TypeReference<List<Message>>() {
+            });
+
+
+            mView.addNewMessages(messages1);
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+    }
+
+    @Override
+    public void unsetView() {
+        super.unsetView();
+        //make sure to end network tasks
+    }
+
+    @Override
+    public void setView(MessagingContract.MessagingView view) {
+        super.setView(view);
+        //start network streaming messages
+    }
 }
