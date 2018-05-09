@@ -1,4 +1,4 @@
-package com.nestef.room.model.event;
+package com.nestef.room.model;
 
 import org.json.JSONObject;
 
