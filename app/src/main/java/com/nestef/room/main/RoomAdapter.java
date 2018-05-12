@@ -43,7 +43,6 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         //todo we need proper data validation here
         Room room = mRooms.get(position);
         Log.d(TAG, "onBindViewHolder: " + room.name + room.userCount);
-        Log.d(TAG, "onBindViewHolder: " + room.lastAccessTime.toInstant());
         holder.title.setText(room.name);
         //holder.description.setText(room.topic);
         //holder.userCount.setText(String.valueOf(room.userCount));

@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Room</string>
 
+    <string name="login_title">Login</string>
+
     <!--Navigation Tabs-->
     <string name="room_nav_title">Rooms</string>
     <string name="search_nav_title">Search</string>

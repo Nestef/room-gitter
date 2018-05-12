@@ -22,7 +22,11 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+
         debug {
+            buildConfigField 'String', 'OAuthId', oauth_key
+            buildConfigField 'String', 'OAuthSecret', oauth_secret
+            buildConfigField 'String', "RedirectUrl", redirect_url
             minifyEnabled false
         }
         release {

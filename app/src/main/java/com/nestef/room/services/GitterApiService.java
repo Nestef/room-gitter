@@ -20,6 +20,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -33,15 +34,18 @@ public interface GitterApiService {
     @GET("/rooms")
     Call<List<Room>> getRooms();
 
+    @FormUrlEncoded
     @POST("/rooms")
     Call<RoomResponse> getRoomIdByUri(@Field("uri") String roomUri);
 
+    @FormUrlEncoded
     @POST("/user/{userId}/rooms")
     Call joinRoom(@Path("userId") String userId, @Field("id") String roomId);
 
     @DELETE("rooms/{roomId}/users/{userId}")
     Call leaveRoom(@Path("roomId") String roomId, @Path("userId") String userId);
 
+    @FormUrlEncoded
     @PUT("/rooms/{roomId}")
     Call updateRoom(@Path("roomId") String roomId, @Field("topic") String topic, @Field("noIndex") boolean noIndex, @Field("tags") String tags);
 
@@ -75,9 +79,11 @@ public interface GitterApiService {
     @GET("/rooms/{roomId}/chatMessages/{messageId}")
     Call<Message> getMessageById(@Path("roomId") String roomID, @Path("messageId") String messageId);
 
+    @FormUrlEncoded
     @POST("/rooms/{roomId}/chatMessages")
     Call sendMessage(@Path("roomId") String roomId, @Field("text") String text);
 
+    @FormUrlEncoded
     @PUT("/rooms/{roomId}/chatMessages/{messageId}")
     Call editMessage(@Path("roomId") String roomId, @Path("messageId") String messageId, @Field("text") String text);
 
@@ -93,6 +99,7 @@ public interface GitterApiService {
     @GET("/user/{userId}/rooms/{roomId}/unreadItems")
     Call<UnreadResponse> getUnread(@Path("userId") String userId, @Path("roomId") String roomId);
 
+    @FormUrlEncoded
     @POST("/user/{userId}/rooms/{roomId}/unreadItems")
     Call readMessages(@Path("userId") String userId, @Path("roomId") String roomId, @Field("chat") List<String> messageIds);
 
