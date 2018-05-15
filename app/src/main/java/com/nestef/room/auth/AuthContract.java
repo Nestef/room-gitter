@@ -17,8 +17,6 @@ public interface AuthContract {
 
         void startMainActivity(Context context);
 
-        String buildAuthRequestUrl();
-
         boolean handleUri(Uri uri, Context context);
 
     }

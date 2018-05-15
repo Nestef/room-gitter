@@ -14,6 +14,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.nestef.room.R;
+import com.nestef.room.util.UriUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,7 +69,7 @@ public class AuthActivity extends AppCompatActivity implements AuthContract.Auth
             }
 
         });
-        webView.loadUrl(presenter.buildAuthRequestUrl());
+        webView.loadUrl(UriUtils.buildAuthRequestUrl());
 
     }
 
