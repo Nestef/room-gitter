@@ -1,5 +1,6 @@
 package com.nestef.room.main;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,21 +28,22 @@ import butterknife.Unbinder;
  * Created by Noah Steffes on 3/25/18.
  */
 
-public class RoomFragment extends Fragment implements MainContract.RoomView {
+public class RoomFragment extends Fragment implements MainContract.RoomView, RoomAdapter.RoomCallback {
 
     private static final String TAG = "RoomFragment";
 
     @BindView(R.id.room_list)
-    RecyclerView roomList;
+    RecyclerView mRoomList;
     @Nullable
     @BindView(R.id.default_toolbar)
-    Toolbar toolbar;
+    Toolbar mToolbar;
     @BindInt(R.integer.is_tablet)
-    int isTablet;
+    int mIsTablet;
 
-    private Unbinder unbinder;
-    private RoomAdapter roomAdapter;
-    private RoomPresenter presenter;
+    private Unbinder mUnbinder;
+    private RoomAdapter mRoomAdapter;
+    private RoomPresenter mPresenter;
+    private RoomSelectionCallback mCallback;
 
     public RoomFragment() {
     }
@@ -56,40 +58,51 @@ public class RoomFragment extends Fragment implements MainContract.RoomView {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new RoomPresenter();
+        mPresenter = new RoomPresenter();
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.room_fragment, container, false);
-        unbinder = ButterKnife.bind(this, rootView);
-        presenter.setView(this);
+        mUnbinder = ButterKnife.bind(this, rootView);
+        mPresenter.setView(this);
         Log.d(TAG, "onCreateView: ");
         if (isTablet()) {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+            ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         }
-        presenter.fetchRooms();
+        mPresenter.fetchRooms();
         return rootView;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
+        mUnbinder.unbind();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        presenter.unsetView();
+        mPresenter.unsetView();
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mCallback = (RoomFragment.RoomSelectionCallback) getActivity();
+        } catch (ClassCastException e) {
+            throw new ClassCastException(getActivity().toString()
+                    + " must implement RoomFragmentCallback");
+        }
+
+    }
+    @Override
     public void showRooms(List<Room> rooms) {
-        roomList.setLayoutManager(new LinearLayoutManager(getContext()));
-        roomAdapter = new RoomAdapter(rooms);
-        roomList.setAdapter(roomAdapter);
+        mRoomList.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRoomAdapter = new RoomAdapter(rooms, this);
+        mRoomList.setAdapter(mRoomAdapter);
     }
 
     @Override
@@ -108,6 +121,17 @@ public class RoomFragment extends Fragment implements MainContract.RoomView {
     }
 
     private boolean isTablet() {
-        return isTablet == 1;
+        return mIsTablet == 1;
     }
+
+    @Override
+    public void onRoomClick(Room room) {
+        mCallback.onRoomSelected(room);
+    }
+
+    public interface RoomSelectionCallback {
+        void onRoomSelected(Room room);
+    }
+
+    ;
 }

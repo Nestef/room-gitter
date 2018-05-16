@@ -1,35 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:orientation="horizontal">
 
-
-    <include layout="@layout/default_actionbar" />
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/bbn_bottom_navigation_width"
-        android:layout_marginTop="?actionBarSize"
-        android:orientation="horizontal">
+        android:layout_weight="1"
+        android:fitsSystemWindows="true">
+
+        <include layout="@layout/navigation_bar" />
+
+        <include layout="@layout/default_actionbar" />
 
         <FrameLayout
             android:id="@+id/fragment_switcher"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_marginStart="@dimen/bbn_bottom_navigation_width"
+            android:layout_marginTop="?actionBarSize" />
+    </android.support.design.widget.CoordinatorLayout>
 
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:fitsSystemWindows="true">
         <FrameLayout
             android:id="@+id/message_holder"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2" />
-    </LinearLayout>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </android.support.design.widget.CoordinatorLayout>
 
 
-    <include layout="@layout/navigation_bar" />
-
-
-</android.support.design.widget.CoordinatorLayout>
+</LinearLayout>

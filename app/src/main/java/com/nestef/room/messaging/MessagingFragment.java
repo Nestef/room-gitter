@@ -16,6 +16,9 @@ import android.widget.ImageView;
 
 import com.nestef.room.R;
 import com.nestef.room.model.Message;
+import com.nestef.room.model.Room;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -29,51 +32,55 @@ import butterknife.Unbinder;
  */
 public class MessagingFragment extends Fragment implements MessagingContract.MessagingView {
 
-    Unbinder unbinder;
-    MessagingPresenter presenter;
-    MessageAdapter messageAdapter;
+    private static final String ROOM_KEY = "room";
+
+    Unbinder mUnbinder;
+    MessagingPresenter mPresenter;
+    MessageAdapter mMessageAdapter;
+    Room mRoom;
 
     @BindView(R.id.message_list)
-    RecyclerView messageList;
+    RecyclerView mMessageList;
     @BindView(R.id.message_input)
-    EditText inputField;
+    EditText mInputField;
     @BindView(R.id.message_send_iv)
-    ImageView send;
+    ImageView mSend;
     @BindInt(R.integer.is_tablet)
-    int isTablet;
+    int mIsTablet;
     @Nullable
     @BindView(R.id.message_toolbar)
-    Toolbar toolbar;
-
-    @Override
-    public void showMessages(List<Message> messages) {
-        messageList.setLayoutManager(new LinearLayoutManager(getContext()));
-        messageAdapter = new MessageAdapter(messages);
-        messageList.setAdapter(messageAdapter);
-
-    }
+    Toolbar mToolbar;
 
     public MessagingFragment() {
     }
 
-    public static MessagingFragment newInstance() {
+    public static MessagingFragment newInstance(Room room) {
 
         Bundle args = new Bundle();
-
+        args.putParcelable(ROOM_KEY, Parcels.wrap(room));
         MessagingFragment fragment = new MessagingFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
+    public void showMessages(List<Message> messages) {
+        mMessageList.setLayoutManager(new LinearLayoutManager(getContext()));
+        mMessageAdapter = new MessageAdapter(messages);
+        mMessageList.setAdapter(mMessageAdapter);
+
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new MessagingPresenter();
+        mPresenter = new MessagingPresenter();
+        mRoom = Parcels.unwrap(getArguments().getParcelable(ROOM_KEY));
     }
 
     @Override
     public void addNewMessages(List<Message> newMessages) {
-        messageAdapter.addItems(newMessages);
+        mMessageAdapter.addItems(newMessages);
     }
 
     @Override
@@ -84,15 +91,19 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.messaging_fragment, container);
-        unbinder = ButterKnife.bind(this, view);
-        presenter.setView(this);
-        if (!isTablet()) ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        presenter.fetchMessages();
-        send.setOnClickListener(new View.OnClickListener() {
+        View view = inflater.inflate(R.layout.messaging_fragment, container, false);
+        mUnbinder = ButterKnife.bind(this, view);
+        mPresenter.setView(this);
+        if (!isTablet()) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        mToolbar.setTitle(mRoom.name);
+        mPresenter.fetchMessages();
+        mSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.tempNew();
+                mPresenter.tempNew();
             }
         });
         return view;
@@ -101,13 +112,13 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
+        mUnbinder.unbind();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        presenter.unsetView();
+        mPresenter.unsetView();
     }
 
 
@@ -127,6 +138,6 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     }
 
     private boolean isTablet() {
-        return isTablet == 1;
+        return mIsTablet == 1;
     }
 }

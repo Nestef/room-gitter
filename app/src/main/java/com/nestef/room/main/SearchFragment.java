@@ -1,7 +1,6 @@
 package com.nestef.room.main;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.nestef.room.R;
-import com.nestef.room.messaging.MessagingActivity;
 
 import butterknife.BindInt;
 import butterknife.BindView;
@@ -61,15 +59,6 @@ public class SearchFragment extends Fragment implements MainContract.SearchView 
         Log.d(TAG, "onCreateView: ");
         unbinder = ButterKnife.bind(this, rootView);
         if (isTablet()) ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-
-        text.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setClass(getContext(), MessagingActivity.class);
-                startActivity(intent);
-            }
-        });
 
         return rootView;
     }

@@ -122,7 +122,7 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
             mCallback = (GroupsFragment.OnCommunitySelection) getActivity();
         } catch (ClassCastException e) {
             throw new ClassCastException(getActivity().toString()
-                    + " must implement OnHeadlineSelectedListener");
+                    + " must implement OnCommunitySelection");
         }
 
     }

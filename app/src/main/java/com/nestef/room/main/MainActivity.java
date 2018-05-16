@@ -1,5 +1,6 @@
 package com.nestef.room.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -8,17 +9,27 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import com.nestef.room.R;
+import com.nestef.room.messaging.MessagingActivity;
+import com.nestef.room.messaging.MessagingFragment;
 import com.nestef.room.model.Group;
+import com.nestef.room.model.Room;
+
+import org.parceler.Parcels;
 
 import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.sephiroth.android.library.bottomnavigation.BottomNavigation;
 
-public class MainActivity extends AppCompatActivity implements GroupsFragment.OnCommunitySelection {
+public class MainActivity extends AppCompatActivity implements GroupsFragment.OnCommunitySelection, RoomFragment.RoomSelectionCallback {
 
     private static final String TAG = "MainActivity";
-    int fragmentId = R.id.fragment_switcher;
+    private static final String ROOM_EXTRA = "room_extra";
+
+    int mFragmentId = R.id.fragment_switcher;
+
+    int mMessageFragmentId = R.id.message_holder;
+
     @BindView(R.id.navigation_bar)
     BottomNavigation mBottomNavigation;
     @BindInt(R.integer.is_tablet)
@@ -34,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
         ButterKnife.bind(this);
         Fragment fragment = RoomFragment.newInstance();
         FragmentTransaction f = getSupportFragmentManager().beginTransaction();
-        f.add(fragmentId, fragment).commit();
+        f.add(mFragmentId, fragment).commit();
         if (isTablet()) {
             setSupportActionBar(mDefaultToolbar);
         }
@@ -45,19 +56,19 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
             public void onMenuItemSelect(int i, int i1, boolean b) {
                 switch (i1) {
                     case 0:
-                        getSupportFragmentManager().beginTransaction().replace(fragmentId, RoomFragment.newInstance()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(mFragmentId, RoomFragment.newInstance()).commit();
                         Log.d(TAG, "onMenuItemSelect:0: room");
                         return;
                     case 1:
-                        getSupportFragmentManager().beginTransaction().replace(fragmentId, SearchFragment.newInstance()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(mFragmentId, SearchFragment.newInstance()).commit();
 
                         return;
                     case 2:
-                        getSupportFragmentManager().beginTransaction().replace(fragmentId, PeopleFragment.newInstance()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(mFragmentId, PeopleFragment.newInstance()).commit();
                         Log.d(TAG, "onMenuItemSelect: 2:People");
                         return;
                     case 3:
-                        getSupportFragmentManager().beginTransaction().replace(fragmentId, GroupsFragment.newInstance()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(mFragmentId, GroupsFragment.newInstance()).commit();
                         Log.d(TAG, "onMenuItemSelect: 3: Community");
                         return;
                 }
@@ -76,13 +87,25 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
     }
 
     private void tabletSetup() {
-        // Toolbar toolbar = findViewById(R.id.tablet_toolbar);
-        // setSupportActionBar(toolbar);
+        // Toolbar mToolbar = findViewById(R.id.tablet_toolbar);
+        // setSupportActionBar(mToolbar);
 
     }
 
     @Override
     public void onCommunitySelect(Group group) {
-        getSupportFragmentManager().beginTransaction().replace(fragmentId, CommunityFragment.newInstance(group)).addToBackStack("communityfragment").commit();
+        getSupportFragmentManager().beginTransaction().replace(mFragmentId, CommunityFragment.newInstance(group)).addToBackStack("communityfragment").commit();
+    }
+
+    @Override
+    public void onRoomSelected(Room room) {
+        if (isTablet()) {
+            getSupportFragmentManager().beginTransaction().replace(mMessageFragmentId, MessagingFragment.newInstance(room)).commit();
+        } else {
+            Intent intent = new Intent();
+            intent.setClass(this, MessagingActivity.class);
+            intent.putExtra(ROOM_EXTRA, Parcels.wrap(room));
+            startActivity(intent);
+        }
     }
 }

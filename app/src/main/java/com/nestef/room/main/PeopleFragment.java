@@ -1,6 +1,7 @@
 package com.nestef.room.main;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,7 +29,7 @@ import butterknife.Unbinder;
  * Created by Noah Steffes on 3/31/18.
  */
 
-public class PeopleFragment extends Fragment implements MainContract.PeopleView {
+public class PeopleFragment extends Fragment implements MainContract.PeopleView, RoomAdapter.RoomCallback {
 
     private static final String TAG = "PeopleFragment";
 
@@ -43,6 +44,7 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView 
     private Unbinder unbinder;
     private RoomAdapter roomAdapter;
     private PeoplePresenter presenter;
+    private RoomFragment.RoomSelectionCallback mCallback;
 
     public PeopleFragment() {
     }
@@ -84,9 +86,21 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView 
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mCallback = (RoomFragment.RoomSelectionCallback) getActivity();
+        } catch (ClassCastException e) {
+            throw new ClassCastException(getActivity().toString()
+                    + " must implement RoomFragmentCallback");
+        }
+
+    }
+
+    @Override
     public void showChats(List<Room> chats) {
         peopleList.setLayoutManager(new LinearLayoutManager(getContext()));
-        roomAdapter = new RoomAdapter(chats);
+        roomAdapter = new RoomAdapter(chats, this);
         peopleList.setAdapter(roomAdapter);
     }
     @Override
@@ -106,5 +120,10 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView 
 
     private boolean isTablet() {
         return isTablet == 1;
+    }
+
+    @Override
+    public void onRoomClick(Room room) {
+        mCallback.onRoomSelected(room);
     }
 }

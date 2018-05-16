@@ -23,11 +23,17 @@ import butterknife.ButterKnife;
  */
 public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder> {
 
-    private static final String TAG = RoomAdapter.class.getName();
+    private static final String TAG = "RoomAdapter";
     private List<Room> mRooms;
+    private RoomCallback mCallback;
 
     public RoomAdapter(List<Room> rooms) {
         mRooms = rooms;
+    }
+
+    public RoomAdapter(List<Room> rooms, RoomCallback callback) {
+        mRooms = rooms;
+        mCallback = callback;
     }
 
     @NonNull
@@ -62,6 +68,10 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         return mRooms.size();
     }
 
+    public interface RoomCallback {
+        void onRoomClick(Room room);
+    }
+
     class RoomViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.room_list_item_title)
@@ -75,6 +85,12 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         RoomViewHolder(View v) {
             super(v);
             ButterKnife.bind(this, v);
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mCallback.onRoomClick(mRooms.get(getAdapterPosition()));
+                }
+            });
         }
     }
 }
