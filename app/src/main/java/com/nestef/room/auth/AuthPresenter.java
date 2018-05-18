@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.support.v7.app.AppCompatActivity;
 
 import com.nestef.room.BuildConfig;
 import com.nestef.room.base.BasePresenter;
@@ -38,7 +39,10 @@ public class AuthPresenter extends BasePresenter<AuthContract.AuthView> implemen
     public void startMainActivity(Context context) {
         Intent intent = new Intent();
         intent.setClass(context, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
         context.startActivity(intent);
+        ((AppCompatActivity) context).finish();
     }
 
     @Override

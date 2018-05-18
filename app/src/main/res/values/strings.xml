@@ -14,4 +14,9 @@
     <!-- Community fragment -->
     <string name="community_joined_title">Your Rooms</string>
     <string name="community_all_title">Other Rooms</string>
+
+    <!-- Preferences -->
+    <string name="theme_pref_title">Dark Theme</string>
+    <string name="theme_pref_key">dark_theme</string>
+    <string name="theme_pref_summary">Switch app to dark theme</string>
 </resources>

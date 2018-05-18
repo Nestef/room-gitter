@@ -75,7 +75,9 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPresenter = new MessagingPresenter();
-        mRoom = Parcels.unwrap(getArguments().getParcelable(ROOM_KEY));
+        if (getArguments() != null) {
+            mRoom = Parcels.unwrap(getArguments().getParcelable(ROOM_KEY));
+        }
     }
 
     @Override
@@ -98,7 +100,9 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
             ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        mToolbar.setTitle(mRoom.name);
+        if (mRoom != null) {
+            mToolbar.setTitle(mRoom.name);
+        }
         mPresenter.fetchMessages();
         mSend.setOnClickListener(new View.OnClickListener() {
             @Override

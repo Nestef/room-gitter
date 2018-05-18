@@ -58,7 +58,7 @@ public class SearchFragment extends Fragment implements MainContract.SearchView 
         View rootView = inflater.inflate(R.layout.search_fragment, container, false);
         Log.d(TAG, "onCreateView: ");
         unbinder = ButterKnife.bind(this, rootView);
-        if (isTablet()) ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
         return rootView;
     }

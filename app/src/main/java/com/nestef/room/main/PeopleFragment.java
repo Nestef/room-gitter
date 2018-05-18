@@ -12,6 +12,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -66,7 +68,8 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView,
         View rootView = inflater.inflate(R.layout.people_fragment, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         presenter.setView(this);
-        if (isTablet()) ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        if (!isTablet()) setHasOptionsMenu(true);
 
         Log.d(TAG, "onCreateView: ");
         presenter.fetchChats();
@@ -95,6 +98,11 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView,
                     + " must implement RoomFragmentCallback");
         }
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main_actions, menu);
     }
 
     @Override

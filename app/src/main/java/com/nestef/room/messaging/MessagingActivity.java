@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.nestef.room.R;
 import com.nestef.room.model.Room;
+import com.nestef.room.preferences.ThemeChanger;
 
 import org.parceler.Parcels;
 
@@ -15,6 +16,7 @@ public class MessagingActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ThemeChanger.setTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messaging);
         Room room = Parcels.unwrap(getIntent().getParcelableExtra(ROOM_EXTRA));

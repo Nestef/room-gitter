@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -68,9 +70,8 @@ public class RoomFragment extends Fragment implements MainContract.RoomView, Roo
         mUnbinder = ButterKnife.bind(this, rootView);
         mPresenter.setView(this);
         Log.d(TAG, "onCreateView: ");
-        if (isTablet()) {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
-        }
+        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+        if (!isTablet()) setHasOptionsMenu(true);
         mPresenter.fetchRooms();
         return rootView;
     }
@@ -98,6 +99,12 @@ public class RoomFragment extends Fragment implements MainContract.RoomView, Roo
         }
 
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main_actions, menu);
+    }
+
     @Override
     public void showRooms(List<Room> rooms) {
         mRoomList.setLayoutManager(new LinearLayoutManager(getContext()));

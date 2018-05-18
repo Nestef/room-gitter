@@ -7,12 +7,16 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.nestef.room.R;
 import com.nestef.room.messaging.MessagingActivity;
 import com.nestef.room.messaging.MessagingFragment;
 import com.nestef.room.model.Group;
 import com.nestef.room.model.Room;
+import com.nestef.room.preferences.PreferencesActivity;
+import com.nestef.room.preferences.ThemeChanger;
 
 import org.parceler.Parcels;
 
@@ -40,14 +44,18 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ThemeChanger.setTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         Fragment fragment = RoomFragment.newInstance();
         FragmentTransaction f = getSupportFragmentManager().beginTransaction();
         f.add(mFragmentId, fragment).commit();
+
         if (isTablet()) {
             setSupportActionBar(mDefaultToolbar);
+
+            getSupportFragmentManager().beginTransaction().add(mMessageFragmentId, new MessagingFragment()).commit();
         }
         mBottomNavigation.setDefaultSelectedIndex(0);
         Log.d(TAG, "onCreate: is tablet" + isTablet());
@@ -79,6 +87,34 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
 
             }
         });
+
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        if (isTablet()) {
+            getMenuInflater().inflate(R.menu.main_actions, menu);
+            return super.onCreateOptionsMenu(menu);
+        }
+        return super.onCreateOptionsMenu(menu);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.settings_action:
+                Intent intent = new Intent();
+                intent.setClass(this, PreferencesActivity.class);
+                startActivity(intent
+                );
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+
 
     }
 

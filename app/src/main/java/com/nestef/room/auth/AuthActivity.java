@@ -14,6 +14,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.nestef.room.R;
+import com.nestef.room.preferences.ThemeChanger;
 import com.nestef.room.util.UriUtils;
 
 import butterknife.BindView;
@@ -32,7 +33,7 @@ public class AuthActivity extends AppCompatActivity implements AuthContract.Auth
 
     protected void onCreate(Bundle savedInstanceState) {
 
-        setTheme(R.style.AppTheme);
+        ThemeChanger.setTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
         ButterKnife.bind(this);

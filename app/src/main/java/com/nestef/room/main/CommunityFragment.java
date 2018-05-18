@@ -1,5 +1,6 @@
 package com.nestef.room.main;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,6 +10,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -28,7 +31,7 @@ import butterknife.Unbinder;
 /**
  * Created by Noah Steffes on 5/2/18.
  */
-public class CommunityFragment extends Fragment implements MainContract.CommunityView {
+public class CommunityFragment extends Fragment implements MainContract.CommunityView, RoomAdapter.RoomCallback {
 
 
     private static final String GROUP = "Group";
@@ -36,6 +39,7 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
     CommunityPresenter presenter;
     RoomAdapter joinedAdapter;
     RoomAdapter communityAdapter;
+    private RoomFragment.RoomSelectionCallback mCallback;
 
 
     @BindView(R.id.community_room_list)
@@ -70,7 +74,8 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
         View view = inflater.inflate(R.layout.community_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
         presenter.setView(this);
-        if (isTablet()) ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        if (!isTablet()) setHasOptionsMenu(true);
 
         presenter.fetchRooms();
         return view;
@@ -88,6 +93,21 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
         presenter.unsetView();
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mCallback = (RoomFragment.RoomSelectionCallback) getActivity();
+        } catch (ClassCastException e) {
+            throw new ClassCastException(getActivity().toString()
+                    + " must implement RoomFragmentCallback");
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main_actions, menu);
+    }
 
     @Override
     public void showLoadingIndicator() {
@@ -111,7 +131,7 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
     @Override
     public void showJoinedRooms(List<Room> joinedRooms) {
         joinedRoomList.setLayoutManager(new LinearLayoutManager(getContext()));
-        joinedAdapter = new RoomAdapter(joinedRooms);
+        joinedAdapter = new RoomAdapter(joinedRooms, this);
         joinedRoomList.setAdapter(joinedAdapter);
     }
 
@@ -123,7 +143,12 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
     @Override
     public void showUnjoinedRooms(List<Room> unjoinedRooms) {
         communityRoomList.setLayoutManager(new LinearLayoutManager(getContext()));
-        communityAdapter = new RoomAdapter(unjoinedRooms);
+        communityAdapter = new RoomAdapter(unjoinedRooms, this);
         communityRoomList.setAdapter(communityAdapter);
+    }
+
+    @Override
+    public void onRoomClick(Room room) {
+        mCallback.onRoomSelected(room);
     }
 }

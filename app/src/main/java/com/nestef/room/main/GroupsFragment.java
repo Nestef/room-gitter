@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -69,8 +71,8 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
         Log.d(TAG, "onCreateView: ");
         unbinder = ButterKnife.bind(this, rootView);
         presenter.setView(this);
-        if (isTablet()) ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        if (!isTablet()) setHasOptionsMenu(true);
 
         presenter.fetchGroups();
         return rootView;
@@ -86,6 +88,11 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
     public void onDestroy() {
         super.onDestroy();
         presenter.unsetView();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main_actions, menu);
     }
 
     @Override
