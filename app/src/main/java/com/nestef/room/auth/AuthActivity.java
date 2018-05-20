@@ -1,6 +1,7 @@
 package com.nestef.room.auth;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +20,8 @@ import com.nestef.room.util.UriUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.nestef.room.util.Constants.AUTH_SHARED_PREF;
 
 public class AuthActivity extends AppCompatActivity implements AuthContract.AuthView {
 
@@ -40,7 +43,7 @@ public class AuthActivity extends AppCompatActivity implements AuthContract.Auth
 
         presenter = new AuthPresenter();
         presenter.setView(this);
-        if (presenter.checkUserAuth(this)) {
+        if (presenter.checkUserAuth(getSharedPreferences(AUTH_SHARED_PREF, Context.MODE_PRIVATE))) {
             presenter.startMainActivity(this);
         }
 

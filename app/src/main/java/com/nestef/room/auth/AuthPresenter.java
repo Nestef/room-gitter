@@ -67,7 +67,7 @@ public class AuthPresenter extends BasePresenter<AuthContract.AuthView> implemen
                         @ParametersAreNonnullByDefault
                         public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
                             String token = response.body().accessToken;
-                            saveToken(token, context);
+                            saveToken(token, context.getSharedPreferences(AUTH_SHARED_PREF, Context.MODE_PRIVATE));
                             startMainActivity(context);
                         }
 
@@ -83,16 +83,14 @@ public class AuthPresenter extends BasePresenter<AuthContract.AuthView> implemen
         return false;
     }
 
-    private void saveToken(String token, Context context) {
-        SharedPreferences sharedPref = context.getSharedPreferences(AUTH_SHARED_PREF, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
+    private void saveToken(String token, SharedPreferences sharedPreferences) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(AUTH_TOKEN_PREF, token);
         editor.apply();
     }
 
     @Override
-    public boolean checkUserAuth(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(AUTH_SHARED_PREF, Context.MODE_PRIVATE);
+    public boolean checkUserAuth(SharedPreferences sharedPreferences) {
         return sharedPreferences.getString(AUTH_TOKEN_PREF, null) != null;
     }
 
