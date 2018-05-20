@@ -75,6 +75,8 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
         unbinder = ButterKnife.bind(this, view);
         presenter.setView(this);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        //((AppCompatActivity) getActivity()).getSupportActionBar().setTitle();
+
         if (!isTablet()) setHasOptionsMenu(true);
 
         presenter.fetchRooms();
@@ -145,6 +147,7 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
         communityRoomList.setLayoutManager(new LinearLayoutManager(getContext()));
         communityAdapter = new RoomAdapter(unjoinedRooms, this);
         communityRoomList.setAdapter(communityAdapter);
+
     }
 
     @Override

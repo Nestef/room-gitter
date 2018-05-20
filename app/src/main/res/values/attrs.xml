@@ -2,4 +2,5 @@
 <resources>
 
     <attr name="inputSendDrawable" format="reference" />
+    <attr name="settingsDrawable" format="reference" />
 </resources>

@@ -3,7 +3,6 @@ package com.nestef.room.main;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -34,6 +33,12 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
 
     int mMessageFragmentId = R.id.message_holder;
 
+    final RoomFragment mRoomFragment = RoomFragment.newInstance();
+    final SearchFragment mSearchFragment = SearchFragment.newInstance();
+    final PeopleFragment mPeopleFragment = PeopleFragment.newInstance();
+    final GroupsFragment mGroupsFragment = GroupsFragment.newInstance();
+
+
     @BindView(R.id.navigation_bar)
     BottomNavigation mBottomNavigation;
     @BindInt(R.integer.is_tablet)
@@ -44,62 +49,59 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         ThemeChanger.setTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        Fragment fragment = RoomFragment.newInstance();
-        FragmentTransaction f = getSupportFragmentManager().beginTransaction();
-        f.add(mFragmentId, fragment).commit();
+
+        getSupportFragmentManager().beginTransaction().add(mFragmentId, mRoomFragment).commit();
+        mBottomNavigation.setDefaultSelectedIndex(0);
 
         if (isTablet()) {
             setSupportActionBar(mDefaultToolbar);
-
             getSupportFragmentManager().beginTransaction().add(mMessageFragmentId, new MessagingFragment()).commit();
         }
-        mBottomNavigation.setDefaultSelectedIndex(0);
-        Log.d(TAG, "onCreate: is tablet" + isTablet());
+
         mBottomNavigation.setOnMenuItemClickListener(new BottomNavigation.OnMenuItemSelectionListener() {
             @Override
             public void onMenuItemSelect(int i, int i1, boolean b) {
                 switch (i1) {
                     case 0:
-                        getSupportFragmentManager().beginTransaction().replace(mFragmentId, RoomFragment.newInstance()).commit();
-                        Log.d(TAG, "onMenuItemSelect:0: room");
+                        switchFragments(mRoomFragment);
                         return;
                     case 1:
-                        getSupportFragmentManager().beginTransaction().replace(mFragmentId, SearchFragment.newInstance()).commit();
-
+                        switchFragments(mSearchFragment);
                         return;
                     case 2:
-                        getSupportFragmentManager().beginTransaction().replace(mFragmentId, PeopleFragment.newInstance()).commit();
-                        Log.d(TAG, "onMenuItemSelect: 2:People");
+                        switchFragments(mPeopleFragment);
                         return;
                     case 3:
-                        getSupportFragmentManager().beginTransaction().replace(mFragmentId, GroupsFragment.newInstance()).commit();
+                        switchFragments(mGroupsFragment);
                         Log.d(TAG, "onMenuItemSelect: 3: Community");
-                        return;
                 }
             }
 
             @Override
             public void onMenuItemReselect(int i, int i1, boolean b) {
-
             }
         });
+    }
 
+    private void switchFragments(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(mFragmentId, fragment)
+                .commit();
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         if (isTablet()) {
             getMenuInflater().inflate(R.menu.main_actions, menu);
             return super.onCreateOptionsMenu(menu);
         }
         return super.onCreateOptionsMenu(menu);
-
     }
 
     @Override
@@ -120,12 +122,6 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
 
     private boolean isTablet() {
         return mIsTablet == 1;
-    }
-
-    private void tabletSetup() {
-        // Toolbar mToolbar = findViewById(R.id.tablet_toolbar);
-        // setSupportActionBar(mToolbar);
-
     }
 
     @Override
