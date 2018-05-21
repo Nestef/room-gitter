@@ -39,6 +39,11 @@
         <activity
             android:name=".preferences.PreferencesActivity"
             android:parentActivityName=".main.MainActivity" />
+
+        <provider
+            android:name=".provider.RoomProvider"
+            android:authorities="com.nestef.room.roomProvider"
+            android:exported="false" />
     </application>
 
 </manifest>

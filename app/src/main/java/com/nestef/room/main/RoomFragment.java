@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.nestef.room.R;
 import com.nestef.room.model.Room;
@@ -41,6 +42,8 @@ public class RoomFragment extends Fragment implements MainContract.RoomView, Roo
     Toolbar mToolbar;
     @BindInt(R.integer.is_tablet)
     int mIsTablet;
+    @BindView(R.id.room_empty_text)
+    TextView mEmptyMessage;
 
     private Unbinder mUnbinder;
     private RoomAdapter mRoomAdapter;
@@ -124,7 +127,8 @@ public class RoomFragment extends Fragment implements MainContract.RoomView, Roo
 
     @Override
     public void showEmpty() {
-
+        mRoomList.setVisibility(View.INVISIBLE);
+        mEmptyMessage.setVisibility(View.VISIBLE);
     }
 
     private boolean isTablet() {

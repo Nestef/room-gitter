@@ -9,6 +9,7 @@
     <string name="chats_nav_title">Private Chats</string>
     <string name="communities_nav_title">Communities</string>
 
+    <string name="room_empty_text">No Joined Rooms</string>
     <!-- Search Ui -->
     <string name="suggestion_title">Suggested Rooms</string>
     <!-- Community fragment -->

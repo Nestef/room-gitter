@@ -35,6 +35,7 @@ public class RoomPresenter extends BasePresenter<MainContract.RoomView> implemen
             List<Room> rooms = mapper.readValue(json, new TypeReference<List<Room>>() {
             });
             mView.showRooms(rooms);
+            mView.showEmpty();
         } catch (Exception e) {
             e.printStackTrace();
         }
