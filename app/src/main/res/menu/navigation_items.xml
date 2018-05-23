@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/white"
-    app:bbn_itemColorActive="@color/colorAccent"
-    app:bbn_itemColorInactive="@android:color/darker_gray">
+    android:background="?navigationBackground"
+    app:bbn_itemColorActive="?navigationActiveColor"
+    app:bbn_itemColorInactive="?navigationInactiveColor">
     <item
         android:id="@+id/room_nav_item"
-        android:icon="@drawable/ic_forum_black_24dp"
+        android:icon="?navRoomDrawable"
         android:title="@string/room_nav_title" />
     <item
         android:id="@+id/search_nav_item"
-        android:icon="@drawable/ic_search_black_24dp"
+        android:icon="?navSearchDrawable"
         android:title="@string/search_nav_title" />
     <item
         android:id="@+id/chats_nav_item"
-        android:icon="@drawable/ic_person_black_24dp"
+        android:icon="?navChatDrawable"
         android:title="@string/chats_nav_title" />
     <item
         android:id="@+id/communities_nav_item"
-        android:icon="@drawable/account_group"
+        android:icon="?navCommunityDrawable"
         android:title="@string/communities_nav_title" />
 
 </menu>

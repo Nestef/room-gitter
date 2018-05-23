@@ -13,6 +13,14 @@
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="settingsDrawable">@drawable/ic_settings_black_24dp</item>
 
+        <item name="navigationBackground">@color/colorPrimary</item>
+        <item name="navigationActiveColor">@color/colorAccent</item>
+        <item name="navigationInactiveColor">@android:color/darker_gray</item>
+        <item name="navRoomDrawable">@drawable/ic_forum_black_24dp</item>
+        <item name="navSearchDrawable">@drawable/ic_search_black_24dp</item>
+        <item name="navChatDrawable">@drawable/ic_person_black_24dp</item>
+        <item name="navCommunityDrawable">@drawable/account_group</item>
+
     </style>
 
     <style name="AppTheme.Launch">
@@ -31,6 +39,14 @@
         <item name="inputSendDrawable">@drawable/ic_send_white_24dp</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="settingsDrawable">@drawable/ic_settings_white_24dp</item>
+
+        <item name="navigationBackground">@color/colorDarkPrimary</item>
+        <item name="navigationActiveColor">@color/colorAccent</item>
+        <item name="navigationInactiveColor">@android:color/darker_gray</item>
+        <item name="navRoomDrawable">@drawable/ic_forum_black_24dp</item>
+        <item name="navSearchDrawable">@drawable/ic_search_black_24dp</item>
+        <item name="navChatDrawable">@drawable/ic_person_black_24dp</item>
+        <item name="navCommunityDrawable">@drawable/account_group</item>
 
     </style>
 

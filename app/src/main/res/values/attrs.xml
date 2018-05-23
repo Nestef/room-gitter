@@ -3,4 +3,13 @@
 
     <attr name="inputSendDrawable" format="reference" />
     <attr name="settingsDrawable" format="reference" />
+
+    <!-- navigation -->
+    <attr name="navigationBackground" format="reference" />
+    <attr name="navigationActiveColor" format="reference" />
+    <attr name="navigationInactiveColor" format="reference" />
+    <attr name="navRoomDrawable" format="reference" />
+    <attr name="navSearchDrawable" format="reference" />
+    <attr name="navChatDrawable" format="reference" />
+    <attr name="navCommunityDrawable" format="reference" />
 </resources>
