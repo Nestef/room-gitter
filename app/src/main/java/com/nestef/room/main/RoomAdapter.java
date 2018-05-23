@@ -1,19 +1,18 @@
 package com.nestef.room.main;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.content.Context;
+import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.nestef.room.R;
 import com.nestef.room.model.Room;
-
-import java.util.List;
+import com.nestef.room.provider.RoomProviderContract;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,58 +20,66 @@ import butterknife.ButterKnife;
 /**
  * Created by Noah Steffes on 4/19/18.
  */
-public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder> {
+public class RoomAdapter extends CursorAdapter {
+
 
     private static final String TAG = "RoomAdapter";
-    private List<Room> mRooms;
     private RoomCallback mCallback;
 
-    public RoomAdapter(List<Room> rooms) {
-        mRooms = rooms;
-    }
 
-    public RoomAdapter(List<Room> rooms, RoomCallback callback) {
-        mRooms = rooms;
+    public RoomAdapter(Context context, RoomCallback callback) {
+        super(context, null, 0);
         mCallback = callback;
     }
 
-    @NonNull
     @Override
-    public RoomAdapter.RoomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.room_list_item, parent, false);
-        return new RoomViewHolder(view);
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        View view = LayoutInflater.from(context).inflate(R.layout.room_list_item, parent, false);
+
+        RoomViewHolder viewHolder = new RoomViewHolder(view);
+        view.setTag(viewHolder);
+
+        return view;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RoomAdapter.RoomViewHolder holder, int position) {
-        //todo we need proper data validation here
-        Room room = mRooms.get(position);
-        Log.d(TAG, "onBindViewHolder: " + room.name + room.userCount);
-        holder.title.setText(room.name);
+    public void bindView(View view, Context context, Cursor cursor) {
+
+        RoomViewHolder viewHolder = (RoomViewHolder) view.getTag();
+
+        final Room room = new Room();
+        room.name = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_NAME));
+        room.unreadItems = cursor.getInt(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_UNREAD));
+        room.avatarUrl = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_AVATARURL));
+        room.favourite = cursor.getInt(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_FAVOURITE));
+        room.userCount = cursor.getInt(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_USER_COUNT));
+        room.id = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_ID));
+
+        viewHolder.title.setText(room.name);
         //holder.description.setText(room.topic);
         //holder.userCount.setText(String.valueOf(room.userCount));
         if (room.unreadItems == 0) {
-            holder.unread.setVisibility(View.GONE);
+            viewHolder.unread.setVisibility(View.GONE);
         } else {
-            holder.unread.setText(String.valueOf(room.unreadItems));
+            viewHolder.unread.setText(String.valueOf(room.unreadItems));
         }
         //Todo add error handling
-        Glide.with(holder.itemView).load(room.avatarUrl).into(holder.avatar);
+        Glide.with(context).load(room.avatarUrl).into(viewHolder.avatar);
+        viewHolder.view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCallback.onRoomClick(room);
+            }
+        });
 
     }
 
-    @Override
-    public int getItemCount() {
-        if (mRooms == null) return 0;
-        return mRooms.size();
-    }
 
     public interface RoomCallback {
         void onRoomClick(Room room);
     }
 
-    class RoomViewHolder extends RecyclerView.ViewHolder {
+    class RoomViewHolder {
 
         @BindView(R.id.room_list_item_title)
         TextView title;
@@ -82,15 +89,12 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         @BindView(R.id.room_item_unread)
         TextView unread;
 
+        View view;
+
         RoomViewHolder(View v) {
-            super(v);
-            ButterKnife.bind(this, v);
-            v.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mCallback.onRoomClick(mRooms.get(getAdapterPosition()));
-                }
-            });
+            view = v;
+            ButterKnife.bind(this, view);
+
         }
     }
 }

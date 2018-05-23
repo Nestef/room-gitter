@@ -1,5 +1,7 @@
 package com.nestef.room.main;
 
+import android.database.Cursor;
+
 import com.nestef.room.base.BaseView;
 import com.nestef.room.model.Group;
 import com.nestef.room.model.Room;
@@ -16,7 +18,7 @@ public interface MainContract {
     }
 
     interface RoomView extends BaseView {
-        void showRooms(List<Room> rooms);
+        void showRooms(Cursor rooms);
 
     }
 
@@ -33,7 +35,7 @@ public interface MainContract {
     }
 
     interface PeopleView extends BaseView {
-        void showChats(List<Room> chats);
+        void showChats(Cursor chats);
     }
 
     interface GroupsViewActions {

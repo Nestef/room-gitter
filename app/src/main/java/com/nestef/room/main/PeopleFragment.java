@@ -2,13 +2,12 @@ package com.nestef.room.main;
 
 
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,16 +15,20 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.nestef.room.R;
+import com.nestef.room.data.DataManager;
+import com.nestef.room.data.LoaderProvider;
+import com.nestef.room.data.PrefManager;
 import com.nestef.room.model.Room;
-
-import java.util.List;
 
 import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+import static com.nestef.room.util.Constants.AUTH_SHARED_PREF;
 
 /**
  * Created by Noah Steffes on 3/31/18.
@@ -36,7 +39,7 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView,
     private static final String TAG = "PeopleFragment";
 
     @BindView(R.id.people_list)
-    RecyclerView peopleList;
+    ListView peopleList;
     @BindInt(R.integer.is_tablet)
     int isTablet;
     @Nullable
@@ -59,7 +62,9 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView,
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new PeoplePresenter();
+        presenter = new PeoplePresenter(DataManager.getInstance(getContext().getContentResolver(),
+                PrefManager.getInstance(getContext().getSharedPreferences(AUTH_SHARED_PREF, Context.MODE_PRIVATE))),
+                new LoaderProvider(getContext()), getLoaderManager());
     }
 
     @Nullable
@@ -106,10 +111,10 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView,
     }
 
     @Override
-    public void showChats(List<Room> chats) {
-        peopleList.setLayoutManager(new LinearLayoutManager(getContext()));
-        roomAdapter = new RoomAdapter(chats, this);
+    public void showChats(Cursor chats) {
+        roomAdapter = new RoomAdapter(getContext(), this);
         peopleList.setAdapter(roomAdapter);
+        roomAdapter.changeCursor(chats);
     }
     @Override
     public void showLoadingIndicator() {

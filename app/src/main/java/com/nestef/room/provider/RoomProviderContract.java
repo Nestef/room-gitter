@@ -12,7 +12,7 @@ public class RoomProviderContract {
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
     public static final String PRIVATE_ROOM_TABLE = "private_room";
-    public static final String ROOM_TABLE = "room";
+    public static final String ROOM_TABLE = "room_table";
 
     public static final class RoomEntry implements BaseColumns {
 

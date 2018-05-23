@@ -31,14 +31,14 @@ import butterknife.Unbinder;
 /**
  * Created by Noah Steffes on 5/2/18.
  */
-public class CommunityFragment extends Fragment implements MainContract.CommunityView, RoomAdapter.RoomCallback {
+public class CommunityFragment extends Fragment implements MainContract.CommunityView, CommunityRoomAdapter.RoomCallback {
 
 
     private static final String GROUP = "Group";
     Unbinder unbinder;
     CommunityPresenter presenter;
-    RoomAdapter joinedAdapter;
-    RoomAdapter communityAdapter;
+    CommunityRoomAdapter joinedAdapter;
+    CommunityRoomAdapter communityAdapter;
     private RoomFragment.RoomSelectionCallback mCallback;
 
 
@@ -133,7 +133,7 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
     @Override
     public void showJoinedRooms(List<Room> joinedRooms) {
         joinedRoomList.setLayoutManager(new LinearLayoutManager(getContext()));
-        joinedAdapter = new RoomAdapter(joinedRooms, this);
+        joinedAdapter = new CommunityRoomAdapter(joinedRooms, this);
         joinedRoomList.setAdapter(joinedAdapter);
     }
 
@@ -145,7 +145,7 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
     @Override
     public void showUnjoinedRooms(List<Room> unjoinedRooms) {
         communityRoomList.setLayoutManager(new LinearLayoutManager(getContext()));
-        communityAdapter = new RoomAdapter(unjoinedRooms, this);
+        communityAdapter = new CommunityRoomAdapter(unjoinedRooms, this);
         communityRoomList.setAdapter(communityAdapter);
 
     }

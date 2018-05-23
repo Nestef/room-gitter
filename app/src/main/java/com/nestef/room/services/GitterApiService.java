@@ -31,94 +31,94 @@ import retrofit2.http.Path;
  */
 public interface GitterApiService {
 
-    @GET("/rooms")
+    @GET("/v1/rooms")
     Call<List<Room>> getRooms();
 
     @FormUrlEncoded
-    @POST("/rooms")
+    @POST("/v1/rooms")
     Call<RoomResponse> getRoomIdByUri(@Field("uri") String roomUri);
 
     @FormUrlEncoded
-    @POST("/user/{userId}/rooms")
+    @POST("/v1/user/{userId}/rooms")
     Call joinRoom(@Path("userId") String userId, @Field("id") String roomId);
 
-    @DELETE("rooms/{roomId}/users/{userId}")
+    @DELETE("/v1/rooms/{roomId}/users/{userId}")
     Call leaveRoom(@Path("roomId") String roomId, @Path("userId") String userId);
 
     @FormUrlEncoded
-    @PUT("/rooms/{roomId}")
+    @PUT("/v1/rooms/{roomId}")
     Call updateRoom(@Path("roomId") String roomId, @Field("topic") String topic, @Field("noIndex") boolean noIndex, @Field("tags") String tags);
 
-    @DELETE("/rooms/{roomId}")
+    @DELETE("/v1/rooms/{roomId}")
     Call deleteRoom(@Path("roomId") String roomId);
 
-    @GET("/rooms/{roomId}/meta/welcome-message")
+    @GET("/v1/rooms/{roomId}/meta/welcome-message")
     Call<WelcomeMessage> getWelcomeMessage(@Path("roomId") String roomId);
 
-    @GET("/rooms/{roomId}/collaborators")
+    @GET("/v1/rooms/{roomId}/collaborators")
     Call<List<Collaborator>> getCollaborators(@Path("roomId") String roomId);
 
-    @GET("/rooms/{roomId}/suggestedRooms")
+    @GET("/v1/rooms/{roomId}/suggestedRooms")
     Call<List<Room>> getSuggestedRooms(@Path("roomId") String roomId);
 
-    @GET("/rooms/{roomID}/bans")
+    @GET("/v1/rooms/{roomID}/bans")
     Call<List<Ban>> getBanned(@Path("roomId") String roomId);
 
-    @GET("/rooms/{roomId}/events")
+    @GET("/v1/rooms/{roomId}/events")
     Call<List<Event>> getEvents(@Path("roomId") String roomId);
 
-    @GET("/rooms/{roomId}/issues")
+    @GET("/v1/rooms/{roomId}/issues")
     Call<List<Issue>> getIssues(@Path("roomId") String roomId);
 
-    @GET("/rooms/{roomId}/users")
+    @GET("/v1/rooms/{roomId}/users")
     Call<List<User>> getUsers(@Path("roomId") String roomId);
 
-    @GET("/rooms/{roomId}/chatMessages")
+    @GET("/v1/rooms/{roomId}/chatMessages")
     Call<List<Message>> getMessages(@Path("roomId") String roomId);
 
-    @GET("/rooms/{roomId}/chatMessages/{messageId}")
+    @GET("/v1/rooms/{roomId}/chatMessages/{messageId}")
     Call<Message> getMessageById(@Path("roomId") String roomID, @Path("messageId") String messageId);
 
     @FormUrlEncoded
-    @POST("/rooms/{roomId}/chatMessages")
+    @POST("/v1/rooms/{roomId}/chatMessages")
     Call sendMessage(@Path("roomId") String roomId, @Field("text") String text);
 
     @FormUrlEncoded
-    @PUT("/rooms/{roomId}/chatMessages/{messageId}")
+    @PUT("/v1/rooms/{roomId}/chatMessages/{messageId}")
     Call editMessage(@Path("roomId") String roomId, @Path("messageId") String messageId, @Field("text") String text);
 
-    @GET("/user")
+    @GET("/v1/user")
     Call<List<User>> getPersonalProfile();
 
-    @GET("/user/{userId}")
+    @GET("/v1/user/{userId}")
     Call<List<User>> getUserById(@Path("userId") String userId);
 
-    @GET("/user/{userId}/rooms")
+    @GET("/v1/user/{userId}/rooms")
     Call<List<Room>> getUserRooms(@Path("userId") String userId);
 
-    @GET("/user/{userId}/rooms/{roomId}/unreadItems")
+    @GET("/v1/user/{userId}/rooms/{roomId}/unreadItems")
     Call<UnreadResponse> getUnread(@Path("userId") String userId, @Path("roomId") String roomId);
 
     @FormUrlEncoded
-    @POST("/user/{userId}/rooms/{roomId}/unreadItems")
+    @POST("/v1/user/{userId}/rooms/{roomId}/unreadItems")
     Call readMessages(@Path("userId") String userId, @Path("roomId") String roomId, @Field("chat") List<String> messageIds);
 
-    @GET("/user/{userId}/orgs")
+    @GET("/v1/user/{userId}/orgs")
     Call<List<Org>> getUserOrgs(@Path("userId") String userId);
 
-    @GET("/user/{userId}/repos")
+    @GET("/v1/user/{userId}/repos")
     Call<List<Repo>> getUserRepos(@Path("userId") String userId);
 
-    @GET("/user/{userId}/channels")
+    @GET("/v1/user/{userId}/channels")
     Call<List<Room>> getUserChannels(@Path("userId") String userId);
 
-    @GET("/users/{username}")
+    @GET("/v1/users/{username}")
     Call<UserProfile> getUserProfile(@Path("username") String username);
 
-    @GET("/groups")
+    @GET("/v1/groups")
     Call<List<Group>> getGroups();
 
-    @GET("/groups/{groupId}/rooms")
+    @GET("/v1/groups/{groupId}/rooms")
     Call<List<Room>> getGroupRooms(@Path("groupId") String groupId);
 
 }

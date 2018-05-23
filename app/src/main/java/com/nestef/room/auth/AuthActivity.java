@@ -2,6 +2,7 @@ package com.nestef.room.auth;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,6 +16,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.nestef.room.R;
+import com.nestef.room.data.PrefManager;
+import com.nestef.room.main.MainActivity;
 import com.nestef.room.preferences.ThemeChanger;
 import com.nestef.room.util.UriUtils;
 
@@ -41,10 +44,10 @@ public class AuthActivity extends AppCompatActivity implements AuthContract.Auth
         setContentView(R.layout.activity_auth);
         ButterKnife.bind(this);
 
-        presenter = new AuthPresenter();
+        presenter = new AuthPresenter(PrefManager.getInstance(getSharedPreferences(AUTH_SHARED_PREF, Context.MODE_PRIVATE)));
         presenter.setView(this);
-        if (presenter.checkUserAuth(getSharedPreferences(AUTH_SHARED_PREF, Context.MODE_PRIVATE))) {
-            presenter.startMainActivity(this);
+        if (presenter.checkUserAuth()) {
+            startMainActivity();
         }
 
         webView.getSettings().setJavaScriptEnabled(true);
@@ -63,13 +66,13 @@ public class AuthActivity extends AppCompatActivity implements AuthContract.Auth
             @SuppressWarnings("deprecation")
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                return presenter.handleUri(Uri.parse(url), getApplicationContext());
+                return presenter.handleUri(Uri.parse(url));
             }
 
             @TargetApi(Build.VERSION_CODES.N)
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                return presenter.handleUri(request.getUrl(), getApplicationContext());
+                return presenter.handleUri(request.getUrl());
             }
 
         });
@@ -84,6 +87,18 @@ public class AuthActivity extends AppCompatActivity implements AuthContract.Auth
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void startMainActivity() {
+
+        Intent intent = new Intent();
+        intent.setClass(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        startActivity(intent);
+
+        finish();
     }
 
     @Override

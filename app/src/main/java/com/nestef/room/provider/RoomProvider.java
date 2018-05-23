@@ -41,7 +41,35 @@ public class RoomProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        return null;
+        final SQLiteDatabase db = mHelper.getReadableDatabase();
+
+        Cursor cursor;
+
+        switch (mUriMatcher.match(uri)) {
+            case ROOM_MATCH:
+                cursor = db.query(RoomProviderContract.ROOM_TABLE,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            case PRIVATE_ROOM_MATCH:
+                cursor = db.query(RoomProviderContract.PRIVATE_ROOM_TABLE,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return cursor;
     }
 
     @Nullable
@@ -86,6 +114,15 @@ public class RoomProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+        final SQLiteDatabase db = mHelper.getWritableDatabase();
+        switch (mUriMatcher.match(uri)) {
+            case ROOM_MATCH: {
+                db.delete(RoomProviderContract.ROOM_TABLE, selection, selectionArgs);
+            }
+            case PRIVATE_ROOM_MATCH: {
+                db.delete(RoomProviderContract.PRIVATE_ROOM_TABLE, selection, selectionArgs);
+            }
+        }
         return 0;
     }
 
@@ -119,7 +156,7 @@ public class RoomProvider extends ContentProvider {
         }
 
         if (numUpdated > 0) {
-            //   getContext().getContentResolver().notifyChange(uri, null);
+            getContext().getContentResolver().notifyChange(uri, null);
         }
 
         return numUpdated;

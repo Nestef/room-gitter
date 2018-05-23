@@ -1,13 +1,12 @@
 package com.nestef.room.main;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,17 +14,21 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.nestef.room.R;
+import com.nestef.room.data.DataManager;
+import com.nestef.room.data.LoaderProvider;
+import com.nestef.room.data.PrefManager;
 import com.nestef.room.model.Room;
-
-import java.util.List;
 
 import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+import static com.nestef.room.util.Constants.AUTH_SHARED_PREF;
 
 /**
  * Created by Noah Steffes on 3/25/18.
@@ -36,7 +39,7 @@ public class RoomFragment extends Fragment implements MainContract.RoomView, Roo
     private static final String TAG = "RoomFragment";
 
     @BindView(R.id.room_list)
-    RecyclerView mRoomList;
+    ListView mRoomList;
     @Nullable
     @BindView(R.id.default_toolbar)
     Toolbar mToolbar;
@@ -63,7 +66,10 @@ public class RoomFragment extends Fragment implements MainContract.RoomView, Roo
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter = new RoomPresenter();
+
+        mPresenter = new RoomPresenter(DataManager.getInstance(getContext().getContentResolver(),
+                PrefManager.getInstance(getContext().getSharedPreferences(AUTH_SHARED_PREF, Context.MODE_PRIVATE))),
+                new LoaderProvider(getContext()), getLoaderManager());
     }
 
     @Nullable
@@ -109,10 +115,14 @@ public class RoomFragment extends Fragment implements MainContract.RoomView, Roo
     }
 
     @Override
-    public void showRooms(List<Room> rooms) {
-        mRoomList.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRoomAdapter = new RoomAdapter(rooms, this);
+    public void showRooms(Cursor rooms) {
+        mEmptyMessage.setVisibility(View.GONE);
+        mRoomList.setVisibility(View.VISIBLE);
+        mRoomList.setDivider(null);
+        mRoomAdapter = new RoomAdapter(getContext(), this);
         mRoomList.setAdapter(mRoomAdapter);
+        mRoomAdapter.changeCursor(rooms);
+        Log.d(TAG, "showRooms: ");
     }
 
     @Override
@@ -144,5 +154,4 @@ public class RoomFragment extends Fragment implements MainContract.RoomView, Roo
         void onRoomSelected(Room room);
     }
 
-    ;
 }

@@ -20,7 +20,7 @@ public class RoomDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        final String CREATE_TABLE = "CREATE TABLE " +
+        final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 RoomProviderContract.ROOM_TABLE + " (" +
                 RoomProviderContract.RoomEntry._ID + " INTEGER PRIMARY KEY, " +
                 RoomProviderContract.RoomEntry.COLUMN_ID + " TEXT NOT NULL, " +
@@ -31,7 +31,7 @@ public class RoomDbHelper extends SQLiteOpenHelper {
                 RoomProviderContract.RoomEntry.COLUMN_USER_COUNT + " INTEGER NOT NULL);";
 
         db.execSQL(CREATE_TABLE);
-        final String CREATE_PRIVATE_TABLE = "CREATE TABLE " +
+        final String CREATE_PRIVATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 RoomProviderContract.PRIVATE_ROOM_TABLE + " (" +
                 RoomProviderContract.PrivateRoomEntry._ID + " INTEGER PRIMARY KEY, " +
                 RoomProviderContract.PrivateRoomEntry.COLUMN_ID + " TEXT NOT NULL, " +

@@ -16,4 +16,6 @@ public class Constants {
 
     public static final String GRANT_TYPE = "authorization_code";
     public static final String APP_SCHEME = "app";
+
+    public static final String API_BASE_URL = "https://api.gitter.im/";
 }

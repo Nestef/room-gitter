@@ -1,8 +1,6 @@
 package com.nestef.room.auth;
 
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.Uri;
 
 import com.nestef.room.base.BaseView;
@@ -14,15 +12,14 @@ import com.nestef.room.base.BaseView;
 public interface AuthContract {
     interface ViewActions {
 
-        boolean checkUserAuth(SharedPreferences sharedPreferences);
+        boolean checkUserAuth();
 
-        void startMainActivity(Context context);
-
-        boolean handleUri(Uri uri, Context context);
+        boolean handleUri(Uri uri);
 
     }
 
     interface AuthView extends BaseView {
 
+        void startMainActivity();
     }
 }
