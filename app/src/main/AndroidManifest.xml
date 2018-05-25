@@ -43,7 +43,19 @@
         <provider
             android:name=".provider.RoomProvider"
             android:authorities="com.nestef.room.roomProvider"
-            android:exported="false" />
+            android:exported="true" />
+        <receiver android:name=".widget.RoomWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/room_widget_info" />
+        </receiver>
+        <service
+            android:name=".widget.RoomWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>

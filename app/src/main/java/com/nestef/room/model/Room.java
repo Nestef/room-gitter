@@ -1,5 +1,7 @@
 package com.nestef.room.model;
 
+import android.support.annotation.NonNull;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.parceler.Parcel;
@@ -11,7 +13,7 @@ import java.util.List;
  * Created by Noah Steffes on 4/16/18.
  */
 @Parcel
-public class Room {
+public class Room implements Comparable<Room> {
     //Room ID.
     public String id;
     //Room name.
@@ -56,4 +58,13 @@ public class Room {
     public boolean isPublic;
     //Room version.
     public int v;
+
+    @Override
+    public int compareTo(@NonNull Room o) {
+        if (o.unreadItems > unreadItems) {
+            return 1;
+        } else if (unreadItems > o.unreadItems) {
+            return -1;
+        } else return 0;
+    }
 }
