@@ -24,6 +24,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.sephiroth.android.library.bottomnavigation.BottomNavigation;
 
+import static com.nestef.room.util.Constants.WIDGET_CLICK_ACTION;
+import static com.nestef.room.util.Constants.WIDGET_ROOM_ITEM;
+
 public class MainActivity extends AppCompatActivity implements GroupsFragment.OnCommunitySelection, RoomFragment.RoomSelectionCallback {
 
     private static final String TAG = "MainActivity";
@@ -58,9 +61,20 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
         getSupportFragmentManager().beginTransaction().add(mFragmentId, mRoomFragment).commit();
         mBottomNavigation.setDefaultSelectedIndex(0);
 
-        if (isTablet()) {
-            setSupportActionBar(mDefaultToolbar);
-            getSupportFragmentManager().beginTransaction().add(mMessageFragmentId, new MessagingFragment()).commit();
+        Intent activityIntent = getIntent();
+        if (activityIntent.getAction() != null && activityIntent.getAction().equals(WIDGET_CLICK_ACTION)) {
+            Room widgetItem = Parcels.unwrap(activityIntent.getParcelableExtra(WIDGET_ROOM_ITEM));
+            if (isTablet()) {
+                setSupportActionBar(mDefaultToolbar);
+                getSupportFragmentManager().beginTransaction().add(mMessageFragmentId, MessagingFragment.newInstance(widgetItem)).commit();
+            } else {
+                startMessagingActivity(widgetItem);
+            }
+        } else {
+            if (isTablet()) {
+                setSupportActionBar(mDefaultToolbar);
+                getSupportFragmentManager().beginTransaction().add(mMessageFragmentId, new MessagingFragment()).commit();
+            }
         }
 
         mBottomNavigation.setOnMenuItemClickListener(new BottomNavigation.OnMenuItemSelectionListener() {
@@ -134,10 +148,14 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
         if (isTablet()) {
             getSupportFragmentManager().beginTransaction().replace(mMessageFragmentId, MessagingFragment.newInstance(room)).commit();
         } else {
-            Intent intent = new Intent();
-            intent.setClass(this, MessagingActivity.class);
-            intent.putExtra(ROOM_EXTRA, Parcels.wrap(room));
-            startActivity(intent);
+            startMessagingActivity(room);
         }
+    }
+
+    private void startMessagingActivity(Room room) {
+        Intent intent = new Intent();
+        intent.setClass(this, MessagingActivity.class);
+        intent.putExtra(ROOM_EXTRA, Parcels.wrap(room));
+        startActivity(intent);
     }
 }
