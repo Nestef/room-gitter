@@ -62,6 +62,7 @@ public class RoomAdapter extends CursorAdapter {
             viewHolder.unread.setVisibility(View.GONE);
         } else {
             viewHolder.unread.setText(String.valueOf(room.unreadItems));
+            viewHolder.unread.setVisibility(View.VISIBLE);
         }
         //Todo add error handling
         Glide.with(context).load(room.avatarUrl).into(viewHolder.avatar);
