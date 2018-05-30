@@ -3,7 +3,6 @@ package com.nestef.room.main;
 import android.database.Cursor;
 
 import com.nestef.room.base.BaseView;
-import com.nestef.room.model.Group;
 import com.nestef.room.model.Room;
 
 import java.util.List;
@@ -43,7 +42,7 @@ public interface MainContract {
     }
 
     interface GroupsView extends BaseView {
-        void showGroups(List<Group> groups);
+        void showGroups(Cursor groups);
     }
 
     interface CommunityViewActions {

@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.os.AsyncTask;
 
+import com.nestef.room.model.Group;
 import com.nestef.room.model.Room;
 import com.nestef.room.provider.RoomProviderContract;
 import com.nestef.room.services.GitterApiService;
@@ -43,6 +44,10 @@ public class DataManager {
 
     public void getRooms() {
         new RoomAsyncTask().execute();
+    }
+
+    public void getGroups() {
+        new GroupAsyncTask().execute();
     }
 
     void saveRooms(List<Room> rooms) {
@@ -96,6 +101,25 @@ public class DataManager {
 
     }
 
+    private void saveGroups(List<Group> groups) {
+        mContentResolver.delete(RoomProviderContract.GroupEntry.CONTENT_URI, null, null);
+        for (Group group : groups) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(RoomProviderContract.GroupEntry.COLUMN_ID,
+                    group.id);
+            contentValues.put(RoomProviderContract.GroupEntry.COLUMN_NAME,
+                    group.name);
+            contentValues.put(RoomProviderContract.GroupEntry.COLUMN_AVATARURL,
+                    group.avatarUrl);
+            contentValues.put(RoomProviderContract.GroupEntry.COLUMN_URI,
+                    group.uri);
+            contentValues.put(RoomProviderContract.GroupEntry.COLUMN_HOMEURI,
+                    group.homeUri);
+            mContentResolver.insert(RoomProviderContract.GroupEntry.CONTENT_URI, contentValues);
+
+        }
+    }
+
 
     class RoomAsyncTask extends AsyncTask<Void, Void, List<Room>> {
         @Override
@@ -113,6 +137,26 @@ public class DataManager {
             super.onPostExecute(rooms);
             if (rooms != null) {
                 saveRooms(rooms);
+            }
+        }
+    }
+
+    class GroupAsyncTask extends AsyncTask<Void, Void, List<Group>> {
+        @Override
+        protected List<Group> doInBackground(Void... voids) {
+            try {
+                return mApiService.getGroups().execute().body();
+            } catch (IOException io) {
+                io.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<Group> groups) {
+            super.onPostExecute(groups);
+            if (groups != null) {
+                saveGroups(groups);
             }
         }
     }

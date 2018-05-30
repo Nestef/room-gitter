@@ -30,4 +30,10 @@ public class LoaderProvider {
                 null, null, null,
                 RoomProviderContract.PrivateRoomEntry.COLUMN_UNREAD + " DESC");
     }
+
+    public Loader<Cursor> createGroupLoader() {
+        return new CursorLoader(mContext, RoomProviderContract.GroupEntry.CONTENT_URI,
+                null, null, null,
+                null);
+    }
 }

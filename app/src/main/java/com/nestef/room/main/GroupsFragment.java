@@ -1,13 +1,12 @@
 package com.nestef.room.main;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,16 +14,20 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.nestef.room.R;
+import com.nestef.room.data.DataManager;
+import com.nestef.room.data.LoaderProvider;
+import com.nestef.room.data.PrefManager;
 import com.nestef.room.model.Group;
-
-import java.util.List;
 
 import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+import static com.nestef.room.util.Constants.AUTH_SHARED_PREF;
 
 /**
  * Created by Noah Steffes on 4/1/18.
@@ -35,7 +38,7 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
     private static final String TAG = "GroupsFragment";
 
     @BindView(R.id.group_list)
-    RecyclerView groupList;
+    ListView groupList;
 
     @Nullable
     @BindView(R.id.default_toolbar)
@@ -61,7 +64,9 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new GroupsPresenter();
+        presenter = new GroupsPresenter(DataManager.getInstance(getContext().getContentResolver(),
+                PrefManager.getInstance(getContext().getSharedPreferences(AUTH_SHARED_PREF, Context.MODE_PRIVATE))),
+                new LoaderProvider(getContext()), getLoaderManager());
     }
 
     @Nullable
@@ -96,10 +101,13 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
     }
 
     @Override
-    public void showGroups(List<Group> groups) {
-        groupList.setLayoutManager(new LinearLayoutManager(getContext()));
-        groupAdapter = new GroupAdapter(groups, this);
+    public void showGroups(Cursor groups) {
+
+        groupAdapter = new GroupAdapter(getContext(), this);
         groupList.setAdapter(groupAdapter);
+        groupList.setDivider(null);
+        groupAdapter.swapCursor(groups);
+        groupList.setVisibility(View.VISIBLE);
 
     }
 
@@ -115,7 +123,7 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
 
     @Override
     public void showEmpty() {
-
+        groupList.setVisibility(View.GONE);
     }
 
     private boolean isTablet() {

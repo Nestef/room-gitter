@@ -11,7 +11,7 @@ public class RoomDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "roomDb.db";
 
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
 
     RoomDbHelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
@@ -30,7 +30,6 @@ public class RoomDbHelper extends SQLiteOpenHelper {
                 RoomProviderContract.RoomEntry.COLUMN_UNREAD + " INTEGER NOT NULL, " +
                 RoomProviderContract.RoomEntry.COLUMN_USER_COUNT + " INTEGER NOT NULL);";
 
-        db.execSQL(CREATE_TABLE);
         final String CREATE_PRIVATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 RoomProviderContract.PRIVATE_ROOM_TABLE + " (" +
                 RoomProviderContract.PrivateRoomEntry._ID + " INTEGER PRIMARY KEY, " +
@@ -41,8 +40,19 @@ public class RoomDbHelper extends SQLiteOpenHelper {
                 RoomProviderContract.PrivateRoomEntry.COLUMN_UNREAD + " INTEGER NOT NULL, " +
                 RoomProviderContract.PrivateRoomEntry.COLUMN_USER_COUNT + " INTEGER NOT NULL);";
 
+        final String CREATE_GROUP_TABLE = "CREATE TABLE IF NOT EXISTS " +
+                RoomProviderContract.GROUP_TABLE + " (" +
+                RoomProviderContract.GroupEntry._ID + " INTEGER PRIMARY KEY, " +
+                RoomProviderContract.GroupEntry.COLUMN_ID + " TEXT NOT NULL, " +
+                RoomProviderContract.GroupEntry.COLUMN_NAME + " TEXT NOT NULL, " +
+                RoomProviderContract.GroupEntry.COLUMN_AVATARURL + " TEXT NOT NULL, " +
+                RoomProviderContract.GroupEntry.COLUMN_URI + " TEXT NOT NULL, " +
+                RoomProviderContract.GroupEntry.COLUMN_HOMEURI + " TEXT NOT NULL);";
+
+
         db.execSQL(CREATE_TABLE);
         db.execSQL(CREATE_PRIVATE_TABLE);
+        db.execSQL(CREATE_GROUP_TABLE);
     }
 
     @Override
@@ -50,6 +60,7 @@ public class RoomDbHelper extends SQLiteOpenHelper {
 
         db.execSQL("DROP TABLE IF EXISTS " + RoomProviderContract.ROOM_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + RoomProviderContract.PRIVATE_ROOM_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + RoomProviderContract.GROUP_TABLE);
         onCreate(db);
     }
 }

@@ -12,6 +12,9 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import static com.nestef.room.provider.RoomProviderContract.AUTHORITY;
+import static com.nestef.room.provider.RoomProviderContract.GROUP_TABLE;
+
 /**
  * Created by Noah Steffes on 5/21/18.
  */
@@ -19,14 +22,16 @@ public class RoomProvider extends ContentProvider {
 
     private static final int ROOM_MATCH = 261;
     private static final int PRIVATE_ROOM_MATCH = 972;
+    private static final int GROUP_MATCH = 497;
     UriMatcher mUriMatcher = buildUriMatcher();
     SQLiteOpenHelper mHelper;
 
     public static UriMatcher buildUriMatcher() {
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI(RoomProviderContract.AUTHORITY, RoomProviderContract.ROOM_TABLE, ROOM_MATCH);
-        uriMatcher.addURI(RoomProviderContract.AUTHORITY,
-                RoomProviderContract.PRIVATE_ROOM_TABLE, PRIVATE_ROOM_MATCH);
+
+        uriMatcher.addURI(AUTHORITY, RoomProviderContract.ROOM_TABLE, ROOM_MATCH);
+        uriMatcher.addURI(AUTHORITY, RoomProviderContract.PRIVATE_ROOM_TABLE, PRIVATE_ROOM_MATCH);
+        uriMatcher.addURI(AUTHORITY, RoomProviderContract.GROUP_TABLE, GROUP_MATCH);
 
         return uriMatcher;
     }
@@ -34,7 +39,6 @@ public class RoomProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         mHelper = new RoomDbHelper(getContext());
-
         return true;
     }
 
@@ -57,6 +61,15 @@ public class RoomProvider extends ContentProvider {
                 break;
             case PRIVATE_ROOM_MATCH:
                 cursor = db.query(RoomProviderContract.PRIVATE_ROOM_TABLE,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            case GROUP_MATCH:
+                cursor = db.query(GROUP_TABLE,
                         projection,
                         selection,
                         selectionArgs,
@@ -105,6 +118,14 @@ public class RoomProvider extends ContentProvider {
                     throw new SQLException("Failed to insert row into " + uri);
                 }
                 break;
+            case GROUP_MATCH:
+                id = db.insert(GROUP_TABLE, null, values);
+                if (id > 0) {
+                    returnUri = ContentUris.withAppendedId(RoomProviderContract.GroupEntry.CONTENT_URI, id);
+                } else {
+                    throw new SQLException(("Failed to insert row into " + uri));
+                }
+                break;
             default:
                 throw new UnsupportedOperationException("Wrong uri: " + uri);
         }
@@ -121,6 +142,9 @@ public class RoomProvider extends ContentProvider {
             }
             case PRIVATE_ROOM_MATCH: {
                 db.delete(RoomProviderContract.PRIVATE_ROOM_TABLE, selection, selectionArgs);
+            }
+            case GROUP_MATCH: {
+                db.delete(RoomProviderContract.GROUP_TABLE, selection, selectionArgs);
             }
         }
         return 0;
@@ -145,6 +169,13 @@ public class RoomProvider extends ContentProvider {
             }
             case PRIVATE_ROOM_MATCH: {
                 numUpdated = db.update(RoomProviderContract.PRIVATE_ROOM_TABLE,
+                        values,
+                        selection,
+                        selectionArgs);
+                break;
+            }
+            case GROUP_MATCH: {
+                numUpdated = db.update(RoomProviderContract.GROUP_TABLE,
                         values,
                         selection,
                         selectionArgs);

@@ -6,7 +6,7 @@
 
     <include layout="@layout/default_actionbar" />
 
-    <android.support.v7.widget.RecyclerView
+    <ListView
         android:id="@+id/group_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

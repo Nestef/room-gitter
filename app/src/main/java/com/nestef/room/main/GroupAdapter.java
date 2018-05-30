@@ -1,7 +1,8 @@
 package com.nestef.room.main;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import android.content.Context;
+import android.database.Cursor;
+import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.nestef.room.R;
 import com.nestef.room.model.Group;
-
-import java.util.List;
+import com.nestef.room.provider.RoomProviderContract;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -20,59 +20,64 @@ import butterknife.ButterKnife;
 /**
  * Created by Noah Steffes on 4/24/18.
  */
-public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHolder> {
-    private static final String TAG = GroupAdapter.class.getName();
+public class GroupAdapter extends CursorAdapter {
+    private static final String TAG = "GroupAdapter";
 
-    private List<Group> mGroups;
     private GroupCallback mCallback;
 
     //Todo change to empty constructor
-    public GroupAdapter(List<Group> groups, GroupCallback callback) {
-        mGroups = groups;
+    public GroupAdapter(Context context, GroupCallback callback) {
+        super(context, null, 0);
         mCallback = callback;
     }
 
-    @NonNull
     @Override
-    public GroupViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new GroupViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.group_list_item, parent, false));
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        View view = LayoutInflater.from(context).inflate(R.layout.group_list_item, parent, false);
+
+        GroupViewHolder viewHolder = new GroupAdapter.GroupViewHolder(view);
+        view.setTag(viewHolder);
+
+        return view;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GroupViewHolder holder, int position) {
-        Group group = mGroups.get(position);
-        holder.title.setText(group.name);
-        Glide.with(holder.itemView).load(group.avatarUrl).into(holder.avatar);
-    }
+    public void bindView(View view, Context context, Cursor cursor) {
 
-    @Override
-    public int getItemCount() {
-        if (mGroups == null) return 0;
-        return mGroups.size();
+        GroupViewHolder viewHolder = (GroupViewHolder) view.getTag();
+
+        final Group group = new Group();
+        group.name = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.GroupEntry.COLUMN_NAME));
+        group.avatarUrl = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.GroupEntry.COLUMN_AVATARURL));
+        group.uri = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.GroupEntry.COLUMN_URI));
+        group.homeUri = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.GroupEntry.COLUMN_HOMEURI));
+        group.id = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.GroupEntry.COLUMN_ID));
+
+        viewHolder.title.setText(group.name);
+        Glide.with(viewHolder.view).load(group.avatarUrl).into(viewHolder.avatar);
+        viewHolder.view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCallback.onClick(group);
+            }
+        });
     }
 
     public interface GroupCallback {
         void onClick(Group selectedGroup);
     }
 
-    class GroupViewHolder extends RecyclerView.ViewHolder {
+    class GroupViewHolder {
         @BindView(R.id.group_list_item_avatar)
         ImageView avatar;
         @BindView(R.id.group_list_item_title)
         TextView title;
 
+        View view;
 
         GroupViewHolder(View v) {
-            super(v);
-            ButterKnife.bind(this, v);
-            v.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mCallback.onClick(mGroups.get(getAdapterPosition()));
-                }
-            });
-
+            view = v;
+            ButterKnife.bind(this, view);
         }
-
     }
 }
