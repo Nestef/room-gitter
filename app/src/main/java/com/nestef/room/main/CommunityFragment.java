@@ -35,22 +35,22 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
 
 
     private static final String GROUP = "Group";
-    Unbinder unbinder;
-    CommunityPresenter presenter;
-    CommunityRoomAdapter joinedAdapter;
-    CommunityRoomAdapter communityAdapter;
+    Unbinder mUnbinder;
+    CommunityPresenter mPresenter;
+    CommunityRoomAdapter mJoinedAdapter;
+    CommunityRoomAdapter mCommunityAdapter;
     private RoomFragment.RoomSelectionCallback mCallback;
 
 
     @BindView(R.id.community_room_list)
-    RecyclerView communityRoomList;
+    RecyclerView mCommunityRoomList;
     @BindView(R.id.joined_room_list)
-    RecyclerView joinedRoomList;
+    RecyclerView mJoinedRoomList;
     @Nullable
     @BindView(R.id.default_toolbar)
-    Toolbar toolbar;
+    Toolbar mToolbar;
     @BindInt(R.integer.is_tablet)
-    int isTablet;
+    int mIsTablet;
 
     public static CommunityFragment newInstance(Group group) {
 
@@ -64,7 +64,7 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new CommunityPresenter();
+        mPresenter = new CommunityPresenter();
     }
 
     @Nullable
@@ -72,27 +72,27 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.community_fragment, container, false);
-        unbinder = ButterKnife.bind(this, view);
-        presenter.setView(this);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        mUnbinder = ButterKnife.bind(this, view);
+        mPresenter.setView(this);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         //((AppCompatActivity) getActivity()).getSupportActionBar().setTitle();
 
         if (!isTablet()) setHasOptionsMenu(true);
 
-        presenter.fetchRooms();
+        mPresenter.fetchRooms();
         return view;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
+        mUnbinder.unbind();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        presenter.unsetView();
+        mPresenter.unsetView();
     }
 
     @Override
@@ -127,14 +127,14 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
     }
 
     private boolean isTablet() {
-        return isTablet == 1;
+        return mIsTablet == 1;
     }
 
     @Override
     public void showJoinedRooms(List<Room> joinedRooms) {
-        joinedRoomList.setLayoutManager(new LinearLayoutManager(getContext()));
-        joinedAdapter = new CommunityRoomAdapter(joinedRooms, this);
-        joinedRoomList.setAdapter(joinedAdapter);
+        mJoinedRoomList.setLayoutManager(new LinearLayoutManager(getContext()));
+        mJoinedAdapter = new CommunityRoomAdapter(joinedRooms, this);
+        mJoinedRoomList.setAdapter(mJoinedAdapter);
     }
 
     @Override
@@ -144,9 +144,9 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
 
     @Override
     public void showUnjoinedRooms(List<Room> unjoinedRooms) {
-        communityRoomList.setLayoutManager(new LinearLayoutManager(getContext()));
-        communityAdapter = new CommunityRoomAdapter(unjoinedRooms, this);
-        communityRoomList.setAdapter(communityAdapter);
+        mCommunityRoomList.setLayoutManager(new LinearLayoutManager(getContext()));
+        mCommunityAdapter = new CommunityRoomAdapter(unjoinedRooms, this);
+        mCommunityRoomList.setAdapter(mCommunityAdapter);
 
     }
 

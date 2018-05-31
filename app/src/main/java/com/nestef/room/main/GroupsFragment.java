@@ -38,17 +38,17 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
     private static final String TAG = "GroupsFragment";
 
     @BindView(R.id.group_list)
-    ListView groupList;
+    ListView mGroupList;
 
     @Nullable
     @BindView(R.id.default_toolbar)
-    Toolbar toolbar;
+    Toolbar mToolbar;
     @BindInt(R.integer.is_tablet)
-    int isTablet;
+    int mIsTablet;
     GroupsFragment.OnCommunitySelection mCallback;
-    private Unbinder unbinder;
-    private GroupAdapter groupAdapter;
-    private GroupsPresenter presenter;
+    private Unbinder mUnbinder;
+    private GroupAdapter mGroupAdapter;
+    private GroupsPresenter mPresenter;
 
     public GroupsFragment() {
 
@@ -64,7 +64,7 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new GroupsPresenter(DataManager.getInstance(getContext().getContentResolver(),
+        mPresenter = new GroupsPresenter(DataManager.getInstance(getContext().getContentResolver(),
                 PrefManager.getInstance(getContext().getSharedPreferences(AUTH_SHARED_PREF, Context.MODE_PRIVATE))),
                 new LoaderProvider(getContext()), getLoaderManager());
     }
@@ -74,25 +74,25 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.groups_fragment, container, false);
         Log.d(TAG, "onCreateView: ");
-        unbinder = ButterKnife.bind(this, rootView);
-        presenter.setView(this);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        mUnbinder = ButterKnife.bind(this, rootView);
+        mPresenter.setView(this);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         if (!isTablet()) setHasOptionsMenu(true);
 
-        presenter.fetchGroups();
+        mPresenter.fetchGroups();
         return rootView;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
+        mUnbinder.unbind();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        presenter.unsetView();
+        mPresenter.unsetView();
     }
 
     @Override
@@ -103,11 +103,11 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
     @Override
     public void showGroups(Cursor groups) {
 
-        groupAdapter = new GroupAdapter(getContext(), this);
-        groupList.setAdapter(groupAdapter);
-        groupList.setDivider(null);
-        groupAdapter.swapCursor(groups);
-        groupList.setVisibility(View.VISIBLE);
+        mGroupAdapter = new GroupAdapter(getContext(), this);
+        mGroupList.setAdapter(mGroupAdapter);
+        mGroupList.setDivider(null);
+        mGroupAdapter.swapCursor(groups);
+        mGroupList.setVisibility(View.VISIBLE);
 
     }
 
@@ -123,11 +123,11 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
 
     @Override
     public void showEmpty() {
-        groupList.setVisibility(View.GONE);
+        mGroupList.setVisibility(View.GONE);
     }
 
     private boolean isTablet() {
-        return isTablet == 1;
+        return mIsTablet == 1;
     }
 
     @Override
