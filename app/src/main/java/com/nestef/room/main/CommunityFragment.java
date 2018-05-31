@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.nestef.room.R;
+import com.nestef.room.data.DataManager;
+import com.nestef.room.data.PrefManager;
 import com.nestef.room.model.Group;
 import com.nestef.room.model.Room;
 
@@ -27,6 +29,8 @@ import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+import static com.nestef.room.util.Constants.AUTH_SHARED_PREF;
 
 /**
  * Created by Noah Steffes on 5/2/18.
@@ -40,6 +44,7 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
     CommunityRoomAdapter mJoinedAdapter;
     CommunityRoomAdapter mCommunityAdapter;
     private RoomFragment.RoomSelectionCallback mCallback;
+    Group mGroup;
 
 
     @BindView(R.id.community_room_list)
@@ -64,7 +69,9 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter = new CommunityPresenter();
+        mPresenter = new CommunityPresenter(DataManager.getInstance(getContext().getContentResolver(),
+                PrefManager.getInstance(getContext().getSharedPreferences(AUTH_SHARED_PREF, Context.MODE_PRIVATE))));
+        mGroup = Parcels.unwrap(getArguments().getParcelable(GROUP));
     }
 
     @Nullable
@@ -75,11 +82,11 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
         mUnbinder = ButterKnife.bind(this, view);
         mPresenter.setView(this);
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
-        //((AppCompatActivity) getActivity()).getSupportActionBar().setTitle();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mGroup.name);
 
         if (!isTablet()) setHasOptionsMenu(true);
 
-        mPresenter.fetchRooms();
+        mPresenter.fetchRooms(mGroup.id);
         return view;
     }
 
@@ -135,11 +142,12 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
         mJoinedRoomList.setLayoutManager(new LinearLayoutManager(getContext()));
         mJoinedAdapter = new CommunityRoomAdapter(joinedRooms, this);
         mJoinedRoomList.setAdapter(mJoinedAdapter);
+        mJoinedRoomList.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showJoinedRoomsEmpty() {
-
+        mJoinedRoomList.setVisibility(View.GONE);
     }
 
     @Override
@@ -147,6 +155,7 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
         mCommunityRoomList.setLayoutManager(new LinearLayoutManager(getContext()));
         mCommunityAdapter = new CommunityRoomAdapter(unjoinedRooms, this);
         mCommunityRoomList.setAdapter(mCommunityAdapter);
+        mCommunityRoomList.setVisibility(View.VISIBLE);
 
     }
 

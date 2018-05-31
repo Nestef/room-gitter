@@ -46,11 +46,7 @@ public interface MainContract {
     }
 
     interface CommunityViewActions {
-        void fetchRooms();
-
-        void fetchJoinedRooms();
-
-        void fetchUnjoinedRooms();
+        void fetchRooms(String groupId);
     }
 
     interface CommunityView extends BaseView {

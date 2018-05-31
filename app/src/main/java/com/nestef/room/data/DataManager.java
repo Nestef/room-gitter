@@ -29,10 +29,12 @@ public class DataManager {
 
     private PrefManager mPrefManager;
 
-    private DataManager(ContentResolver contentResolver, PrefManager prefManager) {
+    private DataCallback mCallback;
 
-        mApiService = GitterServiceFactory.makeApiService(prefManager.getAuthToken());
+    private DataManager(ContentResolver contentResolver, PrefManager prefManager) {
         mContentResolver = contentResolver;
+        mPrefManager = prefManager;
+        mApiService = GitterServiceFactory.makeApiService(mPrefManager.getAuthToken());
     }
 
     public static DataManager getInstance(ContentResolver contentResolver, PrefManager prefManager) {
@@ -50,10 +52,18 @@ public class DataManager {
         new GroupAsyncTask().execute();
     }
 
-    void saveRooms(List<Room> rooms) {
+    public void getCommunityRooms(String groupId, DataCallback callback) {
+        mCallback = callback;
+        new CommunityAsyncTask().execute(groupId);
+    }
+
+
+    private void saveRooms(List<Room> rooms) {
+        //Clear cached rooms
         mContentResolver.delete(RoomProviderContract.RoomEntry.CONTENT_URI, null, null);
         mContentResolver.delete(RoomProviderContract.PrivateRoomEntry.CONTENT_URI, null, null);
 
+        //Separate private rooms
         Map<Boolean, List<Room>> split = new HashMap<Boolean, List<Room>>();
         for (Room room : rooms) {
             List<Room> list = split.get(room.oneToOne);
@@ -64,6 +74,7 @@ public class DataManager {
             list.add(room);
         }
 
+        //Add rooms to database
         for (Room room : split.get(false)) {
             ContentValues contentValues = new ContentValues();
             contentValues.put(RoomProviderContract.RoomEntry.COLUMN_ID,
@@ -158,6 +169,29 @@ public class DataManager {
             if (groups != null) {
                 saveGroups(groups);
             }
+        }
+    }
+
+    public interface DataCallback {
+        void onCall(List<Room> data);
+    }
+
+    class CommunityAsyncTask extends AsyncTask<String, Void, List<Room>> {
+
+        @Override
+        protected List<Room> doInBackground(String... strings) {
+            try {
+                return mApiService.getGroupRooms(strings[0]).execute().body();
+            } catch (IOException i) {
+                i.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<Room> rooms) {
+            super.onPostExecute(rooms);
+            mCallback.onCall(rooms);
         }
     }
 
