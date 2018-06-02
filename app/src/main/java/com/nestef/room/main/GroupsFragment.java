@@ -102,12 +102,12 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
 
     @Override
     public void showGroups(Cursor groups) {
-
+        mGroupList.setVisibility(View.VISIBLE);
+        mGroupList.setDivider(null);
         mGroupAdapter = new GroupAdapter(getContext(), this);
         mGroupList.setAdapter(mGroupAdapter);
-        mGroupList.setDivider(null);
-        mGroupAdapter.swapCursor(groups);
-        mGroupList.setVisibility(View.VISIBLE);
+        mGroupAdapter.changeCursor(groups);
+
 
     }
 

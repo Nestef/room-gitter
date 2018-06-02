@@ -26,13 +26,15 @@ public class LoaderProvider {
     }
 
     public Loader<Cursor> createPrivateRoomLoader() {
-        return new CursorLoader(mContext, RoomProviderContract.PrivateRoomEntry.CONTENT_URI,
+        return new CursorLoader(mContext,
+                RoomProviderContract.PrivateRoomEntry.CONTENT_URI,
                 null, null, null,
                 RoomProviderContract.PrivateRoomEntry.COLUMN_UNREAD + " DESC");
     }
 
     public Loader<Cursor> createGroupLoader() {
-        return new CursorLoader(mContext, RoomProviderContract.GroupEntry.CONTENT_URI,
+        return new CursorLoader(mContext,
+                RoomProviderContract.GroupEntry.CONTENT_URI,
                 null, null, null,
                 null);
     }

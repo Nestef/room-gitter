@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        getSupportFragmentManager().beginTransaction().add(mFragmentId, mRoomFragment).commit();
+        switchFragments(mRoomFragment);
         mBottomNavigation.setDefaultSelectedIndex(0);
 
         Intent activityIntent = getIntent();
@@ -66,16 +66,17 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
             Room widgetItem = Parcels.unwrap(activityIntent.getParcelableExtra(WIDGET_ROOM_ITEM));
             if (isTablet()) {
                 setSupportActionBar(mDefaultToolbar);
-                getSupportFragmentManager().beginTransaction().add(mMessageFragmentId, MessagingFragment.newInstance(widgetItem)).commit();
+                getSupportFragmentManager().beginTransaction().replace(mMessageFragmentId, MessagingFragment.newInstance(widgetItem)).commit();
             } else {
                 startMessagingActivity(widgetItem);
             }
         } else {
             if (isTablet()) {
                 setSupportActionBar(mDefaultToolbar);
-                getSupportFragmentManager().beginTransaction().add(mMessageFragmentId, new MessagingFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(mMessageFragmentId, new MessagingFragment()).commit();
             }
         }
+        getSupportFragmentManager().beginTransaction().replace(mFragmentId, mRoomFragment).commit();
 
         mBottomNavigation.setOnMenuItemClickListener(new BottomNavigation.OnMenuItemSelectionListener() {
             @Override
