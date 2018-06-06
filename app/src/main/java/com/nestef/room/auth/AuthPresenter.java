@@ -58,6 +58,7 @@ public class AuthPresenter extends BasePresenter<AuthContract.AuthView> implemen
                         public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
                             String token = response.body().accessToken;
                             mPrefManager.saveAuthToken(token);
+                            mPrefManager.saveUserId();
                             mView.startMainActivity();
                         }
 

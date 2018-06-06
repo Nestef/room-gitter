@@ -11,6 +11,7 @@ public class Constants {
 
     public static final String AUTH_SHARED_PREF = "room_auth";
     public static final String AUTH_TOKEN_PREF = "auth_token";
+    public static final String USER_ID_PREF = "user_id";
 
     public static final String AUTHORIZE_PATH = "authorize";
     public static final String CLIENT_ID_PARAM = "client_id";

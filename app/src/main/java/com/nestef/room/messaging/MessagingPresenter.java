@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.nestef.room.base.BasePresenter;
 import com.nestef.room.data.MessageManager;
+import com.nestef.room.model.Event;
 import com.nestef.room.model.Message;
 
 import java.util.List;
@@ -26,6 +27,8 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
     private MessageManager mManager;
 
     private Disposable mMessageStream;
+
+    private Disposable mEventStream;
 
     public MessagingPresenter(MessageManager messageManager) {
         mManager = messageManager;
@@ -77,20 +80,27 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
     @Override
     public void unsetView() {
         super.unsetView();
-        mMessageStream.dispose();
         //make sure to end network tasks
+        mEventStream.dispose();
+        mMessageStream.dispose();
     }
 
     @Override
     public void setView(MessagingContract.MessagingView view) {
         super.setView(view);
+        //start network streaming messages
         mMessageStream = mManager.getMessageStream(mRoomId).subscribe(new Consumer<Message>() {
             @Override
             public void accept(Message message) throws Exception {
                 if (mView != null) mView.addMessage(message);
             }
         });
-        //start network streaming messages
+        mEventStream = mManager.getEventStream(mRoomId).subscribe(new Consumer<Event>() {
+            @Override
+            public void accept(Event event) throws Exception {
+                if (mView != null) mView.addEvent(event);
+            }
+        });
     }
 
     @Override

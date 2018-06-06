@@ -52,11 +52,18 @@ public class MessageManager {
 
     public void sendMessage() {
     }
-
-
+    
     public void getMessages(String roomId, Callback callback) {
         mCallback = callback;
         new MessageAsyncTask().execute(roomId);
+    }
+
+    public void joinRoom(String userId, String roomId) {
+        new JoinRoomAsyncTask().execute(userId, roomId);
+    }
+
+    public void leaveRoom(String roomId, String userId) {
+        new LeaveRoomAsyncTask().execute(roomId, userId);
     }
 
     public Observable<Message> getMessageStream(String roomId) {
@@ -170,6 +177,30 @@ public class MessageManager {
                 mCallback.fetchMessageError();
             }
             mCallback.returnMessages(messages);
+        }
+    }
+
+    class JoinRoomAsyncTask extends AsyncTask<String, Void, Void> {
+        @Override
+        protected Void doInBackground(String... strings) {
+            try {
+                mApiService.joinRoom(strings[0], strings[1]).execute();
+            } catch (IOException i) {
+                i.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    class LeaveRoomAsyncTask extends AsyncTask<String, Void, Void> {
+        @Override
+        protected Void doInBackground(String... strings) {
+            try {
+                mApiService.leaveRoom(strings[0], strings[1]).execute();
+            } catch (IOException i) {
+                i.printStackTrace();
+            }
+            return null;
         }
     }
 }

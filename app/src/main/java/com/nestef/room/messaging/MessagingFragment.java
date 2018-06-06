@@ -86,6 +86,7 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
         if (getArguments() != null) {
             mRoom = Parcels.unwrap(getArguments().getParcelable(ROOM_KEY));
             mPresenter.setRoomId(mRoom.id);
+            mPresenter.setUserId(PrefManager.getInstance(getContext().getSharedPreferences(Constants.AUTH_SHARED_PREF, Context.MODE_PRIVATE)).getUserId());
         }
     }
 
@@ -97,7 +98,7 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     @Override
     public void addMessage(Message message) {
         if (mMessageAdapter != null) {
-            mMessageAdapter.addItem(message);
+            mMessageAdapter.addItem(message);   
         }
         Log.d(TAG, "addMessage: " + message.text);
     }
