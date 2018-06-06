@@ -1,6 +1,7 @@
 package com.nestef.room.messaging;
 
 import com.nestef.room.base.BaseView;
+import com.nestef.room.model.Event;
 import com.nestef.room.model.Message;
 
 import java.util.List;
@@ -11,6 +12,11 @@ import java.util.List;
 
 public interface MessagingContract {
     interface ViewActions{
+
+        void setUserId(String userId);
+
+        void setRoomId(String roomId);
+
         void fetchMessages();
 
         void fetchOlderMessages();
@@ -18,12 +24,24 @@ public interface MessagingContract {
         void sendMessage(String message);
 
         void markRead(String messageId);
+
+        void joinRoom();
+
+        void leaveRoom();
     }
     interface MessagingView extends BaseView{
         void showMessages(List<Message> messages);
 
         void addNewMessages(List<Message> newMessages);
 
+        void addMessage(Message message);
+
+        void addEvent(Event event);
+
         void showOlderMessages(List<Message> oldMessages);
+
+        void showJoinUi();
+
+        void showInputUi();
     }
 }

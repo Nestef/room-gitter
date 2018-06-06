@@ -49,7 +49,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         } else {
             holder.displayName.setText(user.displayName);
         }
-        holder.userName.setText(user.username);
+        String username = "@" + user.username;
+        holder.userName.setText(username);
         Markwon.setMarkdown(holder.content, message.text);
         String time = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(message.sent);
         holder.timeStamp.setText(time);
@@ -57,12 +58,18 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     @Override
     public int getItemCount() {
+        if (messages == null) return 0;
         return messages.size();
     }
 
     public void addItems(List<Message> newItems) {
         messages.addAll(newItems);
         notifyItemRangeInserted(getItemCount(), messages.size() - 1);
+    }
+
+    public void addItem(Message item) {
+        messages.add(item);
+        notifyItemInserted(messages.size() - 1);
     }
 
     class MessageViewHolder extends RecyclerView.ViewHolder {

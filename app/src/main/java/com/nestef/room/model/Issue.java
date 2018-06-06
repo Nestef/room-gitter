@@ -5,5 +5,6 @@ package com.nestef.room.model;
  */
 public class Issue {
     String title;
+    String repo;
     int number;
 }

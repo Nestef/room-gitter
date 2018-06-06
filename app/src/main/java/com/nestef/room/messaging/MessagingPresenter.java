@@ -1,15 +1,52 @@
 package com.nestef.room.messaging;
 
+import android.util.Log;
+
 import com.nestef.room.base.BasePresenter;
+import com.nestef.room.data.MessageManager;
+import com.nestef.room.model.Message;
+
+import java.util.List;
+
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by Noah Steffes on 3/23/18.
  */
 
-public class MessagingPresenter extends BasePresenter<MessagingContract.MessagingView> implements MessagingContract.ViewActions {
+public class MessagingPresenter extends BasePresenter<MessagingContract.MessagingView> implements MessagingContract.ViewActions, MessageManager.Callback {
+
+    private static final String TAG = "MessagingPresenter";
+
+    private String mUserId;
+
+    private String mRoomId;
+
+    private MessageManager mManager;
+
+    private Disposable mMessageStream;
+
+    public MessagingPresenter(MessageManager messageManager) {
+        mManager = messageManager;
+    }
+
+    //TODO
+    //IMPORTANT TO CHECK IF VIEW IS NULL
+
+    @Override
+    public void setUserId(String userId) {
+        mUserId = userId;
+    }
+
+    @Override
+    public void setRoomId(String roomId) {
+        mRoomId = roomId;
+    }
+
     @Override
     public void fetchMessages() {
-
+        mManager.getMessages(mRoomId, this);
     }
 
     @Override
@@ -27,19 +64,50 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
 
     }
 
-    public void tempNew() {
+    @Override
+    public void joinRoom() {
+
+    }
+
+    @Override
+    public void leaveRoom() {
 
     }
 
     @Override
     public void unsetView() {
         super.unsetView();
+        mMessageStream.dispose();
         //make sure to end network tasks
     }
 
     @Override
     public void setView(MessagingContract.MessagingView view) {
         super.setView(view);
+        mMessageStream = mManager.getMessageStream(mRoomId).subscribe(new Consumer<Message>() {
+            @Override
+            public void accept(Message message) throws Exception {
+                if (mView != null) mView.addMessage(message);
+            }
+        });
         //start network streaming messages
+    }
+
+    @Override
+    public void returnMessages(List<Message> messages) {
+
+        if (mView != null) {
+            Log.d(TAG, "returnMessages: notnull");
+            mView.showMessages(messages);
+        } else {
+            Log.d(TAG, "returnMessages: null");
+        }
+    }
+
+    @Override
+    public void fetchMessageError() {
+        if (mView != null) {
+            mView.showEmpty();
+        }
     }
 }

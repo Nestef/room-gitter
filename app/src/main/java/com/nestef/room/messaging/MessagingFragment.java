@@ -1,5 +1,6 @@
 package com.nestef.room.messaging;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +17,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.nestef.room.R;
+import com.nestef.room.data.MessageManager;
+import com.nestef.room.data.PrefManager;
+import com.nestef.room.model.Event;
 import com.nestef.room.model.Message;
 import com.nestef.room.model.Room;
+import com.nestef.room.util.Constants;
 
 import org.parceler.Parcels;
 
@@ -31,6 +37,8 @@ import butterknife.Unbinder;
  * Created by Noah Steffes on 4/13/18.
  */
 public class MessagingFragment extends Fragment implements MessagingContract.MessagingView {
+
+    private static final String TAG = "MessagingFragment";
 
     private static final String ROOM_KEY = "room";
 
@@ -74,9 +82,10 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter = new MessagingPresenter();
+        mPresenter = new MessagingPresenter(MessageManager.getInstance(PrefManager.getInstance(getContext().getSharedPreferences(Constants.AUTH_SHARED_PREF, Context.MODE_PRIVATE))));
         if (getArguments() != null) {
             mRoom = Parcels.unwrap(getArguments().getParcelable(ROOM_KEY));
+            mPresenter.setRoomId(mRoom.id);
         }
     }
 
@@ -86,7 +95,30 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     }
 
     @Override
+    public void addMessage(Message message) {
+        if (mMessageAdapter != null) {
+            mMessageAdapter.addItem(message);
+        }
+        Log.d(TAG, "addMessage: " + message.text);
+    }
+
+    @Override
+    public void addEvent(Event event) {
+
+    }
+
+    @Override
     public void showOlderMessages(List<Message> oldMessages) {
+
+    }
+
+    @Override
+    public void showJoinUi() {
+
+    }
+
+    @Override
+    public void showInputUi() {
 
     }
 
@@ -101,15 +133,10 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         if (mRoom != null) {
-            mToolbar.setTitle(mRoom.name);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mRoom.name);
+            
         }
         mPresenter.fetchMessages();
-        mSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPresenter.tempNew();
-            }
-        });
         return view;
     }
 
