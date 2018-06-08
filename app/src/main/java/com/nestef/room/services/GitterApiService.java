@@ -25,6 +25,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /**
  * Created by Noah Steffes on 5/4/18.
@@ -75,6 +76,9 @@ public interface GitterApiService {
 
     @GET("/v1/rooms/{roomId}/chatMessages")
     Call<List<Message>> getMessages(@Path("roomId") String roomId);
+
+    @GET("/v1/rooms/{roomId}/chatMessages")
+    Call<List<Message>> getMessagesBeforeMessage(@Path("roomId") String roomId, @Query("beforeId") String beforeId);
 
     @GET("/v1/rooms/{roomId}/chatMessages/{messageId}")
     Call<Message> getMessageById(@Path("roomId") String roomID, @Path("messageId") String messageId);

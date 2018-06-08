@@ -2,6 +2,7 @@
 <resources>
 
     <attr name="inputSendDrawable" format="reference" />
+    <attr name="inputMdDrawable" format="reference" />
     <attr name="settingsDrawable" format="reference" />
 
     <!-- navigation -->
@@ -12,4 +13,6 @@
     <attr name="navSearchDrawable" format="reference" />
     <attr name="navChatDrawable" format="reference" />
     <attr name="navCommunityDrawable" format="reference" />
+
+
 </resources>

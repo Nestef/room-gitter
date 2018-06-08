@@ -3,6 +3,7 @@ package com.nestef.room.messaging;
 import com.nestef.room.base.BaseView;
 import com.nestef.room.model.Event;
 import com.nestef.room.model.Message;
+import com.nestef.room.model.Room;
 
 import java.util.List;
 
@@ -19,11 +20,13 @@ public interface MessagingContract {
 
         void fetchMessages();
 
-        void fetchOlderMessages();
+        void fetchOlderMessages(String beforeId);
 
         void sendMessage(String message);
 
         void markRead(String messageId);
+
+        void checkRoomMembership(Room room);
 
         void joinRoom();
 

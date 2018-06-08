@@ -21,4 +21,7 @@
     <string name="theme_pref_key">dark_theme</string>
     <string name="theme_pref_summary">Switch app to dark theme</string>
     <string name="action_settings_title">Settings</string>
+
+    <!-- Messaging -->
+    <string name="message_input_hint">Type a message</string>
 </resources>

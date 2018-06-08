@@ -87,6 +87,7 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
             mRoom = Parcels.unwrap(getArguments().getParcelable(ROOM_KEY));
             mPresenter.setRoomId(mRoom.id);
             mPresenter.setUserId(PrefManager.getInstance(getContext().getSharedPreferences(Constants.AUTH_SHARED_PREF, Context.MODE_PRIVATE)).getUserId());
+
         }
     }
 

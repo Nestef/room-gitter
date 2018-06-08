@@ -1,11 +1,10 @@
 package com.nestef.room.messaging;
 
-import android.util.Log;
-
 import com.nestef.room.base.BasePresenter;
 import com.nestef.room.data.MessageManager;
 import com.nestef.room.model.Event;
 import com.nestef.room.model.Message;
+import com.nestef.room.model.Room;
 
 import java.util.List;
 
@@ -53,13 +52,18 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
     }
 
     @Override
-    public void fetchOlderMessages() {
+    public void olderMessages(List<Message> messages) {
+        if (mView != null) mView.showOlderMessages(messages);
+    }
 
+    @Override
+    public void fetchOlderMessages(String beforeId) {
+        mManager.getOlderMessages(mRoomId, beforeId, this);
     }
 
     @Override
     public void sendMessage(String message) {
-
+        mManager.sendMessage(mRoomId, message);
     }
 
     @Override
@@ -69,12 +73,12 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
 
     @Override
     public void joinRoom() {
-
+        mManager.joinRoom(mUserId, mRoomId);
     }
 
     @Override
     public void leaveRoom() {
-
+        mManager.leaveRoom(mRoomId, mUserId);
     }
 
     @Override
@@ -105,18 +109,24 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
 
     @Override
     public void returnMessages(List<Message> messages) {
-
         if (mView != null) {
-            Log.d(TAG, "returnMessages: notnull");
             mView.showMessages(messages);
+        }
+    }
+
+    @Override
+    public void checkRoomMembership(Room room) {
+        if (room.roomMember) {
+            mView.showInputUi();
         } else {
-            Log.d(TAG, "returnMessages: null");
+            mView.showJoinUi();
         }
     }
 
     @Override
     public void fetchMessageError() {
         if (mView != null) {
+            //TODO Placeholder
             mView.showEmpty();
         }
     }

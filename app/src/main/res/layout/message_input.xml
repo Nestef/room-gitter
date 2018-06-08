@@ -22,7 +22,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:hint="@string/message_input_hint"
             android:inputType="textMultiLine|textAutoComplete" />
+
+        <ImageView
+            android:id="@+id/markdown_info_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:src="?inputMdDrawable" />
 
         <ImageView
             android:id="@+id/message_send_iv"

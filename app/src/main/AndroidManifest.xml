@@ -13,7 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".main.MainActivity">
+        <activity
+            android:name=".main.MainActivity"
+            android:windowSoftInputMode="adjustResize">
 
         </activity>
         <activity
@@ -26,6 +28,7 @@
         </activity>
         <activity
             android:name=".messaging.MessagingActivity"
+            android:windowSoftInputMode="adjustResize"
             android:parentActivityName=".main.MainActivity" />
         <activity android:name=".search.SearchActivity">
             <intent-filter>

@@ -10,6 +10,7 @@
         <item name="android:windowBackground">@color/colorPrimary</item>
         <item name="android:textColorPrimary">@color/textColorPrimary</item>
         <item name="inputSendDrawable">@drawable/ic_send_black_24dp</item>
+        <item name="inputMdDrawable">@drawable/md_black_24dp</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="settingsDrawable">@drawable/ic_settings_black_24dp</item>
 
@@ -37,6 +38,7 @@
         <item name="android:textColorPrimary">@color/textColorPrimaryDark</item>
         <item name="android:textColorPrimaryInverse">@color/textColorPrimary</item>
         <item name="inputSendDrawable">@drawable/ic_send_white_24dp</item>
+        <item name="inputMdDrawable">@drawable/md_white_24dp</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="settingsDrawable">@drawable/ic_settings_white_24dp</item>
 

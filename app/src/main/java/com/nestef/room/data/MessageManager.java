@@ -50,12 +50,28 @@ public class MessageManager {
         return sInstance;
     }
 
-    public void sendMessage() {
+    public void sendMessage(String roomId, String messageText) {
+        new SendMessageAsyncTask().execute(roomId, messageText);
     }
-    
+
+    public void editMessage(String roomId, String messageId, String messageText) {
+        new EditTextAsyncTask().execute(roomId, messageId, messageText);
+    }
+
+    public void getUserProfile(String userName) {
+
+    }
+
     public void getMessages(String roomId, Callback callback) {
         mCallback = callback;
         new MessageAsyncTask().execute(roomId);
+    }
+
+    public void getOlderMessages(String roomId, String beforeId, Callback callback) {
+        if (mCallback == null) {
+            mCallback = callback;
+        }
+        new MessagesBeforeAsyncTask().execute(roomId, beforeId);
     }
 
     public void joinRoom(String userId, String roomId) {
@@ -92,7 +108,7 @@ public class MessageManager {
                 if (mObjectMapper == null) {
                     mObjectMapper = new ObjectMapper();
                 }
-                return mObjectMapper.convertValue(s, Event.class);
+                return mObjectMapper.readValue(s, Event.class);
             }
         };
     }
@@ -155,6 +171,8 @@ public class MessageManager {
     public interface Callback {
         void returnMessages(List<Message> messages);
 
+        void olderMessages(List<Message> messages);
+
         void fetchMessageError();
     }
 
@@ -177,6 +195,26 @@ public class MessageManager {
                 mCallback.fetchMessageError();
             }
             mCallback.returnMessages(messages);
+        }
+    }
+
+    class MessagesBeforeAsyncTask extends AsyncTask<String, Void, List<Message>> {
+        @Override
+        protected List<Message> doInBackground(String... strings) {
+            try {
+                return mApiService.getMessagesBeforeMessage(strings[0], strings[1]).execute().body();
+            } catch (IOException i) {
+                i.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<Message> messages) {
+            super.onPostExecute(messages);
+            if (messages != null) {
+                mCallback.olderMessages(messages);
+            }
         }
     }
 
@@ -203,4 +241,30 @@ public class MessageManager {
             return null;
         }
     }
+
+    class SendMessageAsyncTask extends AsyncTask<String, Void, Void> {
+        @Override
+        protected Void doInBackground(String... strings) {
+            try {
+                mApiService.sendMessage(strings[0], strings[1]).execute();
+            } catch (IOException i) {
+                i.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    class EditTextAsyncTask extends AsyncTask<String, Void, Void> {
+        @Override
+        protected Void doInBackground(String... strings) {
+            try {
+                mApiService.editMessage(strings[0], strings[1], strings[2]).execute();
+            } catch (IOException i) {
+                i.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+
 }
