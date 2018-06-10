@@ -15,6 +15,7 @@ import com.nestef.room.messaging.MessagingFragment;
 import com.nestef.room.model.Group;
 import com.nestef.room.model.Room;
 import com.nestef.room.preferences.PreferencesActivity;
+import com.nestef.room.preferences.SettingsFragment;
 import com.nestef.room.preferences.ThemeChanger;
 
 import org.parceler.Parcels;
@@ -101,6 +102,19 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
             public void onMenuItemReselect(int i, int i1, boolean b) {
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkTheme();
+    }
+
+    private void checkTheme() {
+        if (SettingsFragment.changed) {
+            SettingsFragment.changed = false;
+            recreate();
+        }
     }
 
     private void switchFragments(Fragment fragment) {

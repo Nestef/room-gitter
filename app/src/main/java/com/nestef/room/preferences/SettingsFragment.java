@@ -10,6 +10,9 @@ import com.nestef.room.R;
  * Created by Noah Steffes on 5/17/18.
  */
 public class SettingsFragment extends PreferenceFragmentCompat {
+
+    public static boolean changed;
+
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, final String rootKey) {
         setPreferencesFromResource(R.xml.preferences, rootKey);
@@ -17,6 +20,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         findPreference(getString(R.string.theme_pref_key)).setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
+                changed = true;
                 getActivity().finish();
                 startActivity(getActivity().getIntent());
                 return true;
