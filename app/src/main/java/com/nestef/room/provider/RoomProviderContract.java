@@ -25,6 +25,7 @@ public class RoomProviderContract {
         public static final String COLUMN_USER_COUNT = "user_count";
         public static final String COLUMN_UNREAD = "unread_items";
         public static final String COLUMN_FAVOURITE = "favourite";
+        public static final String COLUMN_MEMBER = "member";
     }
 
     public static final class PrivateRoomEntry implements BaseColumns {
@@ -37,6 +38,7 @@ public class RoomProviderContract {
         public static final String COLUMN_USER_COUNT = "user_count";
         public static final String COLUMN_UNREAD = "unread_items";
         public static final String COLUMN_FAVOURITE = "favourite";
+        public static final String COLUMN_MEMBER = "member";
     }
 
     public static final class GroupEntry implements BaseColumns {

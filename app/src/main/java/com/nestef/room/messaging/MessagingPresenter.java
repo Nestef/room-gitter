@@ -1,5 +1,7 @@
 package com.nestef.room.messaging;
 
+import android.util.Log;
+
 import com.nestef.room.base.BasePresenter;
 import com.nestef.room.data.MessageManager;
 import com.nestef.room.model.Event;
@@ -117,8 +119,10 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
     @Override
     public void checkRoomMembership(Room room) {
         if (room.roomMember) {
+            Log.d(TAG, "checkRoomMembership: true");
             mView.showInputUi();
         } else {
+            Log.d(TAG, "checkRoomMembership: false");
             mView.showJoinUi();
         }
     }

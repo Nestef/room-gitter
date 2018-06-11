@@ -54,6 +54,7 @@ public class RoomAdapter extends CursorAdapter {
         room.favourite = cursor.getInt(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_FAVOURITE));
         room.userCount = cursor.getInt(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_USER_COUNT));
         room.id = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_ID));
+        room.roomMember = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_MEMBER)));
 
         viewHolder.title.setText(room.name);
         //holder.description.setText(room.topic);

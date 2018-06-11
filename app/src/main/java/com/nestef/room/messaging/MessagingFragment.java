@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.nestef.room.R;
 import com.nestef.room.data.MessageManager;
@@ -53,6 +54,10 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     EditText mInputField;
     @BindView(R.id.message_send_iv)
     ImageView mSend;
+    @BindView(R.id.message_layout_ll)
+    LinearLayout mInputLayout;
+    @BindView(R.id.room_join_layout)
+    LinearLayout mJoinLayout;
     @BindInt(R.integer.is_tablet)
     int mIsTablet;
     @Nullable
@@ -116,11 +121,14 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
 
     @Override
     public void showJoinUi() {
-
+        mInputLayout.setVisibility(View.GONE);
+        mJoinLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showInputUi() {
+        mJoinLayout.setVisibility(View.GONE);
+        mInputLayout.setVisibility(View.VISIBLE);
 
     }
 
@@ -138,6 +146,8 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mRoom.name);
             
         }
+        Log.d(TAG, "onCreateView: " + mRoom.roomMember);
+        mPresenter.checkRoomMembership(mRoom);
         mPresenter.fetchMessages();
         return view;
     }

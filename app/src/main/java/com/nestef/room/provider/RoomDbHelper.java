@@ -11,7 +11,7 @@ public class RoomDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "roomDb.db";
 
-    private static final int VERSION = 2;
+    private static final int VERSION = 3;
 
     RoomDbHelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
@@ -28,7 +28,8 @@ public class RoomDbHelper extends SQLiteOpenHelper {
                 RoomProviderContract.RoomEntry.COLUMN_AVATARURL + " TEXT NOT NULL, " +
                 RoomProviderContract.RoomEntry.COLUMN_FAVOURITE + " INTEGER NOT NULL, " +
                 RoomProviderContract.RoomEntry.COLUMN_UNREAD + " INTEGER NOT NULL, " +
-                RoomProviderContract.RoomEntry.COLUMN_USER_COUNT + " INTEGER NOT NULL);";
+                RoomProviderContract.RoomEntry.COLUMN_USER_COUNT + " INTEGER NOT NULL, " +
+                RoomProviderContract.RoomEntry.COLUMN_MEMBER + " TEXT NOT NULL);";
 
         final String CREATE_PRIVATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 RoomProviderContract.PRIVATE_ROOM_TABLE + " (" +
@@ -38,7 +39,8 @@ public class RoomDbHelper extends SQLiteOpenHelper {
                 RoomProviderContract.PrivateRoomEntry.COLUMN_AVATARURL + " TEXT NOT NULL, " +
                 RoomProviderContract.PrivateRoomEntry.COLUMN_FAVOURITE + " INTEGER NOT NULL, " +
                 RoomProviderContract.PrivateRoomEntry.COLUMN_UNREAD + " INTEGER NOT NULL, " +
-                RoomProviderContract.PrivateRoomEntry.COLUMN_USER_COUNT + " INTEGER NOT NULL);";
+                RoomProviderContract.PrivateRoomEntry.COLUMN_USER_COUNT + " INTEGER NOT NULL, " +
+                RoomProviderContract.PrivateRoomEntry.COLUMN_MEMBER + " TEXT NOT NULL);";
 
         final String CREATE_GROUP_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 RoomProviderContract.GROUP_TABLE + " (" +

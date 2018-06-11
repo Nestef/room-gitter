@@ -89,6 +89,7 @@ public class DataManager {
                     room.userCount);
             contentValues.put(RoomProviderContract.RoomEntry.COLUMN_FAVOURITE,
                     room.favourite);
+            contentValues.put(RoomProviderContract.RoomEntry.COLUMN_MEMBER, String.valueOf(room.roomMember));
             mContentResolver
                     .insert(RoomProviderContract.RoomEntry.CONTENT_URI, contentValues);
         }
@@ -106,6 +107,7 @@ public class DataManager {
                     room.userCount);
             contentValues.put(RoomProviderContract.PrivateRoomEntry.COLUMN_FAVOURITE,
                     room.favourite);
+            contentValues.put(RoomProviderContract.PrivateRoomEntry.COLUMN_MEMBER, String.valueOf(room.roomMember));
             mContentResolver
                     .insert(RoomProviderContract.PrivateRoomEntry.CONTENT_URI, contentValues);
         }

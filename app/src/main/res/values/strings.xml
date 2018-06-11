@@ -24,4 +24,6 @@
 
     <!-- Messaging -->
     <string name="message_input_hint">Type a message</string>
+    <string name="join_room_button">Join room</string>
+    <string name="join_room_text">Join room to send messages</string>
 </resources>
