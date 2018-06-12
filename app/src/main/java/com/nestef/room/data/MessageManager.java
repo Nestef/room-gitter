@@ -33,14 +33,13 @@ public class MessageManager {
     private static MessageManager sInstance;
     private GitterApiService mApiService;
     private GitterStreamingService mStreamingService;
-    private Callback mCallback;
     private PrefManager mPrefManager;
     private ObjectMapper mObjectMapper;
 
     private MessageManager(PrefManager prefManager) {
         mPrefManager = prefManager;
-        mApiService = GitterServiceFactory.makeApiService(prefManager.getAuthToken());
-        mStreamingService = GitterServiceFactory.makeStreamingService(prefManager.getAuthToken());
+        mApiService = GitterServiceFactory.makeApiService(mPrefManager.getAuthToken());
+        mStreamingService = GitterServiceFactory.makeStreamingService(mPrefManager.getAuthToken());
     }
 
     public static MessageManager getInstance(PrefManager prefManager) {
@@ -58,20 +57,16 @@ public class MessageManager {
         new EditTextAsyncTask().execute(roomId, messageId, messageText);
     }
 
-    public void getUserProfile(String userName) {
-
+    public void markMessagesRead(String userId, String roomId, List<String> messageIds) {
+        new ReadMessagesAsyncTask(userId, roomId, messageIds).execute();
     }
 
     public void getMessages(String roomId, Callback callback) {
-        mCallback = callback;
-        new MessageAsyncTask().execute(roomId);
+        new MessageAsyncTask(callback).execute(roomId);
     }
 
     public void getOlderMessages(String roomId, String beforeId, Callback callback) {
-        if (mCallback == null) {
-            mCallback = callback;
-        }
-        new MessagesBeforeAsyncTask().execute(roomId, beforeId);
+        new MessagesBeforeAsyncTask(callback).execute(roomId, beforeId);
     }
 
     public void joinRoom(String userId, String roomId) {
@@ -178,6 +173,12 @@ public class MessageManager {
 
     class MessageAsyncTask extends AsyncTask<String, Void, List<Message>> {
 
+        private Callback mCallback;
+
+        MessageAsyncTask(Callback callback) {
+            mCallback = callback;
+        }
+
         @Override
         protected List<Message> doInBackground(String... strings) {
             try {
@@ -199,6 +200,12 @@ public class MessageManager {
     }
 
     class MessagesBeforeAsyncTask extends AsyncTask<String, Void, List<Message>> {
+
+        private Callback mCallback;
+
+        MessagesBeforeAsyncTask(Callback callback) {
+            mCallback = callback;
+        }
         @Override
         protected List<Message> doInBackground(String... strings) {
             try {
@@ -266,5 +273,26 @@ public class MessageManager {
         }
     }
 
+    class ReadMessagesAsyncTask extends AsyncTask<Void, Void, Void> {
 
+        private String mUserId;
+        private String mRoomId;
+        private List<String> mMessageIds;
+
+        ReadMessagesAsyncTask(String userId, String roomId, List<String> messageIds) {
+            mUserId = userId;
+            mRoomId = roomId;
+            mMessageIds = messageIds;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                mApiService.readMessages(mUserId, mRoomId, mMessageIds).execute();
+            } catch (IOException i) {
+                i.printStackTrace();
+            }
+            return null;
+        }
+    }
 }
