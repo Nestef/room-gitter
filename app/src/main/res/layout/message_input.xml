@@ -50,6 +50,7 @@
         >
 
         <TextView
+            android:id="@+id/join_message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -57,6 +58,7 @@
             android:text="@string/join_room_text" />
 
         <Button
+            android:id="@+id/join_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="4dp"

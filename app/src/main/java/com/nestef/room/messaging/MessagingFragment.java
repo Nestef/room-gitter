@@ -2,6 +2,7 @@ package com.nestef.room.messaging;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -43,14 +44,15 @@ import butterknife.Unbinder;
 public class MessagingFragment extends Fragment implements MessagingContract.MessagingView {
 
     private static final String TAG = "MessagingFragment";
-
     private static final String ROOM_KEY = "room";
+    private static final String RECYCLER_STATE = "list_state";
 
     Unbinder mUnbinder;
     MessagingPresenter mPresenter;
     MessageAdapter mMessageAdapter;
     Room mRoom;
 
+    Parcelable listSaveState;
     boolean loading;
 
     @BindView(R.id.message_list)
@@ -75,12 +77,51 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     }
 
     public static MessagingFragment newInstance(Room room) {
-
         Bundle args = new Bundle();
         args.putParcelable(ROOM_KEY, Parcels.wrap(room));
         MessagingFragment fragment = new MessagingFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mPresenter = new MessagingPresenter(MessageManager.getInstance(PrefManager.getInstance(getContext().getSharedPreferences(Constants.AUTH_SHARED_PREF, Context.MODE_PRIVATE))));
+        if (getArguments() != null) {
+            mRoom = Parcels.unwrap(getArguments().getParcelable(ROOM_KEY));
+            mPresenter.setRoomId(mRoom.id);
+            mPresenter.setUserId(PrefManager.getInstance(getContext().getSharedPreferences(Constants.AUTH_SHARED_PREF, Context.MODE_PRIVATE)).getUserId());
+        }
+        if (savedInstanceState != null) {
+            listSaveState = savedInstanceState.getParcelable(RECYCLER_STATE);
+        }
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.messaging_fragment, container, false);
+        mUnbinder = ButterKnife.bind(this, view);
+        mPresenter.setView(this);
+        if (!isTablet()) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        if (mRoom != null) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mRoom.name);
+        }
+        mPresenter.checkRoomMembership(mRoom);
+        mPresenter.fetchMessages();
+        return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mMessageList != null) {
+            outState.putParcelable(RECYCLER_STATE, mMessageList.getLayoutManager().onSaveInstanceState());
+        }
     }
 
     @Override
@@ -90,17 +131,22 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
         layoutManager.setSmoothScrollbarEnabled(true);
         mMessageAdapter = new MessageAdapter(messages, getContext());
         mMessageList.setAdapter(mMessageAdapter);
-        mMessageList.scrollToPosition(mMessageAdapter.getItemCount() - 1);
-
+        if (listSaveState != null) {
+            //restore list state
+            //TODO if the saved state is in older data, state will not restore correctly
+            layoutManager.onRestoreInstanceState(listSaveState);
+        } else {
+            mMessageList.scrollToPosition(mMessageAdapter.getItemCount() - 1);
+        }
         FixedPreloadSizeProvider<Message> sizeProvider = new FixedPreloadSizeProvider<>(40, 40);
         RecyclerViewPreloader<Message> preloader = new RecyclerViewPreloader<>(this, mMessageAdapter, sizeProvider, 5);
         mMessageList.addOnScrollListener(preloader);
 
+        //if scrolled to top of page, load older messages
         mMessageList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int totalItemCount = layoutManager.getItemCount();
                 int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
                 if (firstVisibleItem == 5 && !loading) {
                     mPresenter.fetchOlderMessages(mMessageAdapter.getMessageIdByPosition(0));
@@ -112,18 +158,6 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mPresenter = new MessagingPresenter(MessageManager.getInstance(PrefManager.getInstance(getContext().getSharedPreferences(Constants.AUTH_SHARED_PREF, Context.MODE_PRIVATE))));
-        if (getArguments() != null) {
-            mRoom = Parcels.unwrap(getArguments().getParcelable(ROOM_KEY));
-            mPresenter.setRoomId(mRoom.id);
-            mPresenter.setUserId(PrefManager.getInstance(getContext().getSharedPreferences(Constants.AUTH_SHARED_PREF, Context.MODE_PRIVATE)).getUserId());
-
-        }
-    }
-
-    @Override
     public void addNewMessages(List<Message> newMessages) {
         mMessageAdapter.addItems(newMessages);
     }
@@ -131,7 +165,7 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     @Override
     public void addMessage(Message message) {
         if (mMessageAdapter != null) {
-            mMessageAdapter.addItem(message);   
+            mMessageAdapter.addItem(message);
         }
         Log.d(TAG, "addMessage: " + message.text);
     }
@@ -159,25 +193,6 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
         mJoinLayout.setVisibility(View.GONE);
         mInputLayout.setVisibility(View.VISIBLE);
 
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.messaging_fragment, container, false);
-        mUnbinder = ButterKnife.bind(this, view);
-        mPresenter.setView(this);
-        if (!isTablet()) {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-        if (mRoom != null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mRoom.name);
-            
-        }
-        mPresenter.checkRoomMembership(mRoom);
-        mPresenter.fetchMessages();
-        return view;
     }
 
     @Override

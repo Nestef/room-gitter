@@ -12,6 +12,9 @@ import org.parceler.Parcels;
 public class MessagingActivity extends AppCompatActivity {
 
     private static final String ROOM_EXTRA = "room_extra";
+
+    private final String MESSAGE_FRAGMENT_TAG = "message_fragment";
+
     int mContainerId = R.id.messaging_fragment;
 
     @Override
@@ -20,7 +23,10 @@ public class MessagingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messaging);
         Room room = Parcels.unwrap(getIntent().getParcelableExtra(ROOM_EXTRA));
-        getSupportFragmentManager().beginTransaction().add(mContainerId, MessagingFragment.newInstance(room)).commit();
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().add(mContainerId, MessagingFragment.newInstance(room), MESSAGE_FRAGMENT_TAG).commit();
+        } else {
+        }
     }
 
 }
