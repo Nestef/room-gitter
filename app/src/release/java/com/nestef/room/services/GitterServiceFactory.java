@@ -1,7 +1,5 @@
 package com.nestef.room.services;
 
-import com.facebook.stetho.okhttp3.StethoInterceptor;
-
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -9,7 +7,6 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -47,7 +44,7 @@ public class GitterServiceFactory {
                         .readTimeout(0, TimeUnit.SECONDS)
                         .addInterceptor(new Interceptor() {
                             @Override
-                            public Response intercept(Interceptor.Chain chain) throws IOException {
+                            public Response intercept(Chain chain) throws IOException {
                                 Request original = chain.request();
 
                                 Request request = original.newBuilder()
@@ -56,11 +53,10 @@ public class GitterServiceFactory {
                                 return chain.proceed(request);
                             }
                         })
-                        .addNetworkInterceptor(new StethoInterceptor())
-                        .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.HEADERS))
                         .build())
                 .build()
                 .create(GitterStreamingService.class);
+
     }
 
 
@@ -77,8 +73,7 @@ public class GitterServiceFactory {
                         return chain.proceed(request);
                     }
                 })
-                .addNetworkInterceptor(new StethoInterceptor())
-                .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC))
                 .build();
+
     }
 }

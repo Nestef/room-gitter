@@ -8,8 +8,6 @@ import com.nestef.room.data.PrefManager;
 import com.nestef.room.model.AuthResponse;
 import com.nestef.room.services.GitterAuthService;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -54,7 +52,6 @@ public class AuthPresenter extends BasePresenter<AuthContract.AuthView> implemen
                     .enqueue(new Callback<AuthResponse>() {
 
                         @Override
-                        @ParametersAreNonnullByDefault
                         public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
                             String token = response.body().accessToken;
                             mPrefManager.saveAuthToken(token);
@@ -63,7 +60,6 @@ public class AuthPresenter extends BasePresenter<AuthContract.AuthView> implemen
                         }
 
                         @Override
-                        @ParametersAreNonnullByDefault
                         public void onFailure(Call<AuthResponse> call, Throwable t) {
                             //Todo: add error handling
                         }

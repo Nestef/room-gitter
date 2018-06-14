@@ -16,7 +16,10 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
+import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
+import com.bumptech.glide.util.FixedPreloadSizeProvider;
 import com.nestef.room.R;
 import com.nestef.room.data.MessageManager;
 import com.nestef.room.data.PrefManager;
@@ -48,6 +51,8 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     MessageAdapter mMessageAdapter;
     Room mRoom;
 
+    boolean loading;
+
     @BindView(R.id.message_list)
     RecyclerView mMessageList;
     @BindView(R.id.message_input)
@@ -60,6 +65,8 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     LinearLayout mJoinLayout;
     @BindInt(R.integer.is_tablet)
     int mIsTablet;
+    @BindView(R.id.message_loading_pb)
+    ProgressBar mProgress;
     @Nullable
     @BindView(R.id.message_toolbar)
     Toolbar mToolbar;
@@ -78,10 +85,30 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
 
     @Override
     public void showMessages(List<Message> messages) {
-        mMessageList.setLayoutManager(new LinearLayoutManager(getContext()));
-        mMessageAdapter = new MessageAdapter(messages);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        mMessageList.setLayoutManager(layoutManager);
+        layoutManager.setSmoothScrollbarEnabled(true);
+        mMessageAdapter = new MessageAdapter(messages, getContext());
         mMessageList.setAdapter(mMessageAdapter);
+        mMessageList.scrollToPosition(mMessageAdapter.getItemCount() - 1);
 
+        FixedPreloadSizeProvider<Message> sizeProvider = new FixedPreloadSizeProvider<>(40, 40);
+        RecyclerViewPreloader<Message> preloader = new RecyclerViewPreloader<>(this, mMessageAdapter, sizeProvider, 5);
+        mMessageList.addOnScrollListener(preloader);
+
+        mMessageList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int totalItemCount = layoutManager.getItemCount();
+                int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
+                if (firstVisibleItem == 5 && !loading) {
+                    mPresenter.fetchOlderMessages(mMessageAdapter.getMessageIdByPosition(0));
+                    showLoadingIndicator();
+                    loading = true;
+                }
+            }
+        });
     }
 
     @Override
@@ -116,7 +143,9 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
 
     @Override
     public void showOlderMessages(List<Message> oldMessages) {
-
+        hideLoadingIndicator();
+        mMessageAdapter.addItems(oldMessages);
+        loading = false;
     }
 
     @Override
@@ -146,7 +175,6 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mRoom.name);
             
         }
-        Log.d(TAG, "onCreateView: " + mRoom.roomMember);
         mPresenter.checkRoomMembership(mRoom);
         mPresenter.fetchMessages();
         return view;
@@ -167,12 +195,13 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
 
     @Override
     public void showLoadingIndicator() {
-
+        mProgress.setIndeterminate(true);
+        mProgress.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoadingIndicator() {
-
+        mProgress.setVisibility(View.GONE);
     }
 
     @Override
@@ -183,4 +212,6 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     private boolean isTablet() {
         return mIsTablet == 1;
     }
+
+
 }

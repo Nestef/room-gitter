@@ -61,10 +61,6 @@ public class Room implements Comparable<Room> {
 
     @Override
     public int compareTo(@NonNull Room o) {
-        if (o.unreadItems > unreadItems) {
-            return 1;
-        } else if (unreadItems > o.unreadItems) {
-            return -1;
-        } else return 0;
+        return Integer.compare(o.unreadItems, unreadItems);
     }
 }

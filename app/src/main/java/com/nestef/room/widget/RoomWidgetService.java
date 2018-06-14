@@ -47,7 +47,7 @@ class RoomViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
     private void updateData() {
         if (mRooms == null) {
-            mRooms = new ArrayList<Room>();
+            mRooms = new ArrayList<>();
         }
         mRooms.clear();
     }

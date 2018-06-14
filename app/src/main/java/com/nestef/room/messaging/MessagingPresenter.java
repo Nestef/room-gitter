@@ -1,10 +1,7 @@
 package com.nestef.room.messaging;
 
-import android.util.Log;
-
 import com.nestef.room.base.BasePresenter;
 import com.nestef.room.data.MessageManager;
-import com.nestef.room.model.Event;
 import com.nestef.room.model.Message;
 import com.nestef.room.model.Room;
 
@@ -51,6 +48,9 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
     @Override
     public void fetchMessages() {
         mManager.getMessages(mRoomId, this);
+        if (mView != null) {
+            mView.showLoadingIndicator();
+        }
     }
 
     @Override
@@ -87,7 +87,7 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
     public void unsetView() {
         super.unsetView();
         //make sure to end network tasks
-        mEventStream.dispose();
+        //mEventStream.dispose();
         mMessageStream.dispose();
     }
 
@@ -101,28 +101,27 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
                 if (mView != null) mView.addMessage(message);
             }
         });
-        mEventStream = mManager.getEventStream(mRoomId).subscribe(new Consumer<Event>() {
-            @Override
-            public void accept(Event event) throws Exception {
-                if (mView != null) mView.addEvent(event);
-            }
-        });
+        // mEventStream = mManager.getEventStream(mRoomId).subscribe(new Consumer<Event>() {
+        //      @Override
+        //     public void accept(Event event) throws Exception {
+        //         if (mView != null) mView.addEvent(event);
+        //     }
+        // });
     }
 
     @Override
     public void returnMessages(List<Message> messages) {
         if (mView != null) {
             mView.showMessages(messages);
+            mView.hideLoadingIndicator();
         }
     }
 
     @Override
     public void checkRoomMembership(Room room) {
         if (room.roomMember) {
-            Log.d(TAG, "checkRoomMembership: true");
             mView.showInputUi();
         } else {
-            Log.d(TAG, "checkRoomMembership: false");
             mView.showJoinUi();
         }
     }

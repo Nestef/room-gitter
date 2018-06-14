@@ -64,11 +64,11 @@ public class DataManager {
         mContentResolver.delete(RoomProviderContract.PrivateRoomEntry.CONTENT_URI, null, null);
 
         //Separate private rooms
-        Map<Boolean, List<Room>> split = new HashMap<Boolean, List<Room>>();
+        Map<Boolean, List<Room>> split = new HashMap<>();
         for (Room room : rooms) {
             List<Room> list = split.get(room.oneToOne);
             if (list == null) {
-                list = new ArrayList<Room>();
+                list = new ArrayList<>();
                 split.put(room.oneToOne, list);
             }
             list.add(room);

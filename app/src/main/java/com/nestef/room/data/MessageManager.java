@@ -1,7 +1,6 @@
 package com.nestef.room.data;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nestef.room.model.Event;
@@ -148,7 +147,6 @@ public class MessageManager {
                         emitter.onNext(source.readUtf8Line());
                     }
                 } catch (IOException e) {
-                    Log.d(TAG, "subscribe: " + e.getMessage());
                     if (e.getMessage().equals("Socket closed")) {
                         isCompleted = true;
                         emitter.onComplete();
