@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/message_input_card"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="56dp"
     android:elevation="2dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
@@ -17,13 +17,15 @@
         android:orientation="horizontal"
         android:visibility="gone">
 
-        <EditText
+        <android.support.v7.widget.AppCompatMultiAutoCompleteTextView
             android:id="@+id/message_input"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="@string/message_input_hint"
-            android:inputType="textMultiLine|textAutoComplete" />
+            android:elegantTextHeight="true"
+            android:imeOptions="flagNoExtractUi"
+            android:inputType="textMultiLine|textAutoComplete|textCapSentences" />
 
         <ImageView
             android:id="@+id/markdown_info_iv"
@@ -46,7 +48,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:orientation="horizontal"
-
         >
 
         <TextView

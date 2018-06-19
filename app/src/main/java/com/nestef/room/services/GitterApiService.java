@@ -41,17 +41,17 @@ public interface GitterApiService {
 
     @FormUrlEncoded
     @POST("/v1/user/{userId}/rooms")
-    Call joinRoom(@Path("userId") String userId, @Field("id") String roomId);
+    Call<Void> joinRoom(@Path("userId") String userId, @Field("id") String roomId);
 
     @DELETE("/v1/rooms/{roomId}/users/{userId}")
-    Call leaveRoom(@Path("roomId") String roomId, @Path("userId") String userId);
+    Call<Void> leaveRoom(@Path("roomId") String roomId, @Path("userId") String userId);
 
     @FormUrlEncoded
     @PUT("/v1/rooms/{roomId}")
-    Call updateRoom(@Path("roomId") String roomId, @Field("topic") String topic, @Field("noIndex") boolean noIndex, @Field("tags") String tags);
+    Call<Void> updateRoom(@Path("roomId") String roomId, @Field("topic") String topic, @Field("noIndex") boolean noIndex, @Field("tags") String tags);
 
     @DELETE("/v1/rooms/{roomId}")
-    Call deleteRoom(@Path("roomId") String roomId);
+    Call<Void> deleteRoom(@Path("roomId") String roomId);
 
     @GET("/v1/rooms/{roomId}/meta/welcome-message")
     Call<WelcomeMessage> getWelcomeMessage(@Path("roomId") String roomId);
@@ -88,11 +88,11 @@ public interface GitterApiService {
 
     @FormUrlEncoded
     @POST("/v1/rooms/{roomId}/chatMessages")
-    Call sendMessage(@Path("roomId") String roomId, @Field("text") String text);
+    Call<Message> sendMessage(@Path("roomId") String roomId, @Field("text") String text);
 
     @FormUrlEncoded
     @PUT("/v1/rooms/{roomId}/chatMessages/{messageId}")
-    Call editMessage(@Path("roomId") String roomId, @Path("messageId") String messageId, @Field("text") String text);
+    Call<Message> editMessage(@Path("roomId") String roomId, @Path("messageId") String messageId, @Field("text") String text);
 
     @GET("/v1/user")
     Call<List<User>> getPersonalProfile();
@@ -108,7 +108,7 @@ public interface GitterApiService {
 
     @FormUrlEncoded
     @POST("/v1/user/{userId}/rooms/{roomId}/unreadItems")
-    Call readMessages(@Path("userId") String userId, @Path("roomId") String roomId, @Field("chat") List<String> messageIds);
+    Call<Void> readMessages(@Path("userId") String userId, @Path("roomId") String roomId, @Field("chat") List<String> messageIds);
 
     @GET("/v1/user/{userId}/orgs")
     Call<List<Org>> getUserOrgs(@Path("userId") String userId);

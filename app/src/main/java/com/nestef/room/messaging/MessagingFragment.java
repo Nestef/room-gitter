@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -38,6 +39,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
+
 /**
  * Created by Noah Steffes on 4/13/18.
  */
@@ -50,6 +53,7 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     Unbinder mUnbinder;
     MessagingPresenter mPresenter;
     MessageAdapter mMessageAdapter;
+    LinearLayoutManager mLayoutManager;
     Room mRoom;
 
     Parcelable listSaveState;
@@ -111,8 +115,8 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
         if (mRoom != null) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mRoom.name);
         }
-        mPresenter.checkRoomMembership(mRoom);
         mPresenter.fetchMessages();
+        mPresenter.checkRoomMembership(mRoom);
         return view;
     }
 
@@ -126,15 +130,15 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
 
     @Override
     public void showMessages(List<Message> messages) {
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        mMessageList.setLayoutManager(layoutManager);
-        layoutManager.setSmoothScrollbarEnabled(true);
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mMessageList.setLayoutManager(mLayoutManager);
+        mLayoutManager.setSmoothScrollbarEnabled(true);
         mMessageAdapter = new MessageAdapter(messages, getContext());
         mMessageList.setAdapter(mMessageAdapter);
         if (listSaveState != null) {
             //restore list state
             //TODO if the saved state is in older data, state will not restore correctly
-            layoutManager.onRestoreInstanceState(listSaveState);
+            mLayoutManager.onRestoreInstanceState(listSaveState);
         } else {
             mMessageList.scrollToPosition(mMessageAdapter.getItemCount() - 1);
         }
@@ -147,7 +151,8 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
+                int firstVisibleItem = mLayoutManager.findFirstVisibleItemPosition();
+                Log.d(TAG, "onScrolled: " + firstVisibleItem);
                 if (firstVisibleItem == 5 && !loading) {
                     mPresenter.fetchOlderMessages(mMessageAdapter.getMessageIdByPosition(0));
                     showLoadingIndicator();
@@ -165,7 +170,14 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     @Override
     public void addMessage(Message message) {
         if (mMessageAdapter != null) {
+            Log.d(TAG, "addMessage: " + mMessageAdapter.getItemCount());
+            Log.d(TAG, "addMessage: " + mLayoutManager.findLastVisibleItemPosition());
             mMessageAdapter.addItem(message);
+            if (mLayoutManager.findLastVisibleItemPosition() == mMessageAdapter.getItemCount() - 2) {
+                mMessageList.scrollToPosition(mMessageAdapter.getItemCount() - 1);
+            }
+            Log.d(TAG, "addMessage: " + mMessageAdapter.getItemCount());
+            Log.d(TAG, "addMessage: " + mLayoutManager.findLastVisibleItemPosition());
         }
         Log.d(TAG, "addMessage: " + message.text);
     }
@@ -192,7 +204,21 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     public void showInputUi() {
         mJoinLayout.setVisibility(View.GONE);
         mInputLayout.setVisibility(View.VISIBLE);
-
+        mSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mInputField != null) {
+                    //ensure text is not empty
+                    if (!mInputField.getText().toString().equals("")) {
+                        mPresenter.sendMessage(mInputField.getText().toString());
+                        mInputField.setText("");
+                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
+                                INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(mInputField.getWindowToken(), 0);
+                    }
+                }
+            }
+        });
     }
 
     @Override

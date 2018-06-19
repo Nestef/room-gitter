@@ -147,7 +147,7 @@ public class MessageManager {
                         emitter.onNext(source.readUtf8Line());
                     }
                 } catch (IOException e) {
-                    if (e.getMessage().equals("Socket closed")) {
+                    if (e.getMessage() == null || e.getMessage().equals("Socket closed")) {
                         isCompleted = true;
                         emitter.onComplete();
                     } else {
