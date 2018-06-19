@@ -12,6 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -102,10 +105,16 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
         }
     }
 
+    @Override
+    public void updateRoom(Room room) {
+
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.messaging_fragment, container, false);
+        setHasOptionsMenu(true);
         mUnbinder = ButterKnife.bind(this, view);
         mPresenter.setView(this);
         if (!isTablet()) {
@@ -126,6 +135,27 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
         if (mMessageList != null) {
             outState.putParcelable(RECYCLER_STATE, mMessageList.getLayoutManager().onSaveInstanceState());
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.room_fragment_items, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.leave_room_item);
+        item.setVisible(mRoom.roomMember);
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.leave_room_item:
+                mPresenter.leaveRoom();
+        }
+        return true;
     }
 
     @Override

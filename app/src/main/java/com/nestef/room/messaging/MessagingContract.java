@@ -46,5 +46,7 @@ public interface MessagingContract {
         void showJoinUi();
 
         void showInputUi();
+
+        void updateRoom(Room room);
     }
 }
