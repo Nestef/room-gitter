@@ -47,7 +47,7 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
 /**
  * Created by Noah Steffes on 4/13/18.
  */
-public class MessagingFragment extends Fragment implements MessagingContract.MessagingView {
+public class MessagingFragment extends Fragment implements MessagingContract.MessagingView, MessageAdapter.MentionClickHandler {
 
     private static final String TAG = "MessagingFragment";
     private static final String ROOM_KEY = "room";
@@ -61,6 +61,7 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
 
     Parcelable listSaveState;
     boolean loading;
+    boolean isInputable = false;
 
     @BindView(R.id.message_list)
     RecyclerView mMessageList;
@@ -176,7 +177,7 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
         mLayoutManager = new LinearLayoutManager(getContext());
         mMessageList.setLayoutManager(mLayoutManager);
         mLayoutManager.setSmoothScrollbarEnabled(true);
-        mMessageAdapter = new MessageAdapter(messages, getContext());
+        mMessageAdapter = new MessageAdapter(messages, getContext(), this);
         mMessageList.setAdapter(mMessageAdapter);
         if (listSaveState != null) {
             //restore list state
@@ -242,6 +243,7 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
                 mPresenter.checkRoomMembership(mRoom);
             }
         });
+        isInputable = false;
     }
 
     @Override
@@ -263,6 +265,7 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
                 }
             }
         });
+        isInputable = true;
     }
 
     @Override
@@ -298,5 +301,10 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
         return mIsTablet == 1;
     }
 
-
+    @Override
+    public void onMentionClick(String mention) {
+        if (isInputable) {
+            mInputField.setText(mention);
+        }
+    }
 }

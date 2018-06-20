@@ -16,10 +16,12 @@ import com.nestef.room.R;
 import com.nestef.room.data.GlideApp;
 import com.nestef.room.model.Message;
 import com.nestef.room.model.User;
+import com.nestef.room.util.PatternEditableBuilder;
 
 import java.text.DateFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,9 +36,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     private Context mContext;
 
-    MessageAdapter(List<Message> messages1, Context context) {
+    private MentionClickHandler mHandler;
+
+    MessageAdapter(List<Message> messages1, Context context, MentionClickHandler handler) {
         mMessages = messages1;
         mContext = context;
+        mHandler = handler;
     }
 
     @NonNull
@@ -47,7 +52,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     @Override
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
-        Message message = mMessages.get(position);
+        final Message message = mMessages.get(position);
         User user = message.fromUser;
 
         //TODO set placeholder
@@ -59,6 +64,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             holder.displayName.setText(user.displayName);
         }
         Markwon.setMarkdown(holder.content, message.text);
+        new PatternEditableBuilder().
+                addPattern(Pattern.compile("\\@(\\w+)"), new PatternEditableBuilder.SpannableClickedListener() {
+                    @Override
+                    public void onSpanClicked(String text) {
+                        mHandler.onMentionClick(text);
+                    }
+                }).
+                into(holder.content);
         String time = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(message.sent);
         holder.timeStamp.setText(time);
     }
@@ -111,5 +124,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         }
     }
 
+    public interface MentionClickHandler {
+        void onMentionClick(String mention);
+    }
 
 }
