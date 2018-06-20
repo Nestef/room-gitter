@@ -118,12 +118,20 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
     }
 
     @Override
-    public void checkRoomMembership(Room room) {
-        if (room.roomMember) {
-            mView.showInputUi();
-        } else {
-            mView.showJoinUi();
+    public void returnRoom(Room room) {
+        if (mView != null) {
+            mView.updateRoom(room);
+            if (room.roomMember) {
+                mView.showInputUi();
+            } else {
+                mView.showJoinUi();
+            }
         }
+    }
+
+    @Override
+    public void checkRoomMembership(Room room) {
+        mManager.getRoom(this, room.id);
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nestef.room.model.Event;
 import com.nestef.room.model.Message;
+import com.nestef.room.model.Room;
 import com.nestef.room.services.GitterApiService;
 import com.nestef.room.services.GitterServiceFactory;
 import com.nestef.room.services.GitterStreamingService;
@@ -66,6 +67,10 @@ public class MessageManager {
 
     public void getOlderMessages(String roomId, String beforeId, Callback callback) {
         new MessagesBeforeAsyncTask(callback).execute(roomId, beforeId);
+    }
+
+    public void getRoom(Callback callback, String roomId) {
+        new RoomAsyncTask(callback, roomId).execute();
     }
 
     public void joinRoom(String userId, String roomId) {
@@ -167,7 +172,38 @@ public class MessageManager {
         void olderMessages(List<Message> messages);
 
         void fetchMessageError();
+
+        void returnRoom(Room room);
     }
+
+    class RoomAsyncTask extends AsyncTask<Void, Void, Room> {
+
+        private Callback mCallback;
+
+        private String mRoomId;
+
+        RoomAsyncTask(Callback callback, String roomId) {
+            mCallback = callback;
+            mRoomId = roomId;
+        }
+
+        @Override
+        protected Room doInBackground(Void... voids) {
+            try {
+                return mApiService.getRoomById(mRoomId).execute().body();
+            } catch (IOException i) {
+                i.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Room room) {
+            super.onPostExecute(room);
+            mCallback.returnRoom(room);
+        }
+    }
+
 
     class MessageAsyncTask extends AsyncTask<String, Void, List<Message>> {
 

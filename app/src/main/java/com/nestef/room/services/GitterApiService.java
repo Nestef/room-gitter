@@ -35,6 +35,9 @@ public interface GitterApiService {
     @GET("/v1/rooms")
     Call<List<Room>> getRooms();
 
+    @GET("/v1/rooms/{roomId}")
+    Call<Room> getRoomById(@Path("roomId") String roomId);
+
     @FormUrlEncoded
     @POST("/v1/rooms")
     Call<RoomResponse> getRoomIdByUri(@Field("uri") String roomUri);

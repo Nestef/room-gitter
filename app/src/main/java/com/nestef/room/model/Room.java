@@ -42,6 +42,7 @@ public class Room implements Comparable<Room> {
     public String url;
     //Type of the room.
     public String githubType;
+    public String associatedRepo;
     public String security;
     public boolean premium;
     public boolean noindex;

@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -79,6 +79,8 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     @Nullable
     @BindView(R.id.message_toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.join_button)
+    Button mJoinButton;
 
     public MessagingFragment() {
     }
@@ -107,7 +109,9 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
 
     @Override
     public void updateRoom(Room room) {
-
+        mRoom = room;
+        mPresenter.setRoomId(room.id);
+        updateMenu();
     }
 
     @Nullable
@@ -149,13 +153,22 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
         super.onPrepareOptionsMenu(menu);
     }
 
+    private void updateMenu() {
+        if (!isTablet()) {
+            getActivity().invalidateOptionsMenu();
+        }
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.leave_room_item:
                 mPresenter.leaveRoom();
+                mPresenter.checkRoomMembership(mRoom);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return true;
+
     }
 
     @Override
@@ -182,7 +195,6 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 int firstVisibleItem = mLayoutManager.findFirstVisibleItemPosition();
-                Log.d(TAG, "onScrolled: " + firstVisibleItem);
                 if (firstVisibleItem == 5 && !loading) {
                     mPresenter.fetchOlderMessages(mMessageAdapter.getMessageIdByPosition(0));
                     showLoadingIndicator();
@@ -200,16 +212,11 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     @Override
     public void addMessage(Message message) {
         if (mMessageAdapter != null) {
-            Log.d(TAG, "addMessage: " + mMessageAdapter.getItemCount());
-            Log.d(TAG, "addMessage: " + mLayoutManager.findLastVisibleItemPosition());
             mMessageAdapter.addItem(message);
             if (mLayoutManager.findLastVisibleItemPosition() == mMessageAdapter.getItemCount() - 2) {
                 mMessageList.scrollToPosition(mMessageAdapter.getItemCount() - 1);
             }
-            Log.d(TAG, "addMessage: " + mMessageAdapter.getItemCount());
-            Log.d(TAG, "addMessage: " + mLayoutManager.findLastVisibleItemPosition());
         }
-        Log.d(TAG, "addMessage: " + message.text);
     }
 
     @Override
@@ -228,6 +235,13 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     public void showJoinUi() {
         mInputLayout.setVisibility(View.GONE);
         mJoinLayout.setVisibility(View.VISIBLE);
+        mJoinButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.joinRoom();
+                mPresenter.checkRoomMembership(mRoom);
+            }
+        });
     }
 
     @Override

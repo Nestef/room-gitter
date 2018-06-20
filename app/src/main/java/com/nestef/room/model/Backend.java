@@ -8,4 +8,5 @@ import org.parceler.Parcel;
 @Parcel
 public class Backend {
     String type;
+    String linkPath;
 }

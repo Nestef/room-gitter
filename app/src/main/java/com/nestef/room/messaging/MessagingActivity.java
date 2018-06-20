@@ -25,7 +25,6 @@ public class MessagingActivity extends AppCompatActivity {
         Room room = Parcels.unwrap(getIntent().getParcelableExtra(ROOM_EXTRA));
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().add(mContainerId, MessagingFragment.newInstance(room), MESSAGE_FRAGMENT_TAG).commit();
-        } else {
         }
     }
 
