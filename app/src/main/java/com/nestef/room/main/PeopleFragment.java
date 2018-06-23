@@ -55,7 +55,10 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView,
     }
 
     public static PeopleFragment newInstance() {
-        return new PeopleFragment();
+        Bundle args = new Bundle();
+        PeopleFragment fragment = new PeopleFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
 
@@ -72,11 +75,10 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView,
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.people_fragment, container, false);
         unbinder = ButterKnife.bind(this, rootView);
+        Log.d(TAG, "onCreateView: ");
         presenter.setView(this);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         if (!isTablet()) setHasOptionsMenu(true);
-
-        Log.d(TAG, "onCreateView: ");
         presenter.fetchChats();
         return rootView;
     }
