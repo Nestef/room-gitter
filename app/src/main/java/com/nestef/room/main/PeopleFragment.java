@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -68,6 +67,7 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView,
         presenter = new PeoplePresenter(DataManager.getInstance(getContext().getContentResolver(),
                 PrefManager.getInstance(getContext().getSharedPreferences(AUTH_SHARED_PREF, Context.MODE_PRIVATE))),
                 new LoaderProvider(getContext()), getLoaderManager());
+        if (!isTablet()) setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -75,10 +75,7 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView,
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.people_fragment, container, false);
         unbinder = ButterKnife.bind(this, rootView);
-        Log.d(TAG, "onCreateView: ");
         presenter.setView(this);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        if (!isTablet()) setHasOptionsMenu(true);
         presenter.fetchChats();
         return rootView;
     }
@@ -109,7 +106,9 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView,
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         inflater.inflate(R.menu.main_actions, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -118,6 +117,7 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView,
         peopleList.setAdapter(roomAdapter);
         roomAdapter.changeCursor(chats);
     }
+
     @Override
     public void showLoadingIndicator() {
 

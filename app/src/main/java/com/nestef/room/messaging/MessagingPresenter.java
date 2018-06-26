@@ -88,7 +88,9 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
         super.unsetView();
         //make sure to end network tasks
         //mEventStream.dispose();
-        mMessageStream.dispose();
+        if (mMessageStream != null) {
+            mMessageStream.dispose();
+        }
     }
 
     @Override
@@ -131,6 +133,7 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
 
     @Override
     public void checkRoomMembership(Room room) {
+
         mManager.getRoom(this, room.id);
     }
 

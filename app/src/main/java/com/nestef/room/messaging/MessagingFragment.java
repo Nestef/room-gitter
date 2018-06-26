@@ -121,23 +121,28 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
         View view = inflater.inflate(R.layout.messaging_fragment, container, false);
         setHasOptionsMenu(true);
         mUnbinder = ButterKnife.bind(this, view);
-        mPresenter.setView(this);
         if (!isTablet()) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         if (mRoom != null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mRoom.name);
+            if (isTablet()) {
+                mToolbar.setTitle(mRoom.name);
+            } else {
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mRoom.name);
+            }
+            mPresenter.setView(this);
+            mPresenter.fetchMessages();
+            mPresenter.checkRoomMembership(mRoom);
         }
-        mPresenter.fetchMessages();
-        mPresenter.checkRoomMembership(mRoom);
+
         return view;
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mMessageList != null) {
+        if (mMessageList.getLayoutManager() != null) {
             outState.putParcelable(RECYCLER_STATE, mMessageList.getLayoutManager().onSaveInstanceState());
         }
     }

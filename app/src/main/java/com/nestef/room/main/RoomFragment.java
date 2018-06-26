@@ -66,10 +66,10 @@ public class RoomFragment extends Fragment implements MainContract.RoomView, Roo
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mPresenter = new RoomPresenter(DataManager.getInstance(getContext().getContentResolver(),
                 PrefManager.getInstance(getContext().getSharedPreferences(AUTH_SHARED_PREF, Context.MODE_PRIVATE))),
                 new LoaderProvider(getContext()), getLoaderManager());
+        if (!isTablet()) setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -78,9 +78,10 @@ public class RoomFragment extends Fragment implements MainContract.RoomView, Roo
         View rootView = inflater.inflate(R.layout.room_fragment, container, false);
         mUnbinder = ButterKnife.bind(this, rootView);
         mPresenter.setView(this);
-        Log.d(TAG, "onCreateView: ");
+        //initialize actionbar in oncreateview only in first fragment
+        //in all fragments set actionbar in oncreateoptionsmenu
+        //this prevents a bug where the action menu disapears in hidden fragments on rotation
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
-        if (!isTablet()) setHasOptionsMenu(true);
         mPresenter.fetchRooms();
         return rootView;
     }
@@ -111,7 +112,9 @@ public class RoomFragment extends Fragment implements MainContract.RoomView, Roo
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         inflater.inflate(R.menu.main_actions, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override

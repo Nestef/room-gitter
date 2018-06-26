@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -67,18 +66,15 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
         mPresenter = new GroupsPresenter(DataManager.getInstance(getContext().getContentResolver(),
                 PrefManager.getInstance(getContext().getSharedPreferences(AUTH_SHARED_PREF, Context.MODE_PRIVATE))),
                 new LoaderProvider(getContext()), getLoaderManager());
+        if (!isTablet()) setHasOptionsMenu(true);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.groups_fragment, container, false);
-        Log.d(TAG, "onCreateView: ");
         mUnbinder = ButterKnife.bind(this, rootView);
         mPresenter.setView(this);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
-        if (!isTablet()) setHasOptionsMenu(true);
-
         mPresenter.fetchGroups();
         return rootView;
     }
@@ -97,7 +93,9 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         inflater.inflate(R.menu.main_actions, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
