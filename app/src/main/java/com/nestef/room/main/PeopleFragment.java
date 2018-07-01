@@ -114,6 +114,7 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView,
     @Override
     public void showChats(Cursor chats) {
         roomAdapter = new RoomAdapter(getContext(), this);
+        peopleList.setDivider(null);
         peopleList.setAdapter(roomAdapter);
         roomAdapter.changeCursor(chats);
     }
