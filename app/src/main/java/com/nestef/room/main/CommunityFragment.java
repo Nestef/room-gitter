@@ -9,11 +9,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.nestef.room.R;
 import com.nestef.room.data.DataManager;
@@ -35,14 +38,14 @@ import static com.nestef.room.util.Constants.AUTH_SHARED_PREF;
 /**
  * Created by Noah Steffes on 5/2/18.
  */
-public class CommunityFragment extends Fragment implements MainContract.CommunityView, CommunityRoomAdapter.RoomCallback {
+public class CommunityFragment extends Fragment implements MainContract.CommunityView, RoomAdapter.RoomCallback {
 
 
     private static final String GROUP = "Group";
     Unbinder mUnbinder;
     CommunityPresenter mPresenter;
-    CommunityRoomAdapter mJoinedAdapter;
-    CommunityRoomAdapter mCommunityAdapter;
+    RoomAdapter mJoinedAdapter;
+    RoomAdapter mCommunityAdapter;
     private RoomFragment.RoomSelectionCallback mCallback;
     Group mGroup;
 
@@ -56,6 +59,12 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
     Toolbar mToolbar;
     @BindInt(R.integer.is_tablet)
     int mIsTablet;
+    @BindView(R.id.progress_bar)
+    ProgressBar mLoadingIndicator;
+    @BindView(R.id.community_joined_title)
+    TextView mJoinedTitle;
+    @BindView(R.id.community_other_title)
+    TextView mListTitle;
 
     public static CommunityFragment newInstance(Group group) {
 
@@ -120,17 +129,20 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
 
     @Override
     public void showLoadingIndicator() {
-
+        mJoinedTitle.setVisibility(View.GONE);
+        mListTitle.setVisibility(View.GONE);
+        mJoinedRoomList.setVisibility(View.GONE);
+        mLoadingIndicator.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoadingIndicator() {
-
+        mLoadingIndicator.setVisibility(View.GONE);
     }
 
     @Override
     public void showEmpty() {
-
+        Log.d("", "showEmpty: ");
     }
 
     private boolean isTablet() {
@@ -140,22 +152,28 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
     @Override
     public void showJoinedRooms(List<Room> joinedRooms) {
         mJoinedRoomList.setLayoutManager(new LinearLayoutManager(getContext()));
-        mJoinedAdapter = new CommunityRoomAdapter(joinedRooms, this);
+        mJoinedAdapter = new RoomAdapter(joinedRooms, this);
         mJoinedRoomList.setAdapter(mJoinedAdapter);
         mJoinedRoomList.setVisibility(View.VISIBLE);
+        mJoinedTitle.setVisibility(View.VISIBLE);
+        Log.d("", "showJoinedRooms: ");
     }
 
     @Override
     public void showJoinedRoomsEmpty() {
+        mJoinedTitle.setVisibility(View.VISIBLE);
         mJoinedRoomList.setVisibility(View.GONE);
+        Log.d("", "showJoinedRoomsEmpty: ");
     }
 
     @Override
     public void showUnjoinedRooms(List<Room> unjoinedRooms) {
         mCommunityRoomList.setLayoutManager(new LinearLayoutManager(getContext()));
-        mCommunityAdapter = new CommunityRoomAdapter(unjoinedRooms, this);
+        mCommunityAdapter = new RoomAdapter(unjoinedRooms, this);
         mCommunityRoomList.setAdapter(mCommunityAdapter);
         mCommunityRoomList.setVisibility(View.VISIBLE);
+        mListTitle.setVisibility(View.VISIBLE);
+        Log.d("", "showUnjoinedRooms: ");
 
     }
 

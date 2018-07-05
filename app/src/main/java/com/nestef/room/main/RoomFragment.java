@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.nestef.room.R;
@@ -34,7 +35,7 @@ import static com.nestef.room.util.Constants.AUTH_SHARED_PREF;
  * Created by Noah Steffes on 3/25/18.
  */
 
-public class RoomFragment extends Fragment implements MainContract.RoomView, RoomAdapter.RoomCallback {
+public class RoomFragment extends Fragment implements MainContract.RoomView, RoomCursorAdapter.RoomCallback {
 
     private static final String TAG = "RoomFragment";
 
@@ -47,9 +48,11 @@ public class RoomFragment extends Fragment implements MainContract.RoomView, Roo
     int mIsTablet;
     @BindView(R.id.room_empty_text)
     TextView mEmptyMessage;
+    @BindView(R.id.progress_bar)
+    ProgressBar mLoadingIndicator;
 
     private Unbinder mUnbinder;
-    private RoomAdapter mRoomAdapter;
+    private RoomCursorAdapter mRoomCursorAdapter;
     private RoomPresenter mPresenter;
     private RoomSelectionCallback mCallback;
 
@@ -122,20 +125,22 @@ public class RoomFragment extends Fragment implements MainContract.RoomView, Roo
         mEmptyMessage.setVisibility(View.GONE);
         mRoomList.setVisibility(View.VISIBLE);
         mRoomList.setDivider(null);
-        mRoomAdapter = new RoomAdapter(getContext(), this);
-        mRoomList.setAdapter(mRoomAdapter);
-        mRoomAdapter.changeCursor(rooms);
+        mRoomCursorAdapter = new RoomCursorAdapter(getContext(), this);
+        mRoomList.setAdapter(mRoomCursorAdapter);
+        mRoomCursorAdapter.changeCursor(rooms);
         Log.d(TAG, "showRooms: ");
     }
 
     @Override
     public void showLoadingIndicator() {
-
+        mEmptyMessage.setVisibility(View.GONE);
+        mRoomList.setVisibility(View.GONE);
+        mLoadingIndicator.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoadingIndicator() {
-
+        mLoadingIndicator.setVisibility(View.GONE);
     }
 
     @Override

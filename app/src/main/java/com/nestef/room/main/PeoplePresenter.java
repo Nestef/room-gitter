@@ -33,6 +33,7 @@ public class PeoplePresenter extends BasePresenter<MainContract.PeopleView> impl
 
     @Override
     public void fetchChats() {
+        mView.showLoadingIndicator();
         mDataManager.getRooms();
         if (mLoaderManager.getLoader(PEOPLE_LOADER) == null) {
             mLoaderManager.initLoader(PEOPLE_LOADER, null, this);
@@ -51,11 +52,14 @@ public class PeoplePresenter extends BasePresenter<MainContract.PeopleView> impl
     public void onLoadFinished(@NonNull Loader loader, Cursor data) {
         if (data != null) {
             if (data.moveToLast()) {
+                mView.hideLoadingIndicator();
                 mView.showChats(data);
             } else {
+                mView.hideLoadingIndicator();
                 mView.showEmpty();
             }
         } else {
+            mView.hideLoadingIndicator();
             mView.showEmpty();
         }
     }

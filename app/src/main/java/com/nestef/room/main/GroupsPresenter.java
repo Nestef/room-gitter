@@ -30,6 +30,7 @@ public class GroupsPresenter extends BasePresenter<MainContract.GroupsView> impl
 
     @Override
     public void fetchGroups() {
+        mView.showLoadingIndicator();
         mDataManager.getGroups();
         if (mLoaderManager.getLoader(GROUP_LOADER) == null) {
             mLoaderManager.initLoader(GROUP_LOADER, null, this);
@@ -47,11 +48,14 @@ public class GroupsPresenter extends BasePresenter<MainContract.GroupsView> impl
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data != null) {
             if (data.moveToLast()) {
+                mView.hideLoadingIndicator();
                 mView.showGroups(data);
             } else {
+                mView.hideLoadingIndicator();
                 mView.showEmpty();
             }
         } else {
+            mView.hideLoadingIndicator();
             mView.showEmpty();
         }
 

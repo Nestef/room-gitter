@@ -43,7 +43,7 @@ public class SearchFragment extends Fragment implements MainContract.SearchView,
     TextView mSuggestionTitle;
     @BindView(R.id.search_suggestion_list)
     RecyclerView mSuggestionList;
-    @BindView(R.id.search_pb)
+    @BindView(R.id.progress_bar)
     ProgressBar mLoadingIndicator;
     @BindView(R.id.search_input)
     SearchView mSearchView;

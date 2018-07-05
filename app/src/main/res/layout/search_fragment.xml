@@ -6,12 +6,8 @@
 
     <include layout="@layout/search_actionbar" />
 
-    <ProgressBar
-        android:id="@+id/search_pb"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
-        android:layout_gravity="center"
-
+    <include
+        layout="@layout/progress_bar"
         android:visibility="gone" />
 
     <android.support.v4.widget.NestedScrollView

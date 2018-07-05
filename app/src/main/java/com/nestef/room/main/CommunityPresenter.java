@@ -1,5 +1,7 @@
 package com.nestef.room.main;
 
+import android.util.Log;
+
 import com.nestef.room.base.BasePresenter;
 import com.nestef.room.data.DataManager;
 import com.nestef.room.model.Room;
@@ -21,6 +23,7 @@ public class CommunityPresenter extends BasePresenter<MainContract.CommunityView
 
     @Override
     public void fetchRooms(String groupId) {
+        mView.showLoadingIndicator();
         mDataManager.getCommunityRooms(groupId, this);
     }
 
@@ -33,11 +36,25 @@ public class CommunityPresenter extends BasePresenter<MainContract.CommunityView
             if (room.roomMember) joined.add(room);
             else unJoined.add(room);
         }
-        if (joined.size() == 0 && unJoined.size() == 0) mView.showEmpty();
+        if (joined.size() == 0 && unJoined.size() == 0) {
+            mView.showEmpty();
+            Log.d("", "onCall: ");
+        }
         else {
-            if (joined.size() > 0) mView.showJoinedRooms(joined);
-            else mView.showJoinedRoomsEmpty();
-            if (unJoined.size() > 0) mView.showUnjoinedRooms(unJoined);
+            if (joined.size() > 0) {
+                mView.hideLoadingIndicator();
+                mView.showJoinedRooms(joined);
+                Log.d("", "onCall: joined");
+            } else {
+                mView.hideLoadingIndicator();
+                mView.showJoinedRoomsEmpty();
+                Log.d("", "onCall: joined empty");
+            }
+            if (unJoined.size() > 0) {
+                mView.hideLoadingIndicator();
+                mView.showUnjoinedRooms(unJoined);
+                Log.d("", "onCall: unjoined ");
+            }
         }
     }
 }

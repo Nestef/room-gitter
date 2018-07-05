@@ -6,6 +6,9 @@
 
     <include layout="@layout/default_actionbar" />
 
+    <include
+        layout="@layout/progress_bar"
+        android:visibility="gone" />
 
     <ListView
         android:id="@+id/room_list"

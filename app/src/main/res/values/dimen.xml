@@ -20,5 +20,7 @@
     <dimen name="community_title_start">16dp</dimen>
     <dimen name="community_title_bottom">16dp</dimen>
     <dimen name="community_title_top">16dp</dimen>
+    <!--Progress bar -->
+    <dimen name="progressbar_size">42dp</dimen>
 
 </resources>

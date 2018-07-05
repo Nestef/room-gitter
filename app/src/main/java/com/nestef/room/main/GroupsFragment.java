@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.nestef.room.R;
 import com.nestef.room.data.DataManager;
@@ -44,6 +45,8 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
     Toolbar mToolbar;
     @BindInt(R.integer.is_tablet)
     int mIsTablet;
+    @BindView(R.id.progress_bar)
+    ProgressBar mLoadingIndicator;
     GroupsFragment.OnCommunitySelection mCallback;
     private Unbinder mUnbinder;
     private GroupAdapter mGroupAdapter;
@@ -111,12 +114,13 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
 
     @Override
     public void showLoadingIndicator() {
-
+        mGroupList.setVisibility(View.GONE);
+        mLoadingIndicator.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoadingIndicator() {
-
+        mLoadingIndicator.setVisibility(View.GONE);
     }
 
     @Override

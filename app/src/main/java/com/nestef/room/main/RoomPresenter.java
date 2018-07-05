@@ -34,6 +34,7 @@ public class RoomPresenter extends BasePresenter<MainContract.RoomView> implemen
 
     @Override
     public void fetchRooms() {
+        mView.showLoadingIndicator();
         mDataManager.getRooms();
         if (mLoaderManager.getLoader(ROOM_LOADER) == null) {
             mLoaderManager.initLoader(ROOM_LOADER, null, this);
@@ -52,11 +53,14 @@ public class RoomPresenter extends BasePresenter<MainContract.RoomView> implemen
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data != null) {
             if (data.moveToLast()) {
+                mView.hideLoadingIndicator();
                 mView.showRooms(data);
             } else {
+                mView.hideLoadingIndicator();
                 mView.showEmpty();
             }
         } else {
+            mView.hideLoadingIndicator();
             mView.showEmpty();
         }
 

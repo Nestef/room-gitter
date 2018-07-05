@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.nestef.room.R;
 import com.nestef.room.data.DataManager;
@@ -33,20 +34,22 @@ import static com.nestef.room.util.Constants.AUTH_SHARED_PREF;
  * Created by Noah Steffes on 3/31/18.
  */
 
-public class PeopleFragment extends Fragment implements MainContract.PeopleView, RoomAdapter.RoomCallback {
+public class PeopleFragment extends Fragment implements MainContract.PeopleView, RoomCursorAdapter.RoomCallback {
 
     private static final String TAG = "PeopleFragment";
 
     @BindView(R.id.people_list)
-    ListView peopleList;
+    ListView mPeopleList;
     @BindInt(R.integer.is_tablet)
     int isTablet;
     @Nullable
     @BindView(R.id.default_toolbar)
-    Toolbar toolbar;
+    Toolbar mToolbar;
+    @BindView(R.id.progress_bar)
+    ProgressBar mLoadingIndicator;
 
     private Unbinder unbinder;
-    private RoomAdapter roomAdapter;
+    private RoomCursorAdapter roomCursorAdapter;
     private PeoplePresenter presenter;
     private RoomFragment.RoomSelectionCallback mCallback;
 
@@ -106,27 +109,29 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView,
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         inflater.inflate(R.menu.main_actions, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public void showChats(Cursor chats) {
-        roomAdapter = new RoomAdapter(getContext(), this);
-        peopleList.setDivider(null);
-        peopleList.setAdapter(roomAdapter);
-        roomAdapter.changeCursor(chats);
+        roomCursorAdapter = new RoomCursorAdapter(getContext(), this);
+        mPeopleList.setDivider(null);
+        mPeopleList.setAdapter(roomCursorAdapter);
+        roomCursorAdapter.changeCursor(chats);
+        mPeopleList.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showLoadingIndicator() {
-
+        mPeopleList.setVisibility(View.GONE);
+        mLoadingIndicator.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoadingIndicator() {
-
+        mLoadingIndicator.setVisibility(View.GONE);
     }
 
     @Override
