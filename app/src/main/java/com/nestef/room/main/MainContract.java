@@ -22,11 +22,15 @@ public interface MainContract {
     }
 
     interface SearchViewActions {
+        void fetchSuggestions();
 
+        void searchRooms(String query);
     }
 
     interface SearchView extends BaseView {
+        void showSuggestions(List<Room> suggestions);
 
+        void showResults(List<Room> results);
     }
 
     interface PeopleViewActions {

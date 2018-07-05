@@ -7,6 +7,7 @@ import com.nestef.room.model.Group;
 import com.nestef.room.model.Issue;
 import com.nestef.room.model.Message;
 import com.nestef.room.model.Org;
+import com.nestef.room.model.QueryResponse;
 import com.nestef.room.model.Repo;
 import com.nestef.room.model.Room;
 import com.nestef.room.model.RoomResponse;
@@ -34,6 +35,9 @@ public interface GitterApiService {
 
     @GET("/v1/rooms")
     Call<List<Room>> getRooms();
+
+    @GET("v1/rooms")
+    Call<QueryResponse> searchRooms(@Query("q") String query);
 
     @GET("/v1/rooms/{roomId}")
     Call<Room> getRoomById(@Path("roomId") String roomId);
@@ -99,6 +103,9 @@ public interface GitterApiService {
 
     @GET("/v1/user")
     Call<List<User>> getPersonalProfile();
+
+    @GET("/v1/user/me/suggestedRooms")
+    Call<List<Room>> getSuggestedRooms();
 
     @GET("/v1/user/{userId}")
     Call<List<User>> getUserById(@Path("userId") String userId);

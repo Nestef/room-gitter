@@ -20,6 +20,7 @@ public class Room implements Comparable<Room> {
     public String name;
     //Room topic. (default: GitHub repo description)
     public String topic;
+    public String description;
     public String avatarUrl;
     //Room URI on Gitter.
     public String uri;
@@ -48,6 +49,7 @@ public class Room implements Comparable<Room> {
     public boolean noindex;
     //Tags that define the room.
     public List<String> tags;
+    public List<String> providers;
     //Temporary
     public Permission permissions;
     public boolean roomMember;
@@ -57,6 +59,7 @@ public class Room implements Comparable<Room> {
     public Backend backend;
     @JsonProperty("public")
     public boolean isPublic;
+    public boolean exists;
     //Room version.
     public int v;
 
