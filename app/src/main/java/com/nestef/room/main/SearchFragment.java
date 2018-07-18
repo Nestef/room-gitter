@@ -142,7 +142,7 @@ public class SearchFragment extends Fragment implements MainContract.SearchView,
         mSuggestionTitle.setVisibility(View.VISIBLE);
         mSuggestionList.setVisibility(View.VISIBLE);
         mSuggestionList.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter = new RoomAdapter(suggestions);
+        mAdapter = new RoomAdapter(suggestions, this);
         mSuggestionList.setAdapter(mAdapter);
     }
 

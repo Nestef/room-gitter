@@ -7,7 +7,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:windowBackground">@color/colorPrimary</item>
+
         <item name="android:textColorPrimary">@color/textColorPrimary</item>
         <item name="inputSendDrawable">@drawable/ic_send_black_24dp</item>
         <item name="inputMdDrawable">@drawable/md_black_24dp</item>
@@ -22,10 +22,26 @@
         <item name="navChatDrawable">@drawable/ic_person_black_24dp</item>
         <item name="navCommunityDrawable">@drawable/account_group</item>
 
+        <item name="android:colorBackground">@color/colorPrimary</item>
+        <item name="android:windowBackground">@color/colorPrimary</item>
+
     </style>
 
     <style name="AppTheme.Launch">
         <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
+
+    <style name="AppTheme.Dialog" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackground">@color/colorPrimary</item>
+        <item name="markdownTitleColor">@color/colorDarkPrimary</item>
+    </style>
+
+    <style name="DarkTheme.Dialog" parent="Theme.Design.BottomSheetDialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:colorBackground">@color/colorDarkPrimary</item>
+        <item name="markdownTitleColor">@color/colorPrimary</item>
     </style>
 
     <style name="DarkTheme" parent="Theme.Design.NoActionBar">
@@ -34,7 +50,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:windowBackground">@color/colorDarkPrimary</item>
+
         <item name="android:textColorPrimary">@color/textColorPrimaryDark</item>
         <item name="android:textColorPrimaryInverse">@color/textColorPrimary</item>
         <item name="inputSendDrawable">@drawable/ic_send_white_24dp</item>
@@ -49,6 +65,10 @@
         <item name="navSearchDrawable">@drawable/ic_search_black_24dp</item>
         <item name="navChatDrawable">@drawable/ic_person_black_24dp</item>
         <item name="navCommunityDrawable">@drawable/account_group</item>
+
+
+        <item name="android:colorBackground">@color/colorDarkPrimary</item>
+        <item name="android:windowBackground">@color/colorDarkPrimary</item>
 
     </style>
 

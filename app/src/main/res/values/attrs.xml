@@ -13,6 +13,7 @@
     <attr name="navSearchDrawable" format="reference" />
     <attr name="navChatDrawable" format="reference" />
     <attr name="navCommunityDrawable" format="reference" />
+    <attr name="markdownTitleColor" format="reference" />
 
 
 </resources>

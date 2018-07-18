@@ -33,4 +33,13 @@ public class ThemeChanger {
         editor.apply();
     }
 
+    public static int getThemeIdForDialog(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if (sharedPreferences.getBoolean(context.getResources().getString(R.string.theme_pref_key), false)) {
+            return R.style.DarkTheme_Dialog;
+        } else {
+            return R.style.AppTheme_Dialog;
+        }
+    }
+
 }

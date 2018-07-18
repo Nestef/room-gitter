@@ -18,9 +18,9 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
 
     private static final String TAG = "MessagingPresenter";
 
-    private String mUserId;
+    public String mUserId;
 
-    private String mRoomId;
+    public String mRoomId;
 
     private MessageManager mManager;
 
@@ -55,11 +55,17 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
 
     @Override
     public void olderMessages(List<Message> messages) {
-        if (mView != null) mView.showOlderMessages(messages);
+        if (mView != null) {
+            mView.showOlderMessages(messages);
+            mView.hideLoadingIndicator();
+        }
     }
 
     @Override
     public void fetchOlderMessages(String beforeId) {
+        if (mView != null) {
+            mView.showLoadingIndicator();
+        }
         mManager.getOlderMessages(mRoomId, beforeId, this);
     }
 

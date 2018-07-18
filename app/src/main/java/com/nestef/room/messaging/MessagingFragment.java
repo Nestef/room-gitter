@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,6 +33,7 @@ import com.nestef.room.data.PrefManager;
 import com.nestef.room.model.Event;
 import com.nestef.room.model.Message;
 import com.nestef.room.model.Room;
+import com.nestef.room.preferences.ThemeChanger;
 import com.nestef.room.util.Constants;
 
 import org.parceler.Parcels;
@@ -82,6 +85,8 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     Toolbar mToolbar;
     @BindView(R.id.join_button)
     Button mJoinButton;
+    @BindView(R.id.markdown_info_iv)
+    ImageView mMdButton;
 
     public MessagingFragment() {
     }
@@ -102,6 +107,7 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
             mRoom = Parcels.unwrap(getArguments().getParcelable(ROOM_KEY));
             mPresenter.setRoomId(mRoom.id);
             mPresenter.setUserId(PrefManager.getInstance(getContext().getSharedPreferences(Constants.AUTH_SHARED_PREF, Context.MODE_PRIVATE)).getUserId());
+            Log.d(TAG, "onCreate: " + mPresenter.mUserId);
         }
         if (savedInstanceState != null) {
             listSaveState = savedInstanceState.getParcelable(RECYCLER_STATE);
@@ -135,7 +141,15 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
             mPresenter.fetchMessages();
             mPresenter.checkRoomMembership(mRoom);
         }
-
+        mMdButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MarkdownBottomSheetFragment bottomSheetFragment = new MarkdownBottomSheetFragment();
+                bottomSheetFragment.setStyle(DialogFragment.STYLE_NORMAL, ThemeChanger.getThemeIdForDialog(getContext()));
+                bottomSheetFragment.show(getFragmentManager(), "");
+            }
+        });
+        Log.d(TAG, "onCreate: " + mPresenter.mUserId);
         return view;
     }
 
@@ -203,7 +217,6 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
                 int firstVisibleItem = mLayoutManager.findFirstVisibleItemPosition();
                 if (firstVisibleItem == 5 && !loading) {
                     mPresenter.fetchOlderMessages(mMessageAdapter.getMessageIdByPosition(0));
-                    showLoadingIndicator();
                     loading = true;
                 }
             }
@@ -232,7 +245,6 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
 
     @Override
     public void showOlderMessages(List<Message> oldMessages) {
-        hideLoadingIndicator();
         mMessageAdapter.addItems(oldMessages);
         loading = false;
     }

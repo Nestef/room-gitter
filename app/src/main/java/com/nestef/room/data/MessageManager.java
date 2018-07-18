@@ -74,7 +74,7 @@ public class MessageManager {
     }
 
     public void joinRoom(String userId, String roomId) {
-        new JoinRoomAsyncTask().execute(userId, roomId);
+        new JoinRoomAsyncTask(roomId, userId).execute();
     }
 
     public void leaveRoom(String roomId, String userId) {
@@ -260,10 +260,19 @@ public class MessageManager {
     }
 
     class JoinRoomAsyncTask extends AsyncTask<String, Void, Void> {
+
+        String mUserId;
+        String mRoomId;
+
+        JoinRoomAsyncTask(String roomId, String userId) {
+            mUserId = userId;
+            mRoomId = roomId;
+        }
+
         @Override
         protected Void doInBackground(String... strings) {
             try {
-                mApiService.joinRoom(strings[0], strings[1]).execute();
+                mApiService.joinRoom(mUserId, mRoomId).execute();
             } catch (IOException i) {
                 i.printStackTrace();
             }

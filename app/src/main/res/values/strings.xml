@@ -27,4 +27,18 @@
     <string name="join_room_button">Join room</string>
     <string name="join_room_text">Join room to send messages</string>
     <string name="leave_room_title">Leave room</string>
+    <string name="markdown_title">Markdown Formatting Examples</string>
+    <string name="markdown_example">
+        \ - List \n
+        - ~~Strikethrough~~ \n
+        - **Bold** or __Bold__ \n
+        - *Italic* or _Italic_ \n
+        - **_Bold and Italic_** \n
+        - [Link](https://google.com) \n
+        - `Inline Code` \n
+        - ``` Code Block``` \n\n
+         # Heading \n\n
+         > Blockquote
+    </string>
+
 </resources>
