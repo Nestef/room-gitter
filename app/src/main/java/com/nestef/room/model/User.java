@@ -22,6 +22,7 @@ public class User {
     public String avatarUrlSmall;
     //User avatar URI (medium).
     public String avatarUrlMedium;
+    public boolean staff;
     public List<String> providers;
     public int v;
     public String gv;

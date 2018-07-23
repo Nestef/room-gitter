@@ -20,6 +20,16 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
 
     public String mUserId;
 
+    @Override
+    public void fetchUnreadIds() {
+        mManager.getUnreadMessages(mUserId, mRoomId, this);
+    }
+
+    @Override
+    public void returnUnreadIds(List<String> messageIds) {
+        markRead(messageIds);
+    }
+
     public String mRoomId;
 
     private MessageManager mManager;
@@ -75,8 +85,8 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
     }
 
     @Override
-    public void markRead(String messageId) {
-
+    public void markRead(List<String> messageIds) {
+        mManager.markMessagesRead(mUserId, mRoomId, messageIds);
     }
 
     @Override
@@ -139,7 +149,6 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
 
     @Override
     public void checkRoomMembership(Room room) {
-
         mManager.getRoom(this, room.id);
     }
 

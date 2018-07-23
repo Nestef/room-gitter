@@ -6,6 +6,6 @@ import java.util.List;
  * Created by Noah Steffes on 5/8/18.
  */
 public class UnreadResponse {
-    List<String> chat;
-    List<Mention> mention;
+    public List<String> chat;
+    public List<Mention> mention;
 }

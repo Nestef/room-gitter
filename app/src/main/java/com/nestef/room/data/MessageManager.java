@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nestef.room.model.Event;
 import com.nestef.room.model.Message;
 import com.nestef.room.model.Room;
+import com.nestef.room.model.UnreadResponse;
 import com.nestef.room.services.GitterApiService;
 import com.nestef.room.services.GitterServiceFactory;
 import com.nestef.room.services.GitterStreamingService;
@@ -47,6 +48,10 @@ public class MessageManager {
             sInstance = new MessageManager(prefManager);
         }
         return sInstance;
+    }
+
+    public void getUnreadMessages(String userId, String roomId, Callback callback) {
+        new UnreadMessagesAsyncTask(userId, roomId, callback).execute();
     }
 
     public void sendMessage(String roomId, String messageText) {
@@ -174,6 +179,37 @@ public class MessageManager {
         void fetchMessageError();
 
         void returnRoom(Room room);
+
+        void returnUnreadIds(List<String> messageIds);
+    }
+
+    class UnreadMessagesAsyncTask extends AsyncTask<Void, Void, UnreadResponse> {
+
+        String mUserId;
+        String mRoomId;
+        Callback mCallback;
+
+        UnreadMessagesAsyncTask(String userId, String roomId, Callback callback) {
+            mRoomId = roomId;
+            mUserId = userId;
+            mCallback = callback;
+        }
+
+        @Override
+        protected UnreadResponse doInBackground(Void... voids) {
+            try {
+                return mApiService.getUnread(mUserId, mRoomId).execute().body();
+            } catch (IOException i) {
+                i.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(UnreadResponse unreadResponse) {
+            super.onPostExecute(unreadResponse);
+            mCallback.returnUnreadIds(unreadResponse.chat);
+        }
     }
 
     class RoomAsyncTask extends AsyncTask<Void, Void, Room> {

@@ -139,6 +139,7 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
             }
             mPresenter.setView(this);
             mPresenter.fetchMessages();
+            mPresenter.fetchUnreadIds();
             mPresenter.checkRoomMembership(mRoom);
         }
         mMdButton.setOnClickListener(new View.OnClickListener() {

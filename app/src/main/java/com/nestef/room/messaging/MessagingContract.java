@@ -22,9 +22,11 @@ public interface MessagingContract {
 
         void fetchOlderMessages(String beforeId);
 
+        void fetchUnreadIds();
+
         void sendMessage(String message);
 
-        void markRead(String messageId);
+        void markRead(List<String> messageIds);
 
         void checkRoomMembership(Room room);
 
