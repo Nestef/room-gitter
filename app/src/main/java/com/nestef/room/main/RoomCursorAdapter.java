@@ -57,7 +57,7 @@ public class RoomCursorAdapter extends CursorAdapter {
         room.roomMember = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_MEMBER)));
 
         viewHolder.title.setText(room.name);
-        //holder.description.setText(room.topic);
+        //holder.description.setText(room.topic);query
         //holder.userCount.setText(String.valueOf(room.userCount));
         if (room.unreadItems == 0) {
             viewHolder.unread.setVisibility(View.GONE);

@@ -59,6 +59,13 @@
         <service
             android:name=".widget.RoomWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
+        <service
+            android:name=".services.NewMessagesJobService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

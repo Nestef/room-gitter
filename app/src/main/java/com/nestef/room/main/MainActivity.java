@@ -1,6 +1,9 @@
 package com.nestef.room.main;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,6 +13,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.RetryStrategy;
+import com.firebase.jobdispatcher.Trigger;
 import com.nestef.room.R;
 import com.nestef.room.messaging.MessagingActivity;
 import com.nestef.room.messaging.MessagingFragment;
@@ -18,6 +27,7 @@ import com.nestef.room.model.Room;
 import com.nestef.room.preferences.PreferencesActivity;
 import com.nestef.room.preferences.SettingsFragment;
 import com.nestef.room.preferences.ThemeChanger;
+import com.nestef.room.services.NewMessagesJobService;
 
 import org.parceler.Parcels;
 
@@ -28,6 +38,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.sephiroth.android.library.bottomnavigation.BottomNavigation;
 
+import static com.nestef.room.util.Constants.NOTIFICATION_CHANNEL_ID;
+import static com.nestef.room.util.Constants.NOTIFICATION_CHANNEL_TITLE;
 import static com.nestef.room.util.Constants.WIDGET_CLICK_ACTION;
 import static com.nestef.room.util.Constants.WIDGET_ROOM_ITEM;
 
@@ -84,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
             mCurrentFragmentTag = savedInstanceState.getString(SAVE_FRAGMENT_TAG);
             mNavigationIndex = savedInstanceState.getInt(NAV_INDEX);
         }
+        setupNotifications();
         Intent activityIntent = getIntent();
         if (activityIntent.getAction() != null && activityIntent.getAction().equals(WIDGET_CLICK_ACTION)) {
             Room widgetItem = Parcels.unwrap(activityIntent.getParcelableExtra(WIDGET_ROOM_ITEM));
@@ -130,6 +143,32 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
             public void onMenuItemReselect(int i, int i1, boolean b) {
             }
         });
+    }
+
+    private void setupNotifications() {
+        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String description = "Notifications for new messages";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_TITLE, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+        Job notificationJob = dispatcher.newJobBuilder()
+                .setService(NewMessagesJobService.class)
+                .setRecurring(true)
+                .setTag("new-messages-service")
+                .setReplaceCurrent(true)
+                .setRetryStrategy(RetryStrategy.DEFAULT_LINEAR)
+                .setLifetime(Lifetime.FOREVER)
+                .setTrigger(Trigger.executionWindow(0, 60))
+                .build();
+        Log.d(TAG, "setupNotifications: ");
+        dispatcher.schedule(notificationJob);
     }
 
     @Override
