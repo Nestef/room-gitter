@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/progress_bar"
     android:layout_width="@dimen/progressbar_size"
     android:layout_height="@dimen/progressbar_size"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
 </ProgressBar>
