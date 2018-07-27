@@ -15,8 +15,6 @@ import java.io.IOException;
 import java.util.List;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
@@ -106,67 +104,48 @@ public class MessageManager {
     }
 
     private Function<String, Event> toEvent() {
-        return new Function<String, Event>() {
-            @Override
-            public Event apply(String s) throws Exception {
-                if (mObjectMapper == null) {
-                    mObjectMapper = new ObjectMapper();
-                }
-                return mObjectMapper.readValue(s, Event.class);
+        return s -> {
+            if (mObjectMapper == null) {
+                mObjectMapper = new ObjectMapper();
             }
+            return mObjectMapper.readValue(s, Event.class);
         };
     }
 
     private Function<String, Message> toMessage() {
-        return new Function<String, Message>() {
-            @Override
-            public Message apply(String s) throws Exception {
-                if (mObjectMapper == null) {
-                    mObjectMapper = new ObjectMapper();
-                }
-                return mObjectMapper.readValue(s, Message.class);
+        return s -> {
+            if (mObjectMapper == null) {
+                mObjectMapper = new ObjectMapper();
             }
+            return mObjectMapper.readValue(s, Message.class);
         };
     }
 
     private Predicate<String> streamFilter() {
-        return new Predicate<String>() {
-            @Override
-            public boolean test(String s) throws Exception {
-                return !(s.equals("\n") || s.equals(" "));
-            }
-        };
+        return s -> !(s.equals("\n") || s.equals(" "));
     }
 
     private Function<ResponseBody, ObservableSource<String>> responseToObservable() {
-        return new Function<ResponseBody, ObservableSource<String>>() {
-            @Override
-            public ObservableSource<String> apply(ResponseBody responseBody) throws Exception {
-                return observableSource(responseBody.source());
-            }
-        };
+        return responseBody -> observableSource(responseBody.source());
     }
 
     private Observable<String> observableSource(final BufferedSource source) {
-        return Observable.create(new ObservableOnSubscribe<String>() {
-            @Override
-            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
-                boolean isCompleted = false;
-                try {
-                    while (!emitter.isDisposed()) {
-                        emitter.onNext(source.readUtf8Line());
-                    }
-                } catch (IOException e) {
-                    if (e.getMessage() == null || e.getMessage().equals("Socket closed")) {
-                        isCompleted = true;
-                        emitter.onComplete();
-                    } else {
-                        throw e;
-                    }
+        return Observable.create(emitter -> {
+            boolean isCompleted = false;
+            try {
+                while (!emitter.isDisposed()) {
+                    emitter.onNext(source.readUtf8Line());
                 }
-                if (!isCompleted) {
+            } catch (IOException e) {
+                if (e.getMessage() == null || e.getMessage().equals("Socket closed")) {
+                    isCompleted = true;
                     emitter.onComplete();
+                } else {
+                    throw e;
                 }
+            }
+            if (!isCompleted) {
+                emitter.onComplete();
             }
         });
     }

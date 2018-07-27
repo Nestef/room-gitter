@@ -8,7 +8,6 @@ import com.nestef.room.model.Room;
 import java.util.List;
 
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 /**
  * Created by Noah Steffes on 3/23/18.
@@ -113,18 +112,12 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
     public void setView(MessagingContract.MessagingView view) {
         super.setView(view);
         //start network streaming messages
-        mMessageStream = mManager.getMessageStream(mRoomId).subscribe(new Consumer<Message>() {
-            @Override
-            public void accept(Message message) throws Exception {
-                if (mView != null) mView.addMessage(message);
-            }
+        mMessageStream = mManager.getMessageStream(mRoomId).subscribe(message -> {
+            if (mView != null) mView.addMessage(message);
         });
-        // mEventStream = mManager.getEventStream(mRoomId).subscribe(new Consumer<Event>() {
-        //      @Override
-        //     public void accept(Event event) throws Exception {
-        //         if (mView != null) mView.addEvent(event);
-        //     }
-        // });
+        //mEventStream = mManager.getEventStream(mRoomId).subscribe((Consumer<Event>) event -> {
+        // if (mView != null) mView.addEvent(event);
+        //});
     }
 
     @Override

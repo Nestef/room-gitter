@@ -65,13 +65,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         }
         Markwon.setMarkdown(holder.content, message.text);
         new PatternEditableBuilder().
-                addPattern(Pattern.compile("\\@(\\w+)"), new PatternEditableBuilder.SpannableClickedListener() {
-                    @Override
-                    public void onSpanClicked(String text) {
-                        mHandler.onMentionClick(text);
-                    }
-                }).
-                into(holder.content);
+                addPattern(Pattern.compile("\\@(\\w+)"), text -> mHandler.onMentionClick(text))
+                .into(holder.content);
         String time = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(message.sent);
         holder.timeStamp.setText(time);
     }

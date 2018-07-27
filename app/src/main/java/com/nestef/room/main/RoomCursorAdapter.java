@@ -67,12 +67,7 @@ public class RoomCursorAdapter extends CursorAdapter {
         }
         //Todo add error handling
         Glide.with(context).load(room.avatarUrl).into(viewHolder.avatar);
-        viewHolder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCallback.onRoomClick(room);
-            }
-        });
+        viewHolder.view.setOnClickListener(v -> mCallback.onRoomClick(room));
 
     }
 

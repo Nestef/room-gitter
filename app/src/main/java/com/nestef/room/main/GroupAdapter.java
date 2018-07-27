@@ -55,12 +55,7 @@ public class GroupAdapter extends CursorAdapter {
 
         viewHolder.title.setText(group.name);
         Glide.with(viewHolder.view).load(group.avatarUrl).into(viewHolder.avatar);
-        viewHolder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCallback.onClick(group);
-            }
-        });
+        viewHolder.view.setOnClickListener(v -> mCallback.onClick(group));
     }
 
     public interface GroupCallback {

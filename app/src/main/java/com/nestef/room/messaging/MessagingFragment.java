@@ -142,13 +142,10 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
             mPresenter.fetchUnreadIds();
             mPresenter.checkRoomMembership(mRoom);
         }
-        mMdButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MarkdownBottomSheetFragment bottomSheetFragment = new MarkdownBottomSheetFragment();
-                bottomSheetFragment.setStyle(DialogFragment.STYLE_NORMAL, ThemeChanger.getThemeIdForDialog(getContext()));
-                bottomSheetFragment.show(getFragmentManager(), "");
-            }
+        mMdButton.setOnClickListener(v -> {
+            MarkdownBottomSheetFragment bottomSheetFragment = new MarkdownBottomSheetFragment();
+            bottomSheetFragment.setStyle(DialogFragment.STYLE_NORMAL, ThemeChanger.getThemeIdForDialog(getContext()));
+            bottomSheetFragment.show(getFragmentManager(), "");
         });
         Log.d(TAG, "onCreate: " + mPresenter.mUserId);
         return view;
@@ -179,6 +176,7 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
             getActivity().invalidateOptionsMenu();
         }
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -254,12 +252,9 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     public void showJoinUi() {
         mInputLayout.setVisibility(View.GONE);
         mJoinLayout.setVisibility(View.VISIBLE);
-        mJoinButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPresenter.joinRoom();
-                mPresenter.checkRoomMembership(mRoom);
-            }
+        mJoinButton.setOnClickListener(v -> {
+            mPresenter.joinRoom();
+            mPresenter.checkRoomMembership(mRoom);
         });
         isInputable = false;
     }
@@ -268,18 +263,15 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     public void showInputUi() {
         mJoinLayout.setVisibility(View.GONE);
         mInputLayout.setVisibility(View.VISIBLE);
-        mSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mInputField != null) {
-                    //ensure text is not empty
-                    if (!mInputField.getText().toString().equals("")) {
-                        mPresenter.sendMessage(mInputField.getText().toString());
-                        mInputField.setText("");
-                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
-                                INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(mInputField.getWindowToken(), 0);
-                    }
+        mSend.setOnClickListener(v -> {
+            if (mInputField != null) {
+                //ensure text is not empty
+                if (!mInputField.getText().toString().equals("")) {
+                    mPresenter.sendMessage(mInputField.getText().toString());
+                    mInputField.setText("");
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
+                            INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(mInputField.getWindowToken(), 0);
                 }
             }
         });

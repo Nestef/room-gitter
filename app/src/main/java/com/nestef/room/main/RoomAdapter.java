@@ -84,12 +84,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         RoomViewHolder(View v) {
             super(v);
             ButterKnife.bind(this, v);
-            v.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mCallback.onRoomClick(mRooms.get(getAdapterPosition()));
-                }
-            });
+            v.setOnClickListener(v1 -> mCallback.onRoomClick(mRooms.get(getAdapterPosition())));
         }
     }
 }
