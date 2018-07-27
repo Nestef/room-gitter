@@ -31,6 +31,7 @@ import com.nestef.room.services.NewMessagesJobService;
 
 import org.parceler.Parcels;
 
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindInt;
@@ -49,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
     private static final String ROOM_EXTRA = "room_extra";
     private static final String SAVE_FRAGMENT_TAG = "fragment_tag";
     private static final String NAV_INDEX = "nav";
+
+    List<String> tags = Arrays.asList(ROOM_FRAGMENT_TAG, SEARCH_FRAGMENT_TAG, PEOPLE_FRAGMENT_TAG, GROUPS_FRAGMENT_TAG);
     private static final String ROOM_FRAGMENT_TAG = "room_fragment";
     private static final String SEARCH_FRAGMENT_TAG = "search_fragment";
     private static final String PEOPLE_FRAGMENT_TAG = "people_fragment";
@@ -65,8 +68,7 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
     private GroupsFragment mGroupsFragment;
     private String mCurrentFragmentTag = ROOM_FRAGMENT_TAG;
     private int mNavigationIndex = 0;
-
-
+    
     @BindView(R.id.navigation_bar)
     BottomNavigation mBottomNavigation;
     @BindInt(R.integer.is_tablet)
@@ -91,12 +93,14 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
         mBottomNavigation.setDefaultSelectedIndex(0);
         if (savedInstanceState == null) {
             fragmentManager.beginTransaction().replace(mFragmentId, RoomFragment.newInstance(), ROOM_FRAGMENT_TAG).commit();
+            mCurrentFragmentTag = ROOM_FRAGMENT_TAG;
+            setupNotifications();
         }
         if (savedInstanceState != null) {
             mCurrentFragmentTag = savedInstanceState.getString(SAVE_FRAGMENT_TAG);
             mNavigationIndex = savedInstanceState.getInt(NAV_INDEX);
         }
-        setupNotifications();
+
         Intent activityIntent = getIntent();
         if (activityIntent.getAction() != null && activityIntent.getAction().equals(WIDGET_CLICK_ACTION)) {
             Room widgetItem = Parcels.unwrap(activityIntent.getParcelableExtra(WIDGET_ROOM_ITEM));
@@ -118,22 +122,22 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
             public void onMenuItemSelect(int i, int i1, boolean b) {
                 switch (i1) {
                     case 0:
-                        setFragment(ROOM_FRAGMENT_TAG);
+                        setFragment(ROOM_FRAGMENT_TAG, getSupportFragmentManager().findFragmentByTag(tags.get(mNavigationIndex)));
                         mCurrentFragmentTag = ROOM_FRAGMENT_TAG;
                         mNavigationIndex = 0;
                         return;
                     case 1:
-                        setFragment(SEARCH_FRAGMENT_TAG);
+                        setFragment(SEARCH_FRAGMENT_TAG, getSupportFragmentManager().findFragmentByTag(tags.get(mNavigationIndex)));
                         mCurrentFragmentTag = SEARCH_FRAGMENT_TAG;
                         mNavigationIndex = 1;
                         return;
                     case 2:
-                        setFragment(PEOPLE_FRAGMENT_TAG);
+                        setFragment(PEOPLE_FRAGMENT_TAG, getSupportFragmentManager().findFragmentByTag(tags.get(mNavigationIndex)));
                         mCurrentFragmentTag = PEOPLE_FRAGMENT_TAG;
                         mNavigationIndex = 2;
                         return;
                     case 3:
-                        setFragment(GROUPS_FRAGMENT_TAG);
+                        setFragment(GROUPS_FRAGMENT_TAG, getSupportFragmentManager().findFragmentByTag(tags.get(mNavigationIndex)));
                         mCurrentFragmentTag = GROUPS_FRAGMENT_TAG;
                         mNavigationIndex = 3;
                 }
@@ -174,13 +178,19 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        Log.d(TAG, "onSaveInstanceState: " + mNavigationIndex);
         outState.putInt(NAV_INDEX, mNavigationIndex);
+        Log.d(TAG, "onSaveInstanceState: " + mCurrentFragmentTag);
         outState.putString(SAVE_FRAGMENT_TAG, mCurrentFragmentTag);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        mCurrentFragmentTag = savedInstanceState.getString(SAVE_FRAGMENT_TAG);
+        mNavigationIndex = savedInstanceState.getInt(NAV_INDEX);
+        mBottomNavigation.setSelectedIndex(mNavigationIndex, false);
+        setFragment(SAVE_FRAGMENT_TAG, getSupportFragmentManager().findFragmentByTag(tags.get(mNavigationIndex)));
     }
 
     @Override
@@ -196,45 +206,50 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
         }
     }
 
-    private void setFragment(String tag) {
+    private void setFragment(String tag, Fragment current) {
         Log.d(TAG, "setFragment: ");
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment currentFragment = null;
-        List<Fragment> fragments = fragmentManager.getFragments();
-        if (fragments != null && !fragments.isEmpty()) {
-            for (Fragment fragment : fragments) {
-                if (fragment != null && fragment.isVisible()) {
-                    currentFragment = fragment;
-                }
-            }
+        Fragment community = getSupportFragmentManager().findFragmentByTag(COMMUNITY_FRAGMENT_TAG);
+
+        if (community != null) {
+            Log.d(TAG, "setFragment: community");
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .hide(community)
+                    .remove(community)
+                    .commit();
         }
+
         switch (tag) {
             case ROOM_FRAGMENT_TAG:
                 if (mRoomFragment == null) {
-                    addFragment(RoomFragment.newInstance(), currentFragment, ROOM_FRAGMENT_TAG);
+                    mRoomFragment = RoomFragment.newInstance();
+                    addFragment(mRoomFragment, ROOM_FRAGMENT_TAG);
                 } else {
-                    showFragment(mRoomFragment, currentFragment);
+                    showFragment(mRoomFragment);
                 }
                 break;
             case SEARCH_FRAGMENT_TAG:
                 if (mSearchFragment == null) {
-                    addFragment(SearchFragment.newInstance(), currentFragment, SEARCH_FRAGMENT_TAG);
+                    mSearchFragment = SearchFragment.newInstance();
+                    addFragment(mSearchFragment, SEARCH_FRAGMENT_TAG);
                 } else {
-                    showFragment(mSearchFragment, currentFragment);
+                    showFragment(mSearchFragment);
                 }
                 break;
             case PEOPLE_FRAGMENT_TAG:
                 if (mPeopleFragment == null) {
-                    addFragment(PeopleFragment.newInstance(), currentFragment, PEOPLE_FRAGMENT_TAG);
+                    mPeopleFragment = PeopleFragment.newInstance();
+                    addFragment(mPeopleFragment, PEOPLE_FRAGMENT_TAG);
                 } else {
-                    showFragment(mPeopleFragment, currentFragment);
+                    showFragment(mPeopleFragment);
                 }
                 break;
             case GROUPS_FRAGMENT_TAG:
                 if (mGroupsFragment == null) {
-                    addFragment(GroupsFragment.newInstance(), currentFragment, GROUPS_FRAGMENT_TAG);
+                    mGroupsFragment = GroupsFragment.newInstance();
+                    addFragment(mGroupsFragment, GROUPS_FRAGMENT_TAG);
                 } else {
-                    showFragment(mGroupsFragment, currentFragment);
+                    showFragment(mGroupsFragment);
                 }
                 break;
             default:
@@ -242,19 +257,21 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
         }
     }
 
-    private void addFragment(Fragment fragment, Fragment currentFragment, String tag) {
-        currentFragment.onHiddenChanged(true);
-        getSupportFragmentManager().beginTransaction()
+    private void addFragment(Fragment fragment, String tag) {
+
+        getSupportFragmentManager()
+                .beginTransaction()
                 .add(mFragmentId, fragment, tag)
-                .hide(currentFragment)
+                .hide(getSupportFragmentManager().findFragmentByTag(tags.get(mNavigationIndex)))
                 .commit();
         fragment.onHiddenChanged(false);
     }
 
-    private void showFragment(Fragment fragment, Fragment currentFragment) {
-        currentFragment.onHiddenChanged(true);
-        getSupportFragmentManager().beginTransaction()
-                .hide(currentFragment)
+    private void showFragment(Fragment fragment) {
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .hide(getSupportFragmentManager().findFragmentByTag(tags.get(mNavigationIndex)))
                 .show(fragment)
                 .commit();
         fragment.onHiddenChanged(false);
@@ -289,13 +306,21 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
 
     @Override
     public void onCommunitySelect(Group group) {
-        getSupportFragmentManager().beginTransaction().replace(mFragmentId, CommunityFragment.newInstance(group)).addToBackStack("communityfragment").commit();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(mFragmentId, CommunityFragment.newInstance(group), COMMUNITY_FRAGMENT_TAG)
+                .hide(getSupportFragmentManager().findFragmentByTag(tags.get(mNavigationIndex)))
+                .addToBackStack(COMMUNITY_FRAGMENT_TAG)
+                .commit();
     }
 
     @Override
     public void onRoomSelected(Room room) {
         if (isTablet()) {
-            getSupportFragmentManager().beginTransaction().replace(mMessageFragmentId, MessagingFragment.newInstance(room)).commit();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(mMessageFragmentId, MessagingFragment.newInstance(room))
+                    .commit();
         } else {
             startMessagingActivity(room);
         }

@@ -86,13 +86,21 @@ public class SearchFragment extends Fragment implements MainContract.SearchView,
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                mPresenter.searchRooms(query);
+                if (!query.equals("")) {
+                    mPresenter.searchRooms(query);
+                } else {
+                    mPresenter.fetchSuggestions();
+                }
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                mPresenter.searchRooms(newText);
+                if (!newText.equals("")) {
+                    mPresenter.searchRooms(newText);
+                } else {
+                    mPresenter.fetchSuggestions();
+                }
                 return false;
             }
         });
