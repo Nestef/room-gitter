@@ -41,6 +41,9 @@ public class NewMessagesJobService extends JobService {
 
     private static final String TAG = "NewMessagesJobService";
 
+    GitterApiService mApiService;
+
+
     @Override
     public boolean onStartJob(final JobParameters job) {
 
@@ -52,7 +55,7 @@ public class NewMessagesJobService extends JobService {
 
                 PrefManager prefManager = PrefManager
                         .getInstance(getSharedPreferences(Constants.AUTH_SHARED_PREF, MODE_PRIVATE));
-                GitterApiService apiService = GitterServiceFactory.makeApiService(prefManager.getAuthToken());
+                mApiService = GitterServiceFactory.makeApiService(prefManager.getAuthToken());
 
                 Cursor[] cursors = getRooms();
 
@@ -60,27 +63,29 @@ public class NewMessagesJobService extends JobService {
                 List<UnreadResponse> privateRoomResponses = new ArrayList<>();
                 List<Room> rooms = new ArrayList<>();
                 List<Room> privateRooms = new ArrayList<>();
+                String userId = prefManager.getUserId();
 
                 // for subscribed rooms
                 // make api call for unreadmessages
-                for (int i = 0; i < cursors[0].getCount(); i++) {
-                    Cursor cursor = cursors[0];
-                    cursor.moveToPosition(i);
-                    Room room = getRoomsFromCursor(cursor);
+                Cursor cursor0 = cursors[0];
+                for (int i = 0; i < cursor0.getCount(); i++) {
+                    cursor0.moveToPosition(i);
+                    Room room = getRoomsFromCursor(cursor0);
                     try {
-                        UnreadResponse response = apiService.getUnread(prefManager.getUserId(), room.id).execute().body();
+                        UnreadResponse response = mApiService.getUnread(userId, room.id).execute().body();
                         roomResponses.add(response);
                         rooms.add(room);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
-                for (int i = 0; i < cursors[1].getCount(); i++) {
-                    Cursor cursor = cursors[1];
-                    cursor.moveToPosition(i);
-                    Room room = getRoomsFromCursor(cursor);
+                Cursor cursor1 = cursors[1];
+                for (int i = 0; i < cursor1.getCount(); i++) {
+
+                    cursor1.moveToPosition(i);
+                    Room room = getRoomsFromCursor(cursor1);
                     try {
-                        UnreadResponse response = apiService.getUnread(prefManager.getUserId(), room.id).execute().body();
+                        UnreadResponse response = mApiService.getUnread(userId, room.id).execute().body();
                         privateRoomResponses.add(response);
                         privateRooms.add(room);
                     } catch (IOException e) {
@@ -94,67 +99,11 @@ public class NewMessagesJobService extends JobService {
                 //compare unread coumt to saved unread count
                 //get unread counts from cursor
                 //compare to unreadresponses
-
-
                 //iterate over all subscribed rooms
-
                 //if room has new unread messages
-
                 //iterate over unread messages and add new ones to List
-                for (int i = 0; i < rooms.size(); i++) {
-                    Room room = rooms.get(i);
-                    UnreadResponse response = roomResponses.get(i);
-                    //if room has new unread messages
-                    if (room.unreadItems < response.chat.size()) {
-                        List<String> messageIds = new ArrayList<>();
-                        List<Message> messages = new ArrayList<>();
-                        //iterate over unread messages and add new ones to List
-                        for (int j = 0; j < response.chat.size(); j++) {
-                            if (j >= room.unreadItems) {
-                                messageIds.add(response.chat.get(j));
-                            }
-                        }
-                        //get new Unread Message objects and create notification for this room
-                        try {
-                            for (String id : messageIds) {
-                                Message m = apiService.getMessageById(room.id, id).execute().body();
-                                messages.add(m);
-                            }
-                            sendNotification(context, messages, room);
-                            updateRoom(true, room.name, response.chat.size());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                }
-
-                for (int i = 0; i < privateRooms.size(); i++) {
-                    Room room = privateRooms.get(i);
-                    UnreadResponse response = privateRoomResponses.get(i);
-                    //if room has new unread messages
-                    if (room.unreadItems < response.chat.size()) {
-                        List<String> messageIds = new ArrayList<>();
-                        List<Message> messages = new ArrayList<>();
-                        //iterate over unread messages and add new ones to List
-                        for (int j = 0; j < response.chat.size(); j++) {
-                            if (j >= room.unreadItems) {
-                                messageIds.add(response.chat.get(j));
-                            }
-                        }
-                        //get new Unread Message objects and create notification for this room
-                        try {
-                            for (String id : messageIds) {
-                                Message m = apiService.getMessageById(room.id, id).execute().body();
-                                messages.add(m);
-                            }
-                            sendNotification(context, messages, room);
-                            updateRoom(false, room.name, response.chat.size());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
+                processUnread(rooms, roomResponses);
+                processUnread(privateRooms, privateRoomResponses);
 
                 //update saved data
 
@@ -169,6 +118,35 @@ public class NewMessagesJobService extends JobService {
         //display a notification
         //ideally this notification should have a pending intent to somewhere in the app
         return true;
+    }
+
+    private void processUnread(List<Room> rooms, List<UnreadResponse> responses) {
+        for (int i = 0; i < rooms.size(); i++) {
+            Room room = rooms.get(i);
+            UnreadResponse response = responses.get(i);
+            //if room has new unread messages
+            if (room.unreadItems < response.chat.size()) {
+                List<String> messageIds = new ArrayList<>();
+                List<Message> messages = new ArrayList<>();
+                //iterate over unread messages and add new ones to List
+                for (int j = 0; j < response.chat.size(); j++) {
+                    if (j >= room.unreadItems) {
+                        messageIds.add(response.chat.get(j));
+                    }
+                }
+                //get new Unread Message objects and create notification for this room
+                try {
+                    for (String id : messageIds) {
+                        Message m = mApiService.getMessageById(room.id, id).execute().body();
+                        messages.add(m);
+                    }
+                    sendNotification(this, messages, room);
+                    updateRoom(false, room.name, response.chat.size());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     private void updateRoom(boolean roomType, String name, int unreadnumber) {
