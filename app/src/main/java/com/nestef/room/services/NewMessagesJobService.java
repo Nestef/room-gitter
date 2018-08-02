@@ -30,6 +30,7 @@ import java.util.List;
 
 import ru.noties.markwon.Markwon;
 
+import static android.text.Html.fromHtml;
 import static com.nestef.room.util.Constants.NOTIFICATION_CHANNEL_ID;
 import static com.nestef.room.util.Constants.NOTIFICATION_GROUP_ID;
 import static com.nestef.room.util.Constants.WIDGET_ROOM_ITEM;
@@ -172,10 +173,10 @@ public class NewMessagesJobService extends JobService {
     private void sendNotification(Context context, List<Message> messages, Room room) {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        NotificationCompat.MessagingStyle messagingStyle = new NotificationCompat.MessagingStyle("hh")
+        NotificationCompat.MessagingStyle messagingStyle = new NotificationCompat.MessagingStyle("")
                 .setConversationTitle(room.name);
         for (Message m : messages) {
-            messagingStyle.addMessage(Markwon.markdown(context, m.text), m.sent.getTime(), m.fromUser.username + ":");
+            messagingStyle.addMessage(Markwon.markdown(context, m.text), m.sent.getTime(), fromHtml("<b>" + m.fromUser.username + ":</b>"));
         }
 
         Intent intent = new Intent(context, MainActivity.class);

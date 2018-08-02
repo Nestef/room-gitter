@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/list_vertical_margin"
         android:paddingTop="@dimen/list_vertical_margin"
+
         app:layout_constraintTop_toBottomOf="@id/default_appbar" />
 
 </android.support.constraint.ConstraintLayout>

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
     private GroupsFragment mGroupsFragment;
     private String mCurrentFragmentTag = ROOM_FRAGMENT_TAG;
     private int mNavigationIndex = 0;
-    
+
     @BindView(R.id.navigation_bar)
     BottomNavigation mBottomNavigation;
     @BindInt(R.integer.is_tablet)
@@ -170,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
                 .setRetryStrategy(RetryStrategy.DEFAULT_LINEAR)
                 .setLifetime(Lifetime.FOREVER)
                 .setTrigger(Trigger.executionWindow(0, 60))
+                .addConstraint(Constraint.ON_ANY_NETWORK)
                 .build();
         Log.d(TAG, "setupNotifications: ");
         dispatcher.schedule(notificationJob);
