@@ -18,10 +18,11 @@
 
     <!-- Preferences -->
     <string name="theme_pref_title">Dark Theme</string>
-    <string name="theme_pref_key">dark_theme</string>
+    <string name="theme_pref_key" translatable="false">dark_theme</string>
     <string name="theme_pref_summary">Switch app to dark theme</string>
     <string name="action_settings_title">Settings</string>
-
+    <string name="logout_pref_title">Logout</string>
+    <string name="logout_pref_key" translatable="false">logout</string>
     <!-- Messaging -->
     <string name="message_input_hint">Type a message</string>
     <string name="join_room_button">Join room</string>

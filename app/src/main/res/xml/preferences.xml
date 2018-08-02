@@ -5,4 +5,8 @@
         android:key="@string/theme_pref_key"
         android:summary="@string/theme_pref_summary"
         android:title="@string/theme_pref_title" />
+
+    <Preference
+        android:key="@string/logout_pref_key"
+        android:title="@string/logout_pref_title" />
 </PreferenceScreen>

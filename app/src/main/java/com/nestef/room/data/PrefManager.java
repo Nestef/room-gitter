@@ -54,6 +54,14 @@ public class PrefManager {
         new UserIdAsyncTask().execute();
     }
 
+    public void deleteAuthToken() {
+        mPreferences.edit().remove(AUTH_TOKEN_PREF).apply();
+    }
+
+    public void deleteUserId() {
+        mPreferences.edit().remove(USER_ID_PREF).apply();
+    }
+
     public String getUserId() {
         return mPreferences.getString(USER_ID_PREF, null);
     }
