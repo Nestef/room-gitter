@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
@@ -63,15 +64,18 @@ public class AuthActivity extends AppCompatActivity implements AuthContract.Auth
                 super.onPageFinished(view, url);
             }
 
+
             @SuppressWarnings("deprecation")
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                Log.d(TAG, "shouldOverrideUrlLoading: 1");
                 return presenter.handleUri(Uri.parse(url));
             }
 
             @TargetApi(Build.VERSION_CODES.N)
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                Log.d(TAG, "shouldOverrideUrlLoading: 2");
                 return presenter.handleUri(request.getUrl());
             }
 
@@ -95,7 +99,6 @@ public class AuthActivity extends AppCompatActivity implements AuthContract.Auth
         Intent intent = new Intent();
         intent.setClass(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
         startActivity(intent);
 
         finish();

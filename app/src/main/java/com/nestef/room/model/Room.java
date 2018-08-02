@@ -2,6 +2,7 @@ package com.nestef.room.model;
 
 import android.support.annotation.NonNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.parceler.Parcel;
@@ -13,6 +14,7 @@ import java.util.List;
  * Created by Noah Steffes on 4/16/18.
  */
 @Parcel
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Room implements Comparable<Room> {
     //Room ID.
     public String id;

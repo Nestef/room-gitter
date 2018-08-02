@@ -1,5 +1,7 @@
 package com.nestef.room.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import org.parceler.Parcel;
 
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.List;
  * Created by Noah Steffes on 4/16/18.
  */
 @Parcel
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
     //Gitter User ID.
     public String id;

@@ -1,11 +1,17 @@
 package com.nestef.room.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import org.parceler.Parcel;
+
 import java.util.Date;
 import java.util.List;
 
 /**
  * Created by Noah Steffes on 4/17/18.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Parcel
 public class Message {
     //ID of the message.
     public String id;
@@ -31,7 +37,6 @@ public class Message {
     //List of #Issues referenced in the message.
     public List<Issue> issues;
     //Metadata. This is currently not used for anything.
-    public List meta;
     //Version.
     public int v;
     //Stands for "Gravatar version" and is used for cache busting.

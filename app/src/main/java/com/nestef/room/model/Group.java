@@ -1,11 +1,14 @@
 package com.nestef.room.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import org.parceler.Parcel;
 
 /**
  * Created by Noah Steffes on 4/16/18.
  */
 @Parcel
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Group {
     //Group ID.
     public String id;

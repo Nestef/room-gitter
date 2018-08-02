@@ -8,7 +8,7 @@ android {
         release {
             keyAlias 'capstone-release'
             keyPassword 'Udacity'
-            storeFile file('/home/noah/src/room-for-gitter/udacity-capstone.jks')
+            storeFile file('../udacity-capstone.jks')
             storePassword 'Udacity'
         }
     }
@@ -34,10 +34,10 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField 'String', 'OAuthId', oauth_key
-            buildConfigField 'String', 'OAuthSecret', oauth_secret
-            buildConfigField 'String', "RedirectUrl", redirect_url
-
+            buildConfigField ('String', 'OAuthId', '"0aadae9f7bcb70f0864cc15775f612701e3bcef7"')
+            buildConfigField ('String', 'OAuthSecret', '"0164ef468b58bdb8f07abecd6b101e6cd572a6d4"')
+            buildConfigField ('String', "RedirectUrl", '"app://releasetest"')
+            signingConfig signingConfigs.release
         }
     }
     testOptions {
@@ -88,8 +88,8 @@ dependencies {
     implementation 'ru.noties:markwon:1.0.4'
 
     implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
-    implementation 'com.google.firebase:firebase-core:16.0.0'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.3'
+    implementation 'com.google.firebase:firebase-core:16.0.1'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.4'
 
     //Retrofit
     implementation "com.squareup.retrofit2:retrofit:${retrofit_version}"
