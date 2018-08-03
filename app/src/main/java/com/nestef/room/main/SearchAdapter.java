@@ -85,7 +85,7 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             case USER:
                 User user = (User) mRooms.get(position);
                 UserViewHolder viewHolder1 = (UserViewHolder) holder;
-                viewHolder1.title.setText(user.displayName);
+                viewHolder1.title.setText(user.getUsername());
                 Glide.with(viewHolder1.itemView).load(user.avatarUrl).into(viewHolder1.avatar);
             default:
         }

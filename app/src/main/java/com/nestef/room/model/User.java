@@ -31,4 +31,12 @@ public class User extends GitterDataType {
     public List<String> providers;
     public int v;
     public String gv;
+
+    public String getUsername() {
+        if (displayName == null) {
+            return name;
+        } else {
+            return displayName;
+        }
+    }
 }
