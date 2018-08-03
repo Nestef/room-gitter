@@ -103,8 +103,8 @@ public class NewMessagesJobService extends JobService {
                 //iterate over all subscribed rooms
                 //if room has new unread messages
                 //iterate over unread messages and add new ones to List
-                processUnread(rooms, roomResponses);
-                processUnread(privateRooms, privateRoomResponses);
+                processUnread(rooms, roomResponses, true);
+                processUnread(privateRooms, privateRoomResponses, false);
 
                 //update saved data
 
@@ -121,7 +121,7 @@ public class NewMessagesJobService extends JobService {
         return true;
     }
 
-    private void processUnread(List<Room> rooms, List<UnreadResponse> responses) {
+    private void processUnread(List<Room> rooms, List<UnreadResponse> responses, boolean roomtype) {
         for (int i = 0; i < rooms.size(); i++) {
             Room room = rooms.get(i);
             UnreadResponse response = responses.get(i);
@@ -142,7 +142,7 @@ public class NewMessagesJobService extends JobService {
                         messages.add(m);
                     }
                     sendNotification(this, messages, room);
-                    updateRoom(false, room.name, response.chat.size());
+                    updateRoom(roomtype, room.name, response.chat.size());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
