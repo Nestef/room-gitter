@@ -156,6 +156,9 @@ public class SearchFragment extends Fragment implements MainContract.SearchView,
 
     @Override
     public void showResults(List<Room> results) {
+        //Gitter has some weird behavior with chats between users so
+        //for now I won't show User search results.
+        //Switch to SearchAdapter when adding User search results
         mSuggestionTitle.setVisibility(View.GONE);
         mSuggestionList.setVisibility(View.VISIBLE);
         mAdapter = new RoomAdapter(results, this);

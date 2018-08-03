@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Parcel
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Room implements Comparable<Room> {
+public class Room extends GitterDataType implements Comparable<Room> {
     //Room ID.
     public String id;
     //Room name.

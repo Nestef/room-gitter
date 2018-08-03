@@ -59,7 +59,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         GlideApp.with(holder.itemView).load(user.avatarUrlSmall).placeholder(R.drawable.ic_poll_black_24dp).into(holder.avatar);
         String name = user.displayName;
         if (name == null) {
-            holder.displayName.setText(user.username);
+            holder.displayName.setText(user.name);
         } else {
             holder.displayName.setText(user.displayName);
         }

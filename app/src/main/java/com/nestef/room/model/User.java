@@ -1,6 +1,7 @@
 package com.nestef.room.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.parceler.Parcel;
 
@@ -11,11 +12,12 @@ import java.util.List;
  */
 @Parcel
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class User {
+public class User extends GitterDataType {
     //Gitter User ID.
     public String id;
     // Gitter/GitHub username.
-    public String username;
+    @JsonProperty("username")
+    public String name;
     //Gitter/GitHub user real name.
     public String displayName;
     //Path to the user on Gitter.
