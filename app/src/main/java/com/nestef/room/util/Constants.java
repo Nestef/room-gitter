@@ -30,6 +30,6 @@ public class Constants {
     public static final String WIDGET_ROOM_ITEM = "widget_room";
 
     public static final String NOTIFICATION_GROUP_ID = "room_notification_group";
-    public static final String NOTIFICATION_CHANNEL_ID = "room_notification_group";
+    public static final String NOTIFICATION_CHANNEL_ID = "room_notification_channel";
     public static final String NOTIFICATION_CHANNEL_TITLE = "Room";
 }

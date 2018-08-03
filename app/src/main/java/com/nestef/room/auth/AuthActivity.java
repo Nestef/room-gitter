@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.webkit.CookieManager;
@@ -44,6 +45,8 @@ public class AuthActivity extends AppCompatActivity implements AuthContract.Auth
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
         ButterKnife.bind(this);
+
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         presenter = new AuthPresenter(PrefManager.getInstance(getSharedPreferences(AUTH_SHARED_PREF, Context.MODE_PRIVATE)));
         presenter.setView(this);

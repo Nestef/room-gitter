@@ -23,6 +23,9 @@
     <string name="action_settings_title">Settings</string>
     <string name="logout_pref_title">Logout</string>
     <string name="logout_pref_key" translatable="false">logout</string>
+    <string name="notification_pref_title">Disable Notifications</string>
+    <string name="notification_pref_key" translatable="false">notifications</string>
+    <string name="notification_pref_summary">Disable all notifications</string>
     <!-- Messaging -->
     <string name="message_input_hint">Type a message</string>
     <string name="join_room_button">Join room</string>

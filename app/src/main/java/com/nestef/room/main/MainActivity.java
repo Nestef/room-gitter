@@ -3,11 +3,13 @@ package com.nestef.room.main;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -151,30 +153,36 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
     }
 
     private void setupNotifications() {
-        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String description = "Notifications for new messages";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_TITLE, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (!preferences.getBoolean(getString(R.string.notification_pref_key), false)) {
+
+
+            FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                String description = "Notifications for new messages";
+                int importance = NotificationManager.IMPORTANCE_DEFAULT;
+                NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_TITLE, importance);
+                channel.setDescription(description);
+                // Register the channel with the system; you can't change the importance
+                // or other notification behaviors after this
+                NotificationManager notificationManager = getSystemService(NotificationManager.class);
+                notificationManager.createNotificationChannel(channel);
+            }
+            Job notificationJob = dispatcher.newJobBuilder()
+                    .setService(NewMessagesJobService.class)
+                    .setRecurring(true)
+                    .setTag("new-messages-service")
+                    .setReplaceCurrent(true)
+                    .setRetryStrategy(RetryStrategy.DEFAULT_LINEAR)
+                    .setLifetime(Lifetime.FOREVER)
+                    .setTrigger(Trigger.executionWindow(0, 60))
+                    .addConstraint(Constraint.ON_ANY_NETWORK)
+                    .build();
+            Log.d(TAG, "setupNotifications: ");
+            dispatcher.schedule(notificationJob);
         }
-        Job notificationJob = dispatcher.newJobBuilder()
-                .setService(NewMessagesJobService.class)
-                .setRecurring(true)
-                .setTag("new-messages-service")
-                .setReplaceCurrent(true)
-                .setRetryStrategy(RetryStrategy.DEFAULT_LINEAR)
-                .setLifetime(Lifetime.FOREVER)
-                .setTrigger(Trigger.executionWindow(0, 60))
-                .addConstraint(Constraint.ON_ANY_NETWORK)
-                .build();
-        Log.d(TAG, "setupNotifications: ");
-        dispatcher.schedule(notificationJob);
     }
 
     @Override
