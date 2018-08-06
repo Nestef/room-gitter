@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.nestef.room.R;
 import com.nestef.room.data.DataManager;
@@ -47,6 +48,8 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView,
     Toolbar mToolbar;
     @BindView(R.id.progress_bar)
     ProgressBar mLoadingIndicator;
+    @BindView(R.id.people_empty_text)
+    TextView mEmptyText;
 
     private Unbinder unbinder;
     private RoomCursorAdapter roomCursorAdapter;
@@ -136,7 +139,8 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView,
 
     @Override
     public void showEmpty() {
-
+        mPeopleList.setVisibility(View.GONE);
+        mEmptyText.setVisibility(View.VISIBLE);
     }
 
     private boolean isTablet() {

@@ -10,11 +10,13 @@
     <string name="communities_nav_title">Communities</string>
 
     <string name="room_empty_text">No Joined Rooms</string>
+    <string name="private_chat_empty_text">No Chats</string>
     <!-- Search Ui -->
     <string name="suggestion_title">Suggested Rooms</string>
     <!-- Community fragment -->
     <string name="community_joined_title">Your Rooms</string>
     <string name="community_all_title">Other Rooms</string>
+    <string name="community_empty_state_text">No Communities</string>
 
     <!-- Preferences -->
     <string name="theme_pref_title">Dark Theme</string>

@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.nestef.room.R;
 import com.nestef.room.data.DataManager;
@@ -47,6 +48,9 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
     int mIsTablet;
     @BindView(R.id.progress_bar)
     ProgressBar mLoadingIndicator;
+    @BindView(R.id.group_empty_text)
+    TextView mEmptyText;
+
     GroupsFragment.OnCommunitySelection mCallback;
     private Unbinder mUnbinder;
     private GroupAdapter mGroupAdapter;
@@ -126,6 +130,7 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
     @Override
     public void showEmpty() {
         mGroupList.setVisibility(View.GONE);
+        mEmptyText.setVisibility(View.VISIBLE);
     }
 
     private boolean isTablet() {
