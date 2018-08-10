@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/list_item_height">
 
@@ -27,8 +26,7 @@
         app:layout_constraintEnd_toStartOf="@id/r_barrier2"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@id/r_guideline3"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Title" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/room_item_unread"
@@ -41,8 +39,7 @@
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="89" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <android.support.constraint.Guideline

@@ -10,6 +10,6 @@ import org.parceler.Parcel;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Parcel
 public class Backend {
-    String type;
-    String linkPath;
+    public String type;
+    public String linkPath;
 }

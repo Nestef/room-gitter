@@ -9,13 +9,13 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import com.nestef.room.R;
 import com.nestef.room.data.PrefManager;
@@ -71,14 +71,12 @@ public class AuthActivity extends AppCompatActivity implements AuthContract.Auth
             @SuppressWarnings("deprecation")
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Log.d(TAG, "shouldOverrideUrlLoading: 1");
                 return presenter.handleUri(Uri.parse(url));
             }
 
             @TargetApi(Build.VERSION_CODES.N)
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                Log.d(TAG, "shouldOverrideUrlLoading: 2");
                 return presenter.handleUri(request.getUrl());
             }
 
@@ -105,6 +103,14 @@ public class AuthActivity extends AppCompatActivity implements AuthContract.Auth
         startActivity(intent);
 
         finish();
+    }
+
+    @Override
+    public void showNetworkError() {
+        Toast toast = new Toast(this);
+        toast.setText(getString(R.string.network_error));
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.show();
     }
 
     @Override

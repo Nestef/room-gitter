@@ -6,4 +6,5 @@
     android:layout_height="match_parent"
     android:layout_gravity="start"
     app:bbn_entries="@menu/navigation_items"
+    android:contentDescription="@string/nav_description"
     app:layout_behavior="@string/bbn_tablet_view_behavior" />

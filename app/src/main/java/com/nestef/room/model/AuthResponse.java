@@ -11,8 +11,6 @@ public class AuthResponse {
     @JsonProperty("access_token")
     public String accessToken;
 
-
     @JsonProperty("token_type")
-    String tokenType;
-
+    public String tokenType;
 }

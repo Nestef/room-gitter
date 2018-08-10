@@ -21,5 +21,7 @@ public interface AuthContract {
     interface AuthView extends BaseView {
 
         void startMainActivity();
+
+        void showNetworkError();
     }
 }

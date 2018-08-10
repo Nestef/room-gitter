@@ -8,14 +8,13 @@
     android:padding="8dp"
     android:showDividers="middle">
 
-    <TextView xmlns:tools="http://schemas.android.com/tools"
+    <TextView
         android:id="@+id/widget_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="8dp"
         android:textAppearance="@color/colorDarkPrimary"
-        android:textSize="24sp"
-        tools:text="Title" />
+        android:textSize="24sp" />
 
     <ListView
         android:id="@+id/widget_list"

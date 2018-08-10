@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.util.FixedPreloadSizeProvider;
@@ -87,6 +87,8 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     Button mJoinButton;
     @BindView(R.id.markdown_info_iv)
     ImageView mMdButton;
+    @BindView(R.id.message_empty_text)
+    TextView mEmptyText;
 
     public MessagingFragment() {
     }
@@ -107,7 +109,6 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
             mRoom = Parcels.unwrap(getArguments().getParcelable(ROOM_KEY));
             mPresenter.setRoomId(mRoom.id);
             mPresenter.setUserId(PrefManager.getInstance(getContext().getSharedPreferences(Constants.AUTH_SHARED_PREF, Context.MODE_PRIVATE)).getUserId());
-            Log.d(TAG, "onCreate: " + mPresenter.mUserId);
         }
         if (savedInstanceState != null) {
             listSaveState = savedInstanceState.getParcelable(RECYCLER_STATE);
@@ -147,7 +148,6 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
             bottomSheetFragment.setStyle(DialogFragment.STYLE_NORMAL, ThemeChanger.getThemeIdForDialog(getContext()));
             bottomSheetFragment.show(getFragmentManager(), "");
         });
-        Log.d(TAG, "onCreate: " + mPresenter.mUserId);
         return view;
     }
 
@@ -171,27 +171,41 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
         super.onPrepareOptionsMenu(menu);
     }
 
+    private void inflateMenu() {
+        mToolbar.inflateMenu(R.menu.room_fragment_items);
+        MenuItem item = mToolbar.getMenu().findItem(R.id.leave_room_item);
+        item.setVisible(mRoom.roomMember);
+        mToolbar.setOnMenuItemClickListener(this::handleMenuClick);
+    }
+
     private void updateMenu() {
         if (!isTablet()) {
             getActivity().invalidateOptionsMenu();
+        } else {
+            mToolbar.getMenu().clear();
+            inflateMenu();
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        return handleMenuClick(item);
+    }
+
+    private boolean handleMenuClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.leave_room_item:
                 mPresenter.leaveRoom();
                 mPresenter.checkRoomMembership(mRoom);
                 return true;
             default:
-                return super.onOptionsItemSelected(item);
+                return false;
         }
-
     }
 
     @Override
     public void showMessages(List<Message> messages) {
+        mEmptyText.setVisibility(View.INVISIBLE);
         mLayoutManager = new LinearLayoutManager(getContext());
         mMessageList.setLayoutManager(mLayoutManager);
         mLayoutManager.setSmoothScrollbarEnabled(true);
@@ -304,7 +318,7 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
 
     @Override
     public void showEmpty() {
-
+        mEmptyText.setVisibility(View.VISIBLE);
     }
 
     private boolean isTablet() {

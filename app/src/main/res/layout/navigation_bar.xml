@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
+    android:contentDescription="@string/nav_description"
     app:bbn_entries="@menu/navigation_items"
     app:bbn_scrollEnabled="false"
     app:layout_behavior="@string/bbn_phone_view_behavior" />

@@ -12,7 +12,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.MessagingStyle;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.preference.PreferenceManager;
-import android.util.Log;
 
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
@@ -33,6 +32,7 @@ import java.util.List;
 
 import ru.noties.markwon.Markwon;
 
+import static android.support.v4.app.NotificationCompat.GROUP_ALERT_SUMMARY;
 import static android.text.Html.fromHtml;
 import static com.nestef.room.util.Constants.NOTIFICATION_CHANNEL_ID;
 import static com.nestef.room.util.Constants.NOTIFICATION_GROUP_ID;
@@ -47,81 +47,75 @@ public class NewMessagesJobService extends JobService {
 
     GitterApiService mApiService;
 
+    boolean mGroupSummary = false;
 
     @Override
     public boolean onStartJob(final JobParameters job) {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (!preferences.getBoolean(getString(R.string.notification_pref_key), false)) {
-            Log.d(TAG, "onStartJob: ");
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
+            new Thread(() -> {
 
-                    PrefManager prefManager = PrefManager
-                            .getInstance(getSharedPreferences(Constants.AUTH_SHARED_PREF, MODE_PRIVATE));
-                    mApiService = GitterServiceFactory.makeApiService(prefManager.getAuthToken());
+                PrefManager prefManager = PrefManager
+                        .getInstance(getSharedPreferences(Constants.AUTH_SHARED_PREF, MODE_PRIVATE));
+                mApiService = GitterServiceFactory.makeApiService(prefManager.getAuthToken());
 
-                    Cursor[] cursors = getRooms();
+                Cursor[] cursors = getRooms();
 
-                    List<UnreadResponse> roomResponses = new ArrayList<>();
-                    List<UnreadResponse> privateRoomResponses = new ArrayList<>();
-                    List<Room> rooms = new ArrayList<>();
-                    List<Room> privateRooms = new ArrayList<>();
-                    String userId = prefManager.getUserId();
+                List<UnreadResponse> roomResponses = new ArrayList<>();
+                List<UnreadResponse> privateRoomResponses = new ArrayList<>();
+                List<Room> rooms = new ArrayList<>();
+                List<Room> privateRooms = new ArrayList<>();
+                String userId = prefManager.getUserId();
 
-                    // for subscribed rooms
-                    // make api call for unreadmessages
-                    Cursor cursor0 = cursors[0];
-                    for (int i = 0; i < cursor0.getCount(); i++) {
-                        cursor0.moveToPosition(i);
-                        Room room = getRoomsFromCursor(cursor0);
-                        try {
-                            UnreadResponse response = mApiService.getUnread(userId, room.id).execute().body();
-                            roomResponses.add(response);
-                            rooms.add(room);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                // for subscribed rooms
+                // make api call for unreadmessages
+                Cursor cursor0 = cursors[0];
+                for (int i = 0; i < cursor0.getCount(); i++) {
+                    cursor0.moveToPosition(i);
+                    Room room = getRoomsFromCursor(cursor0);
+                    try {
+                        UnreadResponse response = mApiService.getUnread(userId, room.id).execute().body();
+                        roomResponses.add(response);
+                        rooms.add(room);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    Cursor cursor1 = cursors[1];
-                    for (int i = 0; i < cursor1.getCount(); i++) {
-
-                        cursor1.moveToPosition(i);
-                        Room room = getRoomsFromCursor(cursor1);
-                        try {
-                            UnreadResponse response = mApiService.getUnread(userId, room.id).execute().body();
-                            privateRoomResponses.add(response);
-                            privateRooms.add(room);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    //close cursors
-                    for (Cursor c : cursors) {
-                        c.close();
-                    }
-                    //compare unread coumt to saved unread count
-                    //get unread counts from cursor
-                    //compare to unreadresponses
-                    //iterate over all subscribed rooms
-                    //if room has new unread messages
-                    //iterate over unread messages and add new ones to List
-                    processUnread(rooms, roomResponses, true);
-                    processUnread(privateRooms, privateRoomResponses, false);
-
-                    //update saved data
-
-
-                    jobFinished(job, true);
                 }
+                Cursor cursor1 = cursors[1];
+                for (int i = 0; i < cursor1.getCount(); i++) {
+
+                    cursor1.moveToPosition(i);
+                    Room room = getRoomsFromCursor(cursor1);
+                    try {
+                        UnreadResponse response = mApiService.getUnread(userId, room.id).execute().body();
+                        privateRoomResponses.add(response);
+                        privateRooms.add(room);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                //close cursors
+                for (Cursor c : cursors) {
+                    c.close();
+                }
+                processUnread(rooms, roomResponses, true);
+                processUnread(privateRooms, privateRoomResponses, false);
+
+                if (mGroupSummary) {
+                    final Notification summaryNotification = new NotificationCompat.Builder(getApplicationContext(), NOTIFICATION_CHANNEL_ID)
+                            .setSmallIcon(R.drawable.ic_notification)
+                            .setStyle(new NotificationCompat.InboxStyle())
+                            .setGroup(NOTIFICATION_GROUP_ID)
+                            .setContentText(getString(R.string.new_message_summary))
+                            .setGroupSummary(true)
+                            .build();
+                    ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).notify(875, summaryNotification);
+                    mGroupSummary = false;
+                }
+                jobFinished(job, true);
             }).start();
         }
-
-        // if there are more unreadmessages than the number saved
-        //or fetch messages of the new ones
-        //display a notification
-        //ideally this notification should have a pending intent to somewhere in the app
         return true;
     }
 
@@ -175,6 +169,8 @@ public class NewMessagesJobService extends JobService {
     }
 
     private void sendNotification(Context context, List<Message> messages, Room room) {
+        mGroupSummary = true;
+
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         MessagingStyle messagingStyle = new MessagingStyle("")
@@ -194,15 +190,14 @@ public class NewMessagesJobService extends JobService {
         Notification notification = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
                 .setStyle(messagingStyle)
                 .setContentTitle(room.name)
-                .setContentText(messages.size() + " new messages in " + room.name)
-                .setSmallIcon(R.drawable.ic_forum_black_24dp)
+                .setContentText(messages.size() + getString(R.string.room_new_message_count_text) + room.name)
+                .setSmallIcon(R.drawable.ic_notification)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
+                .setGroupAlertBehavior(GROUP_ALERT_SUMMARY)
                 .setGroup(NOTIFICATION_GROUP_ID)
                 .build();
         notificationManager.notify(room.name.hashCode(), notification);
-
-
     }
 
 
@@ -214,12 +209,10 @@ public class NewMessagesJobService extends JobService {
                 null, null, null,
                 null);
         return new Cursor[]{cursor, prCursor};
-
     }
 
     @Override
     public boolean onStopJob(JobParameters job) {
-        Log.d(TAG, "onStopJob: ");
         return false;
     }
 }

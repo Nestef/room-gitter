@@ -3,5 +3,4 @@
     <item
         android:id="@+id/leave_room_item"
         android:title="@string/leave_room_title" />
-
 </menu>

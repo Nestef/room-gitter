@@ -255,6 +255,7 @@ public class MessageManager {
         MessagesBeforeAsyncTask(Callback callback) {
             mCallback = callback;
         }
+
         @Override
         protected List<Message> doInBackground(String... strings) {
             try {

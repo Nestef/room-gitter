@@ -22,10 +22,8 @@ import butterknife.ButterKnife;
  */
 public class RoomCursorAdapter extends CursorAdapter {
 
-
     private static final String TAG = "RoomCursorAdapter";
     private RoomCallback mCallback;
-
 
     public RoomCursorAdapter(Context context, RoomCallback callback) {
         super(context, null, 0);
@@ -65,10 +63,8 @@ public class RoomCursorAdapter extends CursorAdapter {
             viewHolder.unread.setText(String.valueOf(room.unreadItems));
             viewHolder.unread.setVisibility(View.VISIBLE);
         }
-        //Todo add error handling
         Glide.with(context).load(room.avatarUrl).into(viewHolder.avatar);
         viewHolder.view.setOnClickListener(v -> mCallback.onRoomClick(room));
-
     }
 
 

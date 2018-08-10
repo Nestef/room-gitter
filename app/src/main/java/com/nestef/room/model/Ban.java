@@ -12,10 +12,7 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Parcel
 public class Ban {
-
     public User user;
-
     public User bannedBy;
-
     public Date dateBanned;
 }

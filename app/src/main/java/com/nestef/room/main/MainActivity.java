@@ -11,8 +11,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.firebase.jobdispatcher.Constraint;
@@ -109,6 +107,8 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
             Room widgetItem = Parcels.unwrap(activityIntent.getParcelableExtra(WIDGET_ROOM_ITEM));
             if (isTablet()) {
                 setSupportActionBar(mDefaultToolbar);
+                mDefaultToolbar.inflateMenu(R.menu.main_actions);
+                mDefaultToolbar.setOnMenuItemClickListener(item -> handleMenuClick(item));
                 getSupportFragmentManager().beginTransaction().replace(mMessageFragmentId, MessagingFragment.newInstance(widgetItem)).commit();
             } else {
                 startMessagingActivity(widgetItem);
@@ -116,6 +116,8 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
         } else {
             if (isTablet()) {
                 setSupportActionBar(mDefaultToolbar);
+                mDefaultToolbar.inflateMenu(R.menu.main_actions);
+                mDefaultToolbar.setOnMenuItemClickListener(item -> handleMenuClick(item));
                 getSupportFragmentManager().beginTransaction().replace(mMessageFragmentId, new MessagingFragment()).commit();
             }
         }
@@ -161,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
             FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                String description = "Notifications for new messages";
+                String description = getString(R.string.notification_channel_description);
                 int importance = NotificationManager.IMPORTANCE_DEFAULT;
                 NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_TITLE, importance);
                 channel.setDescription(description);
@@ -180,7 +182,6 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
                     .setTrigger(Trigger.executionWindow(0, 60))
                     .addConstraint(Constraint.ON_ANY_NETWORK)
                     .build();
-            Log.d(TAG, "setupNotifications: ");
             dispatcher.schedule(notificationJob);
         }
     }
@@ -188,9 +189,7 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.d(TAG, "onSaveInstanceState: " + mNavigationIndex);
         outState.putInt(NAV_INDEX, mNavigationIndex);
-        Log.d(TAG, "onSaveInstanceState: " + mCurrentFragmentTag);
         outState.putString(SAVE_FRAGMENT_TAG, mCurrentFragmentTag);
     }
 
@@ -217,11 +216,9 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
     }
 
     private void setFragment(String tag, Fragment current) {
-        Log.d(TAG, "setFragment: ");
         Fragment community = getSupportFragmentManager().findFragmentByTag(COMMUNITY_FRAGMENT_TAG);
 
         if (community != null) {
-            Log.d(TAG, "setFragment: community");
             getSupportFragmentManager()
                     .beginTransaction()
                     .hide(community)
@@ -287,28 +284,24 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
         fragment.onHiddenChanged(false);
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (isTablet()) {
-            getMenuInflater().inflate(R.menu.main_actions, menu);
-            return super.onCreateOptionsMenu(menu);
-        }
-        return super.onCreateOptionsMenu(menu);
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        return handleMenuClick(item);
+    }
+
+    private boolean handleMenuClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.settings_action:
                 Intent intent = new Intent();
                 intent.setClass(this, PreferencesActivity.class);
                 startActivity(intent
                 );
+                return true;
             default:
-                return super.onOptionsItemSelected(item);
+                return false;
         }
     }
+
 
     private boolean isTablet() {
         return mIsTablet == 1;

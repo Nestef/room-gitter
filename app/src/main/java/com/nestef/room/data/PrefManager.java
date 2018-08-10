@@ -2,7 +2,6 @@ package com.nestef.room.data;
 
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.nestef.room.model.User;
 import com.nestef.room.services.GitterApiService;
@@ -12,7 +11,6 @@ import java.io.IOException;
 
 import static com.nestef.room.util.Constants.AUTH_TOKEN_PREF;
 import static com.nestef.room.util.Constants.USER_ID_PREF;
-import static io.fabric.sdk.android.Fabric.TAG;
 
 /**
  * Created by Noah Steffes on 5/22/18.
@@ -70,7 +68,6 @@ public class PrefManager {
         @Override
         protected User doInBackground(Void... voids) {
             try {
-                Log.d("PrefMNger", "doInBackground: ");
                 return mService.getPersonalProfile().execute().body().get(0);
             } catch (IOException i) {
                 i.printStackTrace();
@@ -81,7 +78,6 @@ public class PrefManager {
         @Override
         protected void onPostExecute(User user) {
             super.onPostExecute(user);
-            Log.d(TAG, "onPostExecute: ");
             SharedPreferences.Editor editor = mPreferences.edit();
             editor.putString(USER_ID_PREF, user.id);
             editor.apply();

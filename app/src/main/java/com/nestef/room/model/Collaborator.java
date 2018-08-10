@@ -10,8 +10,8 @@ import org.parceler.Parcel;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Parcel
 public class Collaborator {
-    String displayName;
-    String externalId;
-    String avatarUrl;
-    String type;
+    public String displayName;
+    public String externalId;
+    public String avatarUrl;
+    public String type;
 }

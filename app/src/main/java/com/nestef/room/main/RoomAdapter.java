@@ -2,7 +2,6 @@ package com.nestef.room.main;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,9 +44,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull RoomAdapter.RoomViewHolder holder, int position) {
-        //todo we need proper data validation here
         Room room = mRooms.get(position);
-        Log.d(TAG, "onBindViewHolder: " + room.name + room.userCount);
         holder.title.setText(room.name);
         //holder.description.setText(room.topic);
         //holder.userCount.setText(String.valueOf(room.userCount));
@@ -56,9 +53,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         } else {
             holder.unread.setText(String.valueOf(room.unreadItems));
         }
-        //Todo add error handling
         Glide.with(holder.itemView).load(room.avatarUrl).into(holder.avatar);
-
     }
 
     @Override

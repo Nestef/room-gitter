@@ -33,6 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:padding="8dp"
+            android:contentDescription="@string/markdown_title"
             android:src="?inputMdDrawable" />
 
         <ImageView
@@ -40,6 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:padding="8dp"
+            android:contentDescription="@string/send_message"
             android:src="?inputSendDrawable" />
     </LinearLayout>
 

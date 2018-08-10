@@ -55,8 +55,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         final Message message = mMessages.get(position);
         User user = message.fromUser;
 
-        //TODO set placeholder
-        GlideApp.with(holder.itemView).load(user.avatarUrlSmall).placeholder(R.drawable.ic_poll_black_24dp).into(holder.avatar);
+        GlideApp.with(holder.itemView).load(user.avatarUrlSmall).placeholder(R.drawable.ic_notification).into(holder.avatar);
         holder.displayName.setText(user.getUsername());
         Markwon.setMarkdown(holder.content, message.text);
         new PatternEditableBuilder().
@@ -95,7 +94,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     @Nullable
     @Override
     public RequestBuilder<?> getPreloadRequestBuilder(@NonNull Message item) {
-        return GlideApp.with(mContext).load(item.fromUser.avatarUrlSmall).placeholder(R.drawable.ic_poll_black_24dp);
+        return GlideApp.with(mContext).load(item.fromUser.avatarUrlSmall).placeholder(R.drawable.ic_notification);
     }
 
     class MessageViewHolder extends RecyclerView.ViewHolder {
@@ -117,5 +116,4 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     public interface MentionClickHandler {
         void onMentionClick(String mention);
     }
-
 }

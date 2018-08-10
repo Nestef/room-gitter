@@ -1,7 +1,5 @@
 package com.nestef.room.main;
 
-import android.util.Log;
-
 import com.nestef.room.base.BasePresenter;
 import com.nestef.room.data.DataManager;
 import com.nestef.room.model.Room;
@@ -13,7 +11,6 @@ import java.util.List;
  * Created by Noah Steffes on 5/2/18.
  */
 public class CommunityPresenter extends BasePresenter<MainContract.CommunityView> implements MainContract.CommunityViewActions, DataManager.DataCallback {
-
 
     private DataManager mDataManager;
 
@@ -27,7 +24,6 @@ public class CommunityPresenter extends BasePresenter<MainContract.CommunityView
         mDataManager.getCommunityRooms(groupId, this);
     }
 
-
     @Override
     public void onCall(List<Room> data) {
         List<Room> joined = new ArrayList<>();
@@ -38,22 +34,17 @@ public class CommunityPresenter extends BasePresenter<MainContract.CommunityView
         }
         if (joined.size() == 0 && unJoined.size() == 0) {
             mView.showEmpty();
-            Log.d("", "onCall: ");
-        }
-        else {
+        } else {
             if (joined.size() > 0) {
                 mView.hideLoadingIndicator();
                 mView.showJoinedRooms(joined);
-                Log.d("", "onCall: joined");
             } else {
                 mView.hideLoadingIndicator();
                 mView.showJoinedRoomsEmpty();
-                Log.d("", "onCall: joined empty");
             }
             if (unJoined.size() > 0) {
                 mView.hideLoadingIndicator();
                 mView.showUnjoinedRooms(unJoined);
-                Log.d("", "onCall: unjoined ");
             }
         }
     }

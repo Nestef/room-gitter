@@ -12,7 +12,7 @@ import java.util.List;
 @Parcel
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Mention {
-    String screenName;
-    String userId;
-    List<String> userIds;
+    public String screenName;
+    public String userId;
+    public List<String> userIds;
 }

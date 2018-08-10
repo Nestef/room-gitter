@@ -53,8 +53,6 @@ public class SearchFragment extends Fragment implements MainContract.SearchView,
     RoomAdapter mAdapter;
     RoomFragment.RoomSelectionCallback mCallback;
 
-
-
     public SearchFragment() {
     }
 

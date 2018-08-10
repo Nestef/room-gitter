@@ -63,7 +63,6 @@ public class RoomPresenter extends BasePresenter<MainContract.RoomView> implemen
             mView.hideLoadingIndicator();
             mView.showEmpty();
         }
-
     }
 
     @Override

@@ -11,6 +11,14 @@
         layout="@layout/progress_bar"
         android:visibility="gone" />
 
+    <TextView
+        android:id="@+id/community_empty_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="invisible" />
+
+
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -12,10 +12,10 @@ import java.util.Date;
 @Parcel
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Event {
-    String id;
-    String text;
-    String html;
-    Date sent;
-    Date editedAt;
-    int v;
+    public String id;
+    public String text;
+    public String html;
+    public Date sent;
+    public Date editedAt;
+    public int v;
 }

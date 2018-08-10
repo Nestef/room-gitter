@@ -33,7 +33,7 @@ public class RoomWidgetProvider extends AppWidgetProvider {
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.room_widget);
         views.setRemoteAdapter(R.id.widget_list, intent);
-        views.setTextViewText(R.id.widget_title, "Rooms");
+        views.setTextViewText(R.id.widget_title, context.getString(R.string.room_nav_title));
 
         //Pending intent for item click
         Intent intent1 = new Intent(context, MainActivity.class);

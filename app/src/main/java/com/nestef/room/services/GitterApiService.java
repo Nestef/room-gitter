@@ -85,9 +85,6 @@ public interface GitterApiService {
     Call<List<Message>> getMessages(@Path("roomId") String roomId);
 
     @GET("/v1/rooms/{roomId}/chatMessages")
-    Call<List<Message>> testGetMessages(@Path("roomId") String roomId, @Query("limit") int limit);
-
-    @GET("/v1/rooms/{roomId}/chatMessages")
     Call<List<Message>> getMessagesBeforeMessage(@Path("roomId") String roomId, @Query("beforeId") String beforeId);
 
     @GET("/v1/rooms/{roomId}/chatMessages/{messageId}")

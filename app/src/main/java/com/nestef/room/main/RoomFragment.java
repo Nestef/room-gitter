@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -110,7 +109,6 @@ public class RoomFragment extends Fragment implements MainContract.RoomView, Roo
             throw new ClassCastException(getActivity().toString()
                     + " must implement RoomFragmentCallback");
         }
-
     }
 
     @Override
@@ -128,7 +126,6 @@ public class RoomFragment extends Fragment implements MainContract.RoomView, Roo
         mRoomCursorAdapter = new RoomCursorAdapter(getContext(), this);
         mRoomList.setAdapter(mRoomCursorAdapter);
         mRoomCursorAdapter.changeCursor(rooms);
-        Log.d(TAG, "showRooms: ");
     }
 
     @Override

@@ -7,18 +7,22 @@
     <item
         android:id="@+id/room_nav_item"
         android:icon="?navRoomDrawable"
+        android:contentDescription="@string/room_nav_title"
         android:title="@string/room_nav_title" />
     <item
         android:id="@+id/search_nav_item"
         android:icon="?navSearchDrawable"
+        android:contentDescription="@string/search_nav_title"
         android:title="@string/search_nav_title" />
     <item
         android:id="@+id/chats_nav_item"
         android:icon="?navChatDrawable"
+        android:contentDescription="@string/chats_nav_title"
         android:title="@string/chats_nav_title" />
     <item
         android:id="@+id/communities_nav_item"
         android:icon="?navCommunityDrawable"
+        android:contentDescription="@string/communities_nav_title"
         android:title="@string/communities_nav_title" />
 
 </menu>

@@ -68,6 +68,4 @@ public class PeoplePresenter extends BasePresenter<MainContract.PeopleView> impl
     public void onLoaderReset(@NonNull Loader loader) {
 
     }
-
-
 }

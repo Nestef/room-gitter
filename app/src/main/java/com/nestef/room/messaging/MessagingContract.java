@@ -12,7 +12,7 @@ import java.util.List;
  */
 
 public interface MessagingContract {
-    interface ViewActions{
+    interface ViewActions {
 
         void setUserId(String userId);
 
@@ -34,7 +34,8 @@ public interface MessagingContract {
 
         void leaveRoom();
     }
-    interface MessagingView extends BaseView{
+
+    interface MessagingView extends BaseView {
         void showMessages(List<Message> messages);
 
         void addNewMessages(List<Message> newMessages);

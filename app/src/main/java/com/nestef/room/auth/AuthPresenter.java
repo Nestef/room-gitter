@@ -1,7 +1,6 @@
 package com.nestef.room.auth;
 
 import android.net.Uri;
-import android.util.Log;
 
 import com.nestef.room.BuildConfig;
 import com.nestef.room.base.BasePresenter;
@@ -36,11 +35,9 @@ public class AuthPresenter extends BasePresenter<AuthContract.AuthView> implemen
 
     @Override
     public boolean handleUri(Uri uri) {
-        Log.d(TAG, "handleUri: " + uri.getScheme());
         if (uri.getScheme().equals(APP_SCHEME)) {
 
             final String code = uri.getQueryParameter(RESPONSE_TYPE);
-            Log.d(TAG, "handleUri: " + code);
 
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(TOKEN_URL)
@@ -63,7 +60,7 @@ public class AuthPresenter extends BasePresenter<AuthContract.AuthView> implemen
 
                         @Override
                         public void onFailure(Call<AuthResponse> call, Throwable t) {
-                            //Todo: add error handling
+                            mView.showNetworkError();
                         }
                     });
             return true;

@@ -3,11 +3,14 @@
 
     <string name="login_title">Login</string>
 
+    <string name="network_error">There was an error connecting</string>
+
     <!--Navigation Tabs-->
     <string name="room_nav_title">Rooms</string>
     <string name="search_nav_title">Search</string>
     <string name="chats_nav_title">Private Chats</string>
     <string name="communities_nav_title">Communities</string>
+    <string name="nav_description">Navigation bar</string>
 
     <string name="room_empty_text">No Joined Rooms</string>
     <string name="private_chat_empty_text">No Chats</string>
@@ -33,7 +36,9 @@
     <string name="join_room_button">Join room</string>
     <string name="join_room_text">Join room to send messages</string>
     <string name="leave_room_title">Leave room</string>
+    <string name="messages_empty_text">There are no messages yet</string>
     <string name="markdown_title">Markdown Formatting Examples</string>
+    <string name="send_message">Send message</string>
     <string name="markdown_example">
         \ - List \n
         - ~~Strikethrough~~ \n
@@ -46,5 +51,10 @@
          # Heading \n\n
          > Blockquote
     </string>
+
+    <!-- Notifications -->
+    <string name="room_new_message_count_text"> new messages in </string>
+    <string name="new_message_summary">You have new messages</string>
+    <string name="notification_channel_description">Notifications for new messages</string>
 
 </resources>

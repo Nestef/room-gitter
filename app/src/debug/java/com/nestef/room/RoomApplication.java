@@ -19,8 +19,5 @@ public class RoomApplication extends Application {
         if (!isRoboUnitTest()) {
             Stetho.initializeWithDefaults(this);
         }
-
-
-
     }
 }

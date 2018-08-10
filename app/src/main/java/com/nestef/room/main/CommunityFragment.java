@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -65,6 +64,8 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
     TextView mJoinedTitle;
     @BindView(R.id.community_other_title)
     TextView mListTitle;
+    @BindView(R.id.community_empty_text)
+    TextView mEmptyText;
 
     public static CommunityFragment newInstance(Group group) {
 
@@ -90,7 +91,6 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
         View view = inflater.inflate(R.layout.community_fragment, container, false);
         mUnbinder = ButterKnife.bind(this, view);
         mPresenter.setView(this);
-
 
         if (!isTablet()) {
             setHasOptionsMenu(true);
@@ -145,7 +145,11 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
 
     @Override
     public void showEmpty() {
-        Log.d("", "showEmpty: ");
+        mEmptyText.setVisibility(View.VISIBLE);
+        mJoinedTitle.setVisibility(View.GONE);
+        mJoinedRoomList.setVisibility(View.GONE);
+        mCommunityRoomList.setVisibility(View.GONE);
+        mListTitle.setVisibility(View.GONE);
     }
 
     private boolean isTablet() {
@@ -159,14 +163,12 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
         mJoinedRoomList.setAdapter(mJoinedAdapter);
         mJoinedRoomList.setVisibility(View.VISIBLE);
         mJoinedTitle.setVisibility(View.VISIBLE);
-        Log.d("", "showJoinedRooms: ");
     }
 
     @Override
     public void showJoinedRoomsEmpty() {
         mJoinedTitle.setVisibility(View.VISIBLE);
         mJoinedRoomList.setVisibility(View.GONE);
-        Log.d("", "showJoinedRoomsEmpty: ");
     }
 
     @Override
@@ -176,7 +178,6 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
         mCommunityRoomList.setAdapter(mCommunityAdapter);
         mCommunityRoomList.setVisibility(View.VISIBLE);
         mListTitle.setVisibility(View.VISIBLE);
-        Log.d("", "showUnjoinedRooms: ");
 
     }
 

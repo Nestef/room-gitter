@@ -11,7 +11,6 @@ import retrofit2.http.Streaming;
  */
 public interface GitterStreamingService {
 
-
     @GET("/v1/rooms/{roomId}/chatMessages/")
     @Streaming
     Observable<ResponseBody> getMessageStream(@Path("roomId") String roomId);

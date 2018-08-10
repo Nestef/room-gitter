@@ -41,9 +41,6 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
         mManager = messageManager;
     }
 
-    //TODO
-    //IMPORTANT TO CHECK IF VIEW IS NULL
-
     @Override
     public void setUserId(String userId) {
         mUserId = userId;
@@ -123,8 +120,12 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
     @Override
     public void returnMessages(List<Message> messages) {
         if (mView != null) {
-            mView.showMessages(messages);
             mView.hideLoadingIndicator();
+            if (messages.size() == 0) {
+                mView.showEmpty();
+            } else {
+                mView.showMessages(messages);
+            }
         }
     }
 
@@ -148,7 +149,6 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
     @Override
     public void fetchMessageError() {
         if (mView != null) {
-            //TODO Placeholder
             mView.showEmpty();
         }
     }

@@ -10,6 +10,6 @@ import org.parceler.Parcel;
 @Parcel
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WelcomeMessage {
-    String html;
-    String text;
+    public String html;
+    public String text;
 }

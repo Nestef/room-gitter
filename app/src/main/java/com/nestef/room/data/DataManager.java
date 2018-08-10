@@ -196,5 +196,4 @@ public class DataManager {
             mCallback.onCall(rooms);
         }
     }
-
 }

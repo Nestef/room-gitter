@@ -57,7 +57,6 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
     private GroupsPresenter mPresenter;
 
     public GroupsFragment() {
-
     }
 
     public static GroupsFragment newInstance() {
@@ -107,13 +106,12 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
 
     @Override
     public void showGroups(Cursor groups) {
+        mEmptyText.setVisibility(View.INVISIBLE);
         mGroupList.setVisibility(View.VISIBLE);
         mGroupList.setDivider(null);
         mGroupAdapter = new GroupAdapter(getContext(), this);
         mGroupList.setAdapter(mGroupAdapter);
         mGroupAdapter.changeCursor(groups);
-
-
     }
 
     @Override
@@ -146,7 +144,6 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
             throw new ClassCastException(getActivity().toString()
                     + " must implement OnCommunitySelection");
         }
-
     }
 
     @Override
@@ -154,10 +151,7 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
         mCallback.onCommunitySelect(selectedGroup);
     }
 
-
     public interface OnCommunitySelection {
         void onCommunitySelect(Group group);
     }
-
-
 }

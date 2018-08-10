@@ -66,7 +66,6 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        //todo we need proper data validation here
         switch (holder.getItemViewType()) {
             case ROOM:
                 Room room = (Room) mRooms.get(position);
@@ -80,7 +79,6 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 } else {
                     viewHolder.unread.setText(String.valueOf(room.unreadItems));
                 }
-                //Todo add error handling
                 Glide.with(viewHolder.itemView).load(room.avatarUrl).into(viewHolder.avatar);
             case USER:
                 User user = (User) mRooms.get(position);
@@ -89,8 +87,6 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 Glide.with(viewHolder1.itemView).load(user.avatarUrl).into(viewHolder1.avatar);
             default:
         }
-
-
     }
 
     @Override

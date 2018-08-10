@@ -25,7 +25,6 @@ public class Constants {
     public static final String GRANT_TYPE = "authorization_code";
     public static final String APP_SCHEME = "app";
 
-
     public static final String WIDGET_CLICK_ACTION = "widget_click";
     public static final String WIDGET_ROOM_ITEM = "widget_room";
 

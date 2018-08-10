@@ -29,7 +29,6 @@ public class Message {
     public boolean unread;
     //Number of users that have read the message.
     public int readBy;
-    //todo add type
     //List of URLs present in the message.
     public List<Url> urls;
     //List of @Mentions in the message.
@@ -41,6 +40,4 @@ public class Message {
     public int v;
     //Stands for "Gravatar version" and is used for cache busting.
     public String gv;
-
-
 }

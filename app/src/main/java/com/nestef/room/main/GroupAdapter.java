@@ -25,8 +25,7 @@ public class GroupAdapter extends CursorAdapter {
 
     private GroupCallback mCallback;
 
-    //Todo change to empty constructor
-    public GroupAdapter(Context context, GroupCallback callback) {
+    GroupAdapter(Context context, GroupCallback callback) {
         super(context, null, 0);
         mCallback = callback;
     }

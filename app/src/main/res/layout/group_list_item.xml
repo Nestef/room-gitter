@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/list_item_height">
 
@@ -22,10 +21,9 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/list_item_text_end"
         android:textSize="@dimen/list_item_title"
-        app:layout_constraintStart_toEndOf="@id/g_guideline"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:text="Title" />
+        app:layout_constraintStart_toEndOf="@id/g_guideline"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.constraint.Guideline
         android:id="@+id/g_guideline"

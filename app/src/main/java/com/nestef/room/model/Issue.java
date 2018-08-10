@@ -10,7 +10,7 @@ import org.parceler.Parcel;
 @Parcel
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Issue {
-    String title;
-    String repo;
-    int number;
+    public String title;
+    public String repo;
+    public int number;
 }
