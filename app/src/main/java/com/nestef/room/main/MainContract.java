@@ -56,6 +56,8 @@ public interface MainContract {
     interface CommunityView extends BaseView {
         void showRooms(List<Room> joinedRooms);
 
+        void networkError();
+
     }
 
 }

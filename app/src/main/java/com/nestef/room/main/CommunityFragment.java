@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nestef.room.R;
 import com.nestef.room.data.DataManager;
@@ -155,6 +156,10 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
         mRoomList.setVisibility(View.GONE);
     }
 
+    @Override
+    public void networkError() {
+        Toast.makeText(getContext(), R.string.network_error, Toast.LENGTH_SHORT).show();
+    }
     private boolean isTablet() {
         return mIsTablet == 1;
     }
