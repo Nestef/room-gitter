@@ -54,11 +54,8 @@ public interface MainContract {
     }
 
     interface CommunityView extends BaseView {
-        void showJoinedRooms(List<Room> joinedRooms);
+        void showRooms(List<Room> joinedRooms);
 
-        void showJoinedRoomsEmpty();
-
-        void showUnjoinedRooms(List<Room> unjoinedRooms);
     }
 
 }

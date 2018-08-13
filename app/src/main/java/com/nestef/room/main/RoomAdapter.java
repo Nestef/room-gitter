@@ -24,14 +24,16 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     private static final String TAG = "RoomAdapter";
     private List<Room> mRooms;
     private RoomAdapter.RoomCallback mCallback;
+    private boolean mShowJoined = false;
 
     public RoomAdapter(List<Room> rooms) {
         mRooms = rooms;
     }
 
-    public RoomAdapter(List<Room> rooms, RoomAdapter.RoomCallback callback) {
+    public RoomAdapter(List<Room> rooms, RoomAdapter.RoomCallback callback, boolean showRoomsJoined) {
         mRooms = rooms;
         mCallback = callback;
+        mShowJoined = showRoomsJoined;
     }
 
     @NonNull
@@ -53,6 +55,16 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         } else {
             holder.unread.setText(String.valueOf(room.unreadItems));
         }
+        if (mShowJoined) {
+            if (room.roomMember) {
+                holder.joined.setText(R.string.room_joined);
+                holder.joined.setVisibility(View.VISIBLE);
+            } else {
+                holder.joined.setVisibility(View.GONE);
+            }
+        } else {
+            holder.joined.setVisibility(View.GONE);
+        }
         Glide.with(holder.itemView).load(room.avatarUrl).into(holder.avatar);
     }
 
@@ -72,9 +84,10 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         TextView title;
         @BindView(R.id.room_list_avatar)
         ImageView avatar;
-
         @BindView(R.id.room_item_unread)
         TextView unread;
+        @BindView(R.id.room_joined_text)
+        TextView joined;
 
         RoomViewHolder(View v) {
             super(v);

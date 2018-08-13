@@ -4,7 +4,7 @@ import com.nestef.room.base.BasePresenter;
 import com.nestef.room.data.DataManager;
 import com.nestef.room.model.Room;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -26,26 +26,21 @@ public class CommunityPresenter extends BasePresenter<MainContract.CommunityView
 
     @Override
     public void onCall(List<Room> data) {
-        List<Room> joined = new ArrayList<>();
-        List<Room> unJoined = new ArrayList<>();
-        for (Room room : data) {
-            if (room.roomMember) joined.add(room);
-            else unJoined.add(room);
-        }
-        if (joined.size() == 0 && unJoined.size() == 0) {
-            mView.showEmpty();
+        Collections.sort(data, (o1, o2) -> {
+            if (o1.roomMember && o2.roomMember) return 0;
+            else if (!o1.roomMember && !o2.roomMember) return 0;
+            else if (o1.roomMember && !o2.roomMember) return -1;
+            else if (!o1.roomMember && o2.roomMember) return 1;
+            return 0;
+        });
+        if (data.size() > 0) {
+            mView.hideLoadingIndicator();
+            mView.showRooms(data);
         } else {
-            if (joined.size() > 0) {
-                mView.hideLoadingIndicator();
-                mView.showJoinedRooms(joined);
-            } else {
-                mView.hideLoadingIndicator();
-                mView.showJoinedRoomsEmpty();
-            }
-            if (unJoined.size() > 0) {
-                mView.hideLoadingIndicator();
-                mView.showUnjoinedRooms(unJoined);
-            }
+            mView.hideLoadingIndicator();
+            mView.showEmpty();
         }
+
     }
 }
+

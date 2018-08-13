@@ -161,7 +161,7 @@ public class SearchFragment extends Fragment implements MainContract.SearchView,
         mSuggestionList.setVisibility(View.VISIBLE);
         mLayoutManager = new LinearLayoutManager(getContext());
         mSuggestionList.setLayoutManager(mLayoutManager);
-        mAdapter = new RoomAdapter(suggestions, this);
+        mAdapter = new RoomAdapter(suggestions, this, false);
         mSuggestionList.setAdapter(mAdapter);
         if (listSaveState != null) {
             mLayoutManager.onRestoreInstanceState(listSaveState);
@@ -174,7 +174,7 @@ public class SearchFragment extends Fragment implements MainContract.SearchView,
         //for now I won't show User search results.
         //Switch to SearchAdapter when adding User search results
         mSuggestionList.setVisibility(View.VISIBLE);
-        mAdapter = new RoomAdapter(results, this);
+        mAdapter = new RoomAdapter(results, this, false);
         mSuggestionList.setAdapter(mAdapter);
         if (listSaveState != null) {
             mLayoutManager.onRestoreInstanceState(listSaveState);

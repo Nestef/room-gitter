@@ -20,6 +20,7 @@
     <string name="community_joined_title">Your Rooms</string>
     <string name="community_all_title">Other Rooms</string>
     <string name="community_empty_state_text">No Communities</string>
+    <string name="room_joined">Joined</string>
 
     <!-- Preferences -->
     <string name="theme_pref_title">Dark Theme</string>

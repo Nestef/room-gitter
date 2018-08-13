@@ -2,6 +2,7 @@ package com.nestef.room.main;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -41,18 +42,18 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
 
 
     private static final String GROUP = "Group";
+
+    private static final String RECYCLER_STATE = "list_state";
     Unbinder mUnbinder;
     CommunityPresenter mPresenter;
     RoomAdapter mJoinedAdapter;
-    RoomAdapter mCommunityAdapter;
     private RoomFragment.RoomSelectionCallback mCallback;
     Group mGroup;
+    Parcelable listSaveState;
+    LinearLayoutManager mLayoutManager;
 
-
-    @BindView(R.id.community_room_list)
-    RecyclerView mCommunityRoomList;
     @BindView(R.id.joined_room_list)
-    RecyclerView mJoinedRoomList;
+    RecyclerView mRoomList;
     @Nullable
     @BindView(R.id.default_toolbar)
     Toolbar mToolbar;
@@ -60,10 +61,6 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
     int mIsTablet;
     @BindView(R.id.progress_bar)
     ProgressBar mLoadingIndicator;
-    @BindView(R.id.community_joined_title)
-    TextView mJoinedTitle;
-    @BindView(R.id.community_other_title)
-    TextView mListTitle;
     @BindView(R.id.community_empty_text)
     TextView mEmptyText;
 
@@ -82,6 +79,9 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
         mPresenter = new CommunityPresenter(DataManager.getInstance(getContext().getContentResolver(),
                 PrefManager.getInstance(getContext().getSharedPreferences(AUTH_SHARED_PREF, Context.MODE_PRIVATE))));
         mGroup = Parcels.unwrap(getArguments().getParcelable(GROUP));
+        if (savedInstanceState != null) {
+            listSaveState = savedInstanceState.getParcelable(RECYCLER_STATE);
+        }
     }
 
     @Nullable
@@ -100,6 +100,14 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
 
         mPresenter.fetchRooms(mGroup.id);
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mRoomList.getLayoutManager() != null) {
+            outState.putParcelable(RECYCLER_STATE, mRoomList.getLayoutManager().onSaveInstanceState());
+        }
     }
 
     @Override
@@ -132,9 +140,7 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
 
     @Override
     public void showLoadingIndicator() {
-        mJoinedTitle.setVisibility(View.GONE);
-        mListTitle.setVisibility(View.GONE);
-        mJoinedRoomList.setVisibility(View.GONE);
+        mRoomList.setVisibility(View.GONE);
         mLoadingIndicator.setVisibility(View.VISIBLE);
     }
 
@@ -146,10 +152,7 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
     @Override
     public void showEmpty() {
         mEmptyText.setVisibility(View.VISIBLE);
-        mJoinedTitle.setVisibility(View.GONE);
-        mJoinedRoomList.setVisibility(View.GONE);
-        mCommunityRoomList.setVisibility(View.GONE);
-        mListTitle.setVisibility(View.GONE);
+        mRoomList.setVisibility(View.GONE);
     }
 
     private boolean isTablet() {
@@ -157,29 +160,17 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
     }
 
     @Override
-    public void showJoinedRooms(List<Room> joinedRooms) {
-        mJoinedRoomList.setLayoutManager(new LinearLayoutManager(getContext()));
-        mJoinedAdapter = new RoomAdapter(joinedRooms, this);
-        mJoinedRoomList.setAdapter(mJoinedAdapter);
-        mJoinedRoomList.setVisibility(View.VISIBLE);
-        mJoinedTitle.setVisibility(View.VISIBLE);
+    public void showRooms(List<Room> joinedRooms) {
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mRoomList.setLayoutManager(mLayoutManager);
+        mJoinedAdapter = new RoomAdapter(joinedRooms, this, true);
+        mRoomList.setAdapter(mJoinedAdapter);
+        mRoomList.setVisibility(View.VISIBLE);
+        if (listSaveState != null) {
+            mLayoutManager.onRestoreInstanceState(listSaveState);
+        }
     }
 
-    @Override
-    public void showJoinedRoomsEmpty() {
-        mJoinedTitle.setVisibility(View.VISIBLE);
-        mJoinedRoomList.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showUnjoinedRooms(List<Room> unjoinedRooms) {
-        mCommunityRoomList.setLayoutManager(new LinearLayoutManager(getContext()));
-        mCommunityAdapter = new RoomAdapter(unjoinedRooms, this);
-        mCommunityRoomList.setAdapter(mCommunityAdapter);
-        mCommunityRoomList.setVisibility(View.VISIBLE);
-        mListTitle.setVisibility(View.VISIBLE);
-
-    }
 
     @Override
     public void onRoomClick(Room room) {

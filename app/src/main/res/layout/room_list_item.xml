@@ -23,11 +23,22 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/list_item_text_end"
         android:textSize="@dimen/list_item_title"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/room_joined_text"
         app:layout_constraintEnd_toStartOf="@id/r_barrier2"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@id/r_guideline3"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/room_joined_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/list_item_subtitle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/r_barrier2"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/r_guideline3"
+        app:layout_constraintTop_toBottomOf="@id/room_list_item_title" />
 
     <TextView
         android:id="@+id/room_item_unread"
