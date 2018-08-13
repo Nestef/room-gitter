@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
-            android:elegantTextHeight="true"
+            android:imeOptions="flagNoExtractUi"
             app:defaultQueryHint="@string/search_nav_title" />
     </android.support.v7.widget.Toolbar>
 </android.support.design.widget.AppBarLayout>
