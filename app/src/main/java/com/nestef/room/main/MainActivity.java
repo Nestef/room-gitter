@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
     private SearchFragment mSearchFragment;
     private PeopleFragment mPeopleFragment;
     private GroupsFragment mGroupsFragment;
+    private CommunityFragment mCommunityFragment;
     private String mCurrentFragmentTag = ROOM_FRAGMENT_TAG;
     private int mNavigationIndex = 0;
 
@@ -91,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
         mSearchFragment = (SearchFragment) fragmentManager.findFragmentByTag(SEARCH_FRAGMENT_TAG);
         mPeopleFragment = (PeopleFragment) fragmentManager.findFragmentByTag(PEOPLE_FRAGMENT_TAG);
         mGroupsFragment = (GroupsFragment) fragmentManager.findFragmentByTag(GROUPS_FRAGMENT_TAG);
+        mCommunityFragment = (CommunityFragment) fragmentManager.findFragmentByTag(COMMUNITY_FRAGMENT_TAG);
         mBottomNavigation.setDefaultSelectedIndex(0);
         if (savedInstanceState == null) {
             fragmentManager.beginTransaction().replace(mFragmentId, RoomFragment.newInstance(), ROOM_FRAGMENT_TAG).commit();
@@ -127,22 +129,22 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
             public void onMenuItemSelect(int i, int i1, boolean b) {
                 switch (i1) {
                     case 0:
-                        setFragment(ROOM_FRAGMENT_TAG, getSupportFragmentManager().findFragmentByTag(tags.get(mNavigationIndex)));
+                        setFragment(ROOM_FRAGMENT_TAG);
                         mCurrentFragmentTag = ROOM_FRAGMENT_TAG;
                         mNavigationIndex = 0;
                         return;
                     case 1:
-                        setFragment(SEARCH_FRAGMENT_TAG, getSupportFragmentManager().findFragmentByTag(tags.get(mNavigationIndex)));
+                        setFragment(SEARCH_FRAGMENT_TAG);
                         mCurrentFragmentTag = SEARCH_FRAGMENT_TAG;
                         mNavigationIndex = 1;
                         return;
                     case 2:
-                        setFragment(PEOPLE_FRAGMENT_TAG, getSupportFragmentManager().findFragmentByTag(tags.get(mNavigationIndex)));
+                        setFragment(PEOPLE_FRAGMENT_TAG);
                         mCurrentFragmentTag = PEOPLE_FRAGMENT_TAG;
                         mNavigationIndex = 2;
                         return;
                     case 3:
-                        setFragment(GROUPS_FRAGMENT_TAG, getSupportFragmentManager().findFragmentByTag(tags.get(mNavigationIndex)));
+                        setFragment(GROUPS_FRAGMENT_TAG);
                         mCurrentFragmentTag = GROUPS_FRAGMENT_TAG;
                         mNavigationIndex = 3;
                 }
@@ -199,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
         mCurrentFragmentTag = savedInstanceState.getString(SAVE_FRAGMENT_TAG);
         mNavigationIndex = savedInstanceState.getInt(NAV_INDEX);
         mBottomNavigation.setSelectedIndex(mNavigationIndex, false);
-        setFragment(SAVE_FRAGMENT_TAG, getSupportFragmentManager().findFragmentByTag(tags.get(mNavigationIndex)));
+        setFragment(SAVE_FRAGMENT_TAG);
     }
 
     @Override
@@ -215,16 +217,7 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
         }
     }
 
-    private void setFragment(String tag, Fragment current) {
-        Fragment community = getSupportFragmentManager().findFragmentByTag(COMMUNITY_FRAGMENT_TAG);
-
-        if (community != null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .hide(community)
-                    .remove(community)
-                    .commit();
-        }
+    private void setFragment(String tag) {
 
         switch (tag) {
             case ROOM_FRAGMENT_TAG:
@@ -259,6 +252,13 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
                     showFragment(mGroupsFragment);
                 }
                 break;
+            case COMMUNITY_FRAGMENT_TAG:
+                if (mCommunityFragment == null) {
+                    mGroupsFragment = GroupsFragment.newInstance();
+                    addFragment(mGroupsFragment, GROUPS_FRAGMENT_TAG);
+                } else {
+                    showFragment(mCommunityFragment);
+                }
             default:
                 break;
         }
@@ -269,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(mFragmentId, fragment, tag)
-                .hide(getSupportFragmentManager().findFragmentByTag(tags.get(mNavigationIndex)))
+                .hide(getSupportFragmentManager().findFragmentByTag(mCurrentFragmentTag))
                 .commit();
         fragment.onHiddenChanged(false);
     }
@@ -278,11 +278,12 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .hide(getSupportFragmentManager().findFragmentByTag(tags.get(mNavigationIndex)))
+                .hide(getSupportFragmentManager().findFragmentByTag(mCurrentFragmentTag))
                 .show(fragment)
                 .commit();
         fragment.onHiddenChanged(false);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -309,9 +310,11 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
 
     @Override
     public void onCommunitySelect(Group group) {
+        mCurrentFragmentTag = COMMUNITY_FRAGMENT_TAG;
+        mCommunityFragment = CommunityFragment.newInstance(group);
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(mFragmentId, CommunityFragment.newInstance(group), COMMUNITY_FRAGMENT_TAG)
+                .add(mFragmentId, mCommunityFragment, COMMUNITY_FRAGMENT_TAG)
                 .hide(getSupportFragmentManager().findFragmentByTag(tags.get(mNavigationIndex)))
                 .addToBackStack(COMMUNITY_FRAGMENT_TAG)
                 .commit();
