@@ -38,6 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/list_vertical_margin"
                 app:layout_constraintStart_toStartOf="parent"
+                android:descendantFocusability="afterDescendants"
                 app:layout_constraintTop_toBottomOf="@id/search_suggestion_text" />
 
         </android.support.constraint.ConstraintLayout>

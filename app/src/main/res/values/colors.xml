@@ -10,5 +10,7 @@
     <color name="colorDarkPrimary">#000000</color>
     <color name="colorDarkPrimaryDark">#000000</color>
 
+    <color name="listItemSelected">@android:color/darker_gray</color>
+
 
 </resources>

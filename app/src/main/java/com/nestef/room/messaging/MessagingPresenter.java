@@ -121,7 +121,7 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
     public void returnMessages(List<Message> messages) {
         if (mView != null) {
             mView.hideLoadingIndicator();
-            if (messages.size() == 0) {
+            if (messages == null || messages.size() == 0) {
                 mView.showEmpty();
             } else {
                 mView.showMessages(messages);
