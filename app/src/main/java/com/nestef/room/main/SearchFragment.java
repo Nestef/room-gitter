@@ -3,6 +3,8 @@ package com.nestef.room.main;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.nestef.room.R;
 import com.nestef.room.data.PrefManager;
@@ -35,12 +36,12 @@ public class SearchFragment extends Fragment implements MainContract.SearchView,
 
     private static final String TAG = "SearchFragment";
 
+    private static final String RECYCLER_STATE = "list_state";
+
     @BindView(R.id.search_toolbar)
     Toolbar toolbar;
     @BindInt(R.integer.is_tablet)
     int isTablet;
-    @BindView(R.id.search_suggestion_text)
-    TextView mSuggestionTitle;
     @BindView(R.id.search_suggestion_list)
     RecyclerView mSuggestionList;
     @BindView(R.id.progress_bar)
@@ -52,6 +53,8 @@ public class SearchFragment extends Fragment implements MainContract.SearchView,
     SearchPresenter mPresenter;
     RoomAdapter mAdapter;
     RoomFragment.RoomSelectionCallback mCallback;
+    Parcelable listSaveState;
+    LinearLayoutManager mLayoutManager;
 
     public SearchFragment() {
     }
@@ -68,6 +71,9 @@ public class SearchFragment extends Fragment implements MainContract.SearchView,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPresenter = new SearchPresenter(new SearchManager(PrefManager.getInstance(getContext().getSharedPreferences(AUTH_SHARED_PREF, Context.MODE_PRIVATE))));
+        if (savedInstanceState != null) {
+            listSaveState = savedInstanceState.getParcelable(RECYCLER_STATE);
+        }
     }
 
     @Override
@@ -106,6 +112,14 @@ public class SearchFragment extends Fragment implements MainContract.SearchView,
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mSuggestionList.getLayoutManager() != null) {
+            outState.putParcelable(RECYCLER_STATE, mSuggestionList.getLayoutManager().onSaveInstanceState());
+        }
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
@@ -126,7 +140,6 @@ public class SearchFragment extends Fragment implements MainContract.SearchView,
     public void showLoadingIndicator() {
         mSuggestionList.setVisibility(View.GONE);
         mLoadingIndicator.setVisibility(View.VISIBLE);
-        mSuggestionTitle.setVisibility(View.GONE);
     }
 
     @Override
@@ -145,11 +158,14 @@ public class SearchFragment extends Fragment implements MainContract.SearchView,
 
     @Override
     public void showSuggestions(List<Room> suggestions) {
-        mSuggestionTitle.setVisibility(View.VISIBLE);
         mSuggestionList.setVisibility(View.VISIBLE);
-        mSuggestionList.setLayoutManager(new LinearLayoutManager(getContext()));
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mSuggestionList.setLayoutManager(mLayoutManager);
         mAdapter = new RoomAdapter(suggestions, this);
         mSuggestionList.setAdapter(mAdapter);
+        if (listSaveState != null) {
+            mLayoutManager.onRestoreInstanceState(listSaveState);
+        }
     }
 
     @Override
@@ -157,10 +173,12 @@ public class SearchFragment extends Fragment implements MainContract.SearchView,
         //Gitter has some weird behavior with chats between users so
         //for now I won't show User search results.
         //Switch to SearchAdapter when adding User search results
-        mSuggestionTitle.setVisibility(View.GONE);
         mSuggestionList.setVisibility(View.VISIBLE);
         mAdapter = new RoomAdapter(results, this);
         mSuggestionList.setAdapter(mAdapter);
+        if (listSaveState != null) {
+            mLayoutManager.onRestoreInstanceState(listSaveState);
+        }
     }
 
     @Override
