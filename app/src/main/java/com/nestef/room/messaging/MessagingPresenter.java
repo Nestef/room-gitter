@@ -53,9 +53,13 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
 
     @Override
     public void fetchMessages() {
-        mManager.getMessages(mRoomId, this);
-        if (mView != null) {
-            mView.showLoadingIndicator();
+        if (mView.checkForConnection()) {
+            mManager.getMessages(mRoomId, this);
+            if (mView != null) {
+                mView.showLoadingIndicator();
+            }
+        } else {
+            mView.networkError();
         }
     }
 
@@ -69,10 +73,14 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
 
     @Override
     public void fetchOlderMessages(String beforeId) {
-        if (mView != null) {
-            mView.showLoadingIndicator();
+        if (mView.checkForConnection()) {
+            if (mView != null) {
+                mView.showLoadingIndicator();
+            }
+            mManager.getOlderMessages(mRoomId, beforeId, this);
+        } else {
+            mView.networkError();
         }
-        mManager.getOlderMessages(mRoomId, beforeId, this);
     }
 
     @Override
@@ -100,18 +108,23 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
         super.unsetView();
         //make sure to end network tasks
         //mEventStream.dispose();
+
         if (mMessageStream != null) {
             mMessageStream.dispose();
         }
     }
 
+
     @Override
     public void setView(MessagingContract.MessagingView view) {
         super.setView(view);
         //start network streaming messages
-        mMessageStream = mManager.getMessageStream(mRoomId).subscribe(message -> {
-            if (mView != null) mView.addMessage(message);
-        });
+
+        if (mView.checkForConnection()) {
+            mMessageStream = mManager.getMessageStream(mRoomId).subscribe(message -> {
+                if (mView != null) mView.addMessage(message);
+            });
+        } else mView.networkError();
         //mEventStream = mManager.getEventStream(mRoomId).subscribe((Consumer<Event>) event -> {
         // if (mView != null) mView.addEvent(event);
         //});

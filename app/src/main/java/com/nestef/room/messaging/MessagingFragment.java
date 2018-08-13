@@ -1,6 +1,8 @@
 package com.nestef.room.messaging;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -24,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.util.FixedPreloadSizeProvider;
@@ -120,6 +123,22 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
         mRoom = room;
         mPresenter.setRoomId(room.id);
         updateMenu();
+    }
+
+    @Override
+    public void networkError() {
+        Toast.makeText(getContext(), R.string.network_error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public boolean checkForConnection() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null &&
+
+                activeNetwork.isConnectedOrConnecting();
     }
 
     @Nullable

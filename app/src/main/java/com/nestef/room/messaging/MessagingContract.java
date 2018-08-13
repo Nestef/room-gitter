@@ -33,6 +33,7 @@ public interface MessagingContract {
         void joinRoom();
 
         void leaveRoom();
+
     }
 
     interface MessagingView extends BaseView {
@@ -51,5 +52,9 @@ public interface MessagingContract {
         void showInputUi();
 
         void updateRoom(Room room);
+
+        void networkError();
+
+        boolean checkForConnection();
     }
 }

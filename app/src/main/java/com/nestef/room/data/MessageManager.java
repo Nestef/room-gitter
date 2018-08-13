@@ -187,7 +187,9 @@ public class MessageManager {
         @Override
         protected void onPostExecute(UnreadResponse unreadResponse) {
             super.onPostExecute(unreadResponse);
-            mCallback.returnUnreadIds(unreadResponse.chat);
+            if (unreadResponse != null) {
+                mCallback.returnUnreadIds(unreadResponse.chat);
+            }
         }
     }
 
@@ -215,7 +217,9 @@ public class MessageManager {
         @Override
         protected void onPostExecute(Room room) {
             super.onPostExecute(room);
-            mCallback.returnRoom(room);
+            if (room != null) {
+                mCallback.returnRoom(room);
+            }
         }
     }
 
