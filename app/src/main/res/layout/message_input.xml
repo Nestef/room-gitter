@@ -8,13 +8,13 @@
     android:elevation="2dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
+    android:descendantFocusability="afterDescendants"
     app:layout_constraintStart_toStartOf="parent">
 
     <LinearLayout
         android:id="@+id/message_layout_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:focusableInTouchMode="true"
         android:orientation="horizontal"
         android:visibility="gone">
 

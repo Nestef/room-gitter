@@ -8,13 +8,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -23,6 +24,10 @@ import com.nestef.room.data.DataManager;
 import com.nestef.room.data.LoaderProvider;
 import com.nestef.room.data.PrefManager;
 import com.nestef.room.model.Room;
+import com.nestef.room.provider.RoomProviderContract;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindInt;
 import butterknife.BindView;
@@ -35,12 +40,12 @@ import static com.nestef.room.util.Constants.AUTH_SHARED_PREF;
  * Created by Noah Steffes on 3/31/18.
  */
 
-public class PeopleFragment extends Fragment implements MainContract.PeopleView, RoomCursorAdapter.RoomCallback {
+public class PeopleFragment extends Fragment implements MainContract.PeopleView, RoomAdapter.RoomCallback {
 
     private static final String TAG = "PeopleFragment";
 
     @BindView(R.id.people_list)
-    ListView mPeopleList;
+    RecyclerView mPeopleList;
     @BindInt(R.integer.is_tablet)
     int isTablet;
     @Nullable
@@ -52,7 +57,7 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView,
     TextView mEmptyText;
 
     private Unbinder unbinder;
-    private RoomCursorAdapter roomCursorAdapter;
+    private RoomAdapter roomCursorAdapter;
     private PeoplePresenter presenter;
     private RoomFragment.RoomSelectionCallback mCallback;
 
@@ -119,11 +124,27 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView,
 
     @Override
     public void showChats(Cursor chats) {
-        roomCursorAdapter = new RoomCursorAdapter(getContext(), this);
-        mPeopleList.setDivider(null);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        List<Room> rooms = new ArrayList<>();
+        for (int i = 0; i < chats.getCount(); i++) {
+            chats.moveToPosition(i);
+            Room room = getRoomsFromCursor(chats);
+            rooms.add(room);
+        }
+        chats.close();
+        roomCursorAdapter = new RoomAdapter(rooms, this, false);
+        mPeopleList.setLayoutManager(linearLayoutManager);
         mPeopleList.setAdapter(roomCursorAdapter);
-        roomCursorAdapter.changeCursor(chats);
         mPeopleList.setVisibility(View.VISIBLE);
+    }
+
+    private Room getRoomsFromCursor(Cursor cursor) {
+        Room room = new Room();
+        room.id = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_ID));
+        room.unreadItems = cursor.getInt(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_UNREAD));
+        room.name = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_NAME));
+        room.avatarUrl = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_AVATARURL));
+        return room;
     }
 
     @Override

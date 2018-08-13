@@ -7,13 +7,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -22,6 +23,10 @@ import com.nestef.room.data.DataManager;
 import com.nestef.room.data.LoaderProvider;
 import com.nestef.room.data.PrefManager;
 import com.nestef.room.model.Group;
+import com.nestef.room.provider.RoomProviderContract;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindInt;
 import butterknife.BindView;
@@ -39,7 +44,7 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
     private static final String TAG = "GroupsFragment";
 
     @BindView(R.id.group_list)
-    ListView mGroupList;
+    RecyclerView mGroupList;
 
     @Nullable
     @BindView(R.id.default_toolbar)
@@ -106,12 +111,29 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
 
     @Override
     public void showGroups(Cursor groups) {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        List<Group> groups1 = new ArrayList<>();
+        for (int i = 0; i < groups.getCount(); i++) {
+            groups.moveToPosition(i);
+            Group group = getGroupFromCursor(groups);
+            groups1.add(group);
+        }
+        groups.close();
         mEmptyText.setVisibility(View.INVISIBLE);
         mGroupList.setVisibility(View.VISIBLE);
-        mGroupList.setDivider(null);
-        mGroupAdapter = new GroupAdapter(getContext(), this);
+        mGroupList.setLayoutManager(linearLayoutManager);
+        mGroupAdapter = new GroupAdapter(groups1, this);
         mGroupList.setAdapter(mGroupAdapter);
-        mGroupAdapter.changeCursor(groups);
+    }
+
+    private Group getGroupFromCursor(Cursor cursor) {
+        Group group = new Group();
+        group.name = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.GroupEntry.COLUMN_NAME));
+        group.avatarUrl = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.GroupEntry.COLUMN_AVATARURL));
+        group.uri = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.GroupEntry.COLUMN_URI));
+        group.homeUri = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.GroupEntry.COLUMN_HOMEURI));
+        group.id = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.GroupEntry.COLUMN_ID));
+        return group;
     }
 
     @Override

@@ -35,6 +35,7 @@
         app:layout_constraintBottom_toTopOf="@id/message_input_card"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:descendantFocusability="afterDescendants"
         app:layout_constraintTop_toBottomOf="@id/message_appbar" />
 
     <include layout="@layout/message_input" />
