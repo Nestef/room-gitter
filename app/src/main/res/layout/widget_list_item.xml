@@ -20,6 +20,7 @@
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/list_item_text_end"
         android:layout_toEndOf="@id/room_list_avatar_widget"
+        android:textColor="@color/textColorPrimary"
         android:textSize="@dimen/list_item_title" />
 
     <TextView
