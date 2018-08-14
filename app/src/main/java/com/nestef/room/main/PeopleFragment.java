@@ -131,7 +131,6 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView,
             Room room = getRoomsFromCursor(chats);
             rooms.add(room);
         }
-        chats.close();
         roomCursorAdapter = new RoomAdapter(rooms, this, false);
         mPeopleList.setLayoutManager(linearLayoutManager);
         mPeopleList.setAdapter(roomCursorAdapter);

@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
@@ -156,38 +157,6 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
         });
     }
 
-    private void setupNotifications() {
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (!preferences.getBoolean(getString(R.string.notification_pref_key), false)) {
-
-
-            FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                String description = getString(R.string.notification_channel_description);
-                int importance = NotificationManager.IMPORTANCE_DEFAULT;
-                NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_TITLE, importance);
-                channel.setDescription(description);
-                // Register the channel with the system; you can't change the importance
-                // or other notification behaviors after this
-                NotificationManager notificationManager = getSystemService(NotificationManager.class);
-                notificationManager.createNotificationChannel(channel);
-            }
-            Job notificationJob = dispatcher.newJobBuilder()
-                    .setService(NewMessagesJobService.class)
-                    .setRecurring(true)
-                    .setTag("new-messages-service")
-                    .setReplaceCurrent(true)
-                    .setRetryStrategy(RetryStrategy.DEFAULT_LINEAR)
-                    .setLifetime(Lifetime.FOREVER)
-                    .setTrigger(Trigger.executionWindow(0, 60))
-                    .addConstraint(Constraint.ON_ANY_NETWORK)
-                    .build();
-            dispatcher.schedule(notificationJob);
-        }
-    }
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -201,7 +170,6 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
         mCurrentFragmentTag = savedInstanceState.getString(SAVE_FRAGMENT_TAG);
         mNavigationIndex = savedInstanceState.getInt(NAV_INDEX);
         mBottomNavigation.setSelectedIndex(mNavigationIndex, false);
-        setFragment(SAVE_FRAGMENT_TAG);
     }
 
     @Override
@@ -219,13 +187,19 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
 
     private void setFragment(String tag) {
 
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStackImmediate();
+        }
+        if (mCurrentFragmentTag.equals(COMMUNITY_FRAGMENT_TAG) && getSupportFragmentManager().findFragmentByTag(COMMUNITY_FRAGMENT_TAG) == null) {
+            mCurrentFragmentTag = GROUPS_FRAGMENT_TAG;
+        }
         switch (tag) {
             case ROOM_FRAGMENT_TAG:
                 if (mRoomFragment == null) {
                     mRoomFragment = RoomFragment.newInstance();
                     addFragment(mRoomFragment, ROOM_FRAGMENT_TAG);
                 } else {
-                    showFragment(mRoomFragment);
+                    showFragment(mRoomFragment, ROOM_FRAGMENT_TAG);
                 }
                 break;
             case SEARCH_FRAGMENT_TAG:
@@ -233,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
                     mSearchFragment = SearchFragment.newInstance();
                     addFragment(mSearchFragment, SEARCH_FRAGMENT_TAG);
                 } else {
-                    showFragment(mSearchFragment);
+                    showFragment(mSearchFragment, SEARCH_FRAGMENT_TAG);
                 }
                 break;
             case PEOPLE_FRAGMENT_TAG:
@@ -241,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
                     mPeopleFragment = PeopleFragment.newInstance();
                     addFragment(mPeopleFragment, PEOPLE_FRAGMENT_TAG);
                 } else {
-                    showFragment(mPeopleFragment);
+                    showFragment(mPeopleFragment, PEOPLE_FRAGMENT_TAG);
                 }
                 break;
             case GROUPS_FRAGMENT_TAG:
@@ -249,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
                     mGroupsFragment = GroupsFragment.newInstance();
                     addFragment(mGroupsFragment, GROUPS_FRAGMENT_TAG);
                 } else {
-                    showFragment(mGroupsFragment);
+                    showFragment(mGroupsFragment, GROUPS_FRAGMENT_TAG);
                 }
                 break;
             case COMMUNITY_FRAGMENT_TAG:
@@ -257,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
                     mGroupsFragment = GroupsFragment.newInstance();
                     addFragment(mGroupsFragment, GROUPS_FRAGMENT_TAG);
                 } else {
-                    showFragment(mCommunityFragment);
+                    showFragment(mCommunityFragment, COMMUNITY_FRAGMENT_TAG);
                 }
             default:
                 break;
@@ -266,21 +240,31 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
 
     private void addFragment(Fragment fragment, String tag) {
 
-        getSupportFragmentManager()
+        FragmentTransaction f = getSupportFragmentManager()
                 .beginTransaction()
-                .add(mFragmentId, fragment, tag)
-                .hide(getSupportFragmentManager().findFragmentByTag(mCurrentFragmentTag))
-                .commit();
+                .add(mFragmentId, fragment, tag);
+        if (getSupportFragmentManager().findFragmentByTag(COMMUNITY_FRAGMENT_TAG) != null) {
+            f.hide(getSupportFragmentManager().findFragmentByTag(GROUPS_FRAGMENT_TAG));
+        }
+        if (getSupportFragmentManager().findFragmentByTag(mCurrentFragmentTag) != null) {
+            f.hide(getSupportFragmentManager().findFragmentByTag(mCurrentFragmentTag));
+        }
+        f.commit();
         fragment.onHiddenChanged(false);
     }
 
-    private void showFragment(Fragment fragment) {
+    private void showFragment(Fragment fragment, String tag) {
 
-        getSupportFragmentManager()
+        FragmentTransaction f = getSupportFragmentManager()
                 .beginTransaction()
-                .hide(getSupportFragmentManager().findFragmentByTag(mCurrentFragmentTag))
-                .show(fragment)
-                .commit();
+                .show(fragment);
+        if (getSupportFragmentManager().findFragmentByTag(mCurrentFragmentTag) != null) {
+            f.hide(getSupportFragmentManager().findFragmentByTag(mCurrentFragmentTag));
+        }
+        if (mCurrentFragmentTag.equals(COMMUNITY_FRAGMENT_TAG)) {
+            f.hide(getSupportFragmentManager().findFragmentByTag(GROUPS_FRAGMENT_TAG));
+        }
+        f.commit();
         fragment.onHiddenChanged(false);
     }
 
@@ -315,7 +299,7 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(mFragmentId, mCommunityFragment, COMMUNITY_FRAGMENT_TAG)
-                .hide(getSupportFragmentManager().findFragmentByTag(tags.get(mNavigationIndex)))
+                .hide(getSupportFragmentManager().findFragmentByTag(GROUPS_FRAGMENT_TAG))
                 .addToBackStack(COMMUNITY_FRAGMENT_TAG)
                 .commit();
     }
@@ -337,5 +321,37 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
         intent.setClass(this, MessagingActivity.class);
         intent.putExtra(ROOM_EXTRA, Parcels.wrap(room));
         startActivity(intent);
+    }
+
+    private void setupNotifications() {
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (!preferences.getBoolean(getString(R.string.notification_pref_key), false)) {
+
+
+            FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                String description = getString(R.string.notification_channel_description);
+                int importance = NotificationManager.IMPORTANCE_DEFAULT;
+                NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_TITLE, importance);
+                channel.setDescription(description);
+                // Register the channel with the system; you can't change the importance
+                // or other notification behaviors after this
+                NotificationManager notificationManager = getSystemService(NotificationManager.class);
+                notificationManager.createNotificationChannel(channel);
+            }
+            Job notificationJob = dispatcher.newJobBuilder()
+                    .setService(NewMessagesJobService.class)
+                    .setRecurring(true)
+                    .setTag("new-messages-service")
+                    .setReplaceCurrent(true)
+                    .setRetryStrategy(RetryStrategy.DEFAULT_LINEAR)
+                    .setLifetime(Lifetime.FOREVER)
+                    .setTrigger(Trigger.executionWindow(0, 60))
+                    .addConstraint(Constraint.ON_ANY_NETWORK)
+                    .build();
+            dispatcher.schedule(notificationJob);
+        }
     }
 }

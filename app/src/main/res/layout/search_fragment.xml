@@ -17,6 +17,7 @@
         android:layout_marginTop="@dimen/list_vertical_margin"
         android:descendantFocusability="afterDescendants"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_weight="0"
         app:layout_constraintTop_toBottomOf="@id/search_appbar" />
 
 

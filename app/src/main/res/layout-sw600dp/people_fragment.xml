@@ -8,16 +8,17 @@
         layout="@layout/progress_bar"
         android:visibility="gone" />
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/people_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:paddingBottom="@dimen/list_vertical_margin"
         android:paddingTop="@dimen/list_vertical_margin"
-        android:clickable="true"
-        android:focusable="true"
-        android:listSelector="@color/listItemSelected"
-        app:layout_constraintTop_toBottomOf="@id/default_appbar" />
+        android:layout_height="0dp"
+        android:descendantFocusability="afterDescendants"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0" />
+
 
     <TextView
         android:id="@+id/people_empty_text"

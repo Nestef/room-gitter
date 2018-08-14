@@ -132,7 +132,6 @@ public class RoomFragment extends Fragment implements MainContract.RoomView, Roo
             Room room = getRoomsFromCursor(rooms);
             rooms1.add(room);
         }
-        rooms.close();
         mEmptyMessage.setVisibility(View.GONE);
         mRoomList.setLayoutManager(linearLayoutManager);
         mRoomList.setVisibility(View.VISIBLE);

@@ -118,7 +118,6 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
             Group group = getGroupFromCursor(groups);
             groups1.add(group);
         }
-        groups.close();
         mEmptyText.setVisibility(View.INVISIBLE);
         mGroupList.setVisibility(View.VISIBLE);
         mGroupList.setLayoutManager(linearLayoutManager);
@@ -139,6 +138,7 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
     @Override
     public void showLoadingIndicator() {
         mGroupList.setVisibility(View.GONE);
+        mEmptyText.setVisibility(View.INVISIBLE);
         mLoadingIndicator.setVisibility(View.VISIBLE);
     }
 
