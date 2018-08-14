@@ -41,6 +41,7 @@ import com.nestef.room.util.Constants;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindInt;
@@ -267,6 +268,10 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
             if (mLayoutManager.findLastVisibleItemPosition() == mMessageAdapter.getItemCount() - 2) {
                 mMessageList.scrollToPosition(mMessageAdapter.getItemCount() - 1);
             }
+        } else {
+            List<Message> newList = new ArrayList<>();
+            newList.add(message);
+            showMessages(newList);
         }
     }
 

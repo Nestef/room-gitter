@@ -75,43 +75,46 @@ public class DataManager {
         }
 
         //Add rooms to database
-        for (Room room : split.get(false)) {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(RoomProviderContract.RoomEntry.COLUMN_ID,
-                    room.id);
-            contentValues.put(RoomProviderContract.RoomEntry.COLUMN_NAME,
-                    room.name);
-            contentValues.put(RoomProviderContract.RoomEntry.COLUMN_AVATARURL,
-                    room.avatarUrl);
-            contentValues.put(RoomProviderContract.RoomEntry.COLUMN_UNREAD,
-                    room.unreadItems);
-            contentValues.put(RoomProviderContract.RoomEntry.COLUMN_USER_COUNT,
-                    room.userCount);
-            contentValues.put(RoomProviderContract.RoomEntry.COLUMN_FAVOURITE,
-                    room.favourite);
-            contentValues.put(RoomProviderContract.RoomEntry.COLUMN_MEMBER, String.valueOf(room.roomMember));
-            mContentResolver
-                    .insert(RoomProviderContract.RoomEntry.CONTENT_URI, contentValues);
+        if (split.get(false) != null) {
+            for (Room room : split.get(false)) {
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(RoomProviderContract.RoomEntry.COLUMN_ID,
+                        room.id);
+                contentValues.put(RoomProviderContract.RoomEntry.COLUMN_NAME,
+                        room.name);
+                contentValues.put(RoomProviderContract.RoomEntry.COLUMN_AVATARURL,
+                        room.avatarUrl);
+                contentValues.put(RoomProviderContract.RoomEntry.COLUMN_UNREAD,
+                        room.unreadItems);
+                contentValues.put(RoomProviderContract.RoomEntry.COLUMN_USER_COUNT,
+                        room.userCount);
+                contentValues.put(RoomProviderContract.RoomEntry.COLUMN_FAVOURITE,
+                        room.favourite);
+                contentValues.put(RoomProviderContract.RoomEntry.COLUMN_MEMBER, String.valueOf(room.roomMember));
+                mContentResolver
+                        .insert(RoomProviderContract.RoomEntry.CONTENT_URI, contentValues);
+            }
         }
-        for (Room room : split.get(true)) {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(RoomProviderContract.PrivateRoomEntry.COLUMN_ID,
-                    room.id);
-            contentValues.put(RoomProviderContract.PrivateRoomEntry.COLUMN_NAME,
-                    room.name);
-            contentValues.put(RoomProviderContract.PrivateRoomEntry.COLUMN_AVATARURL,
-                    room.avatarUrl);
-            contentValues.put(RoomProviderContract.PrivateRoomEntry.COLUMN_UNREAD,
-                    room.unreadItems);
-            contentValues.put(RoomProviderContract.PrivateRoomEntry.COLUMN_USER_COUNT,
-                    room.userCount);
-            contentValues.put(RoomProviderContract.PrivateRoomEntry.COLUMN_FAVOURITE,
-                    room.favourite);
-            contentValues.put(RoomProviderContract.PrivateRoomEntry.COLUMN_MEMBER, String.valueOf(room.roomMember));
-            mContentResolver
-                    .insert(RoomProviderContract.PrivateRoomEntry.CONTENT_URI, contentValues);
+        if (split.get(true) != null) {
+            for (Room room : split.get(true)) {
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(RoomProviderContract.PrivateRoomEntry.COLUMN_ID,
+                        room.id);
+                contentValues.put(RoomProviderContract.PrivateRoomEntry.COLUMN_NAME,
+                        room.name);
+                contentValues.put(RoomProviderContract.PrivateRoomEntry.COLUMN_AVATARURL,
+                        room.avatarUrl);
+                contentValues.put(RoomProviderContract.PrivateRoomEntry.COLUMN_UNREAD,
+                        room.unreadItems);
+                contentValues.put(RoomProviderContract.PrivateRoomEntry.COLUMN_USER_COUNT,
+                        room.userCount);
+                contentValues.put(RoomProviderContract.PrivateRoomEntry.COLUMN_FAVOURITE,
+                        room.favourite);
+                contentValues.put(RoomProviderContract.PrivateRoomEntry.COLUMN_MEMBER, String.valueOf(room.roomMember));
+                mContentResolver
+                        .insert(RoomProviderContract.PrivateRoomEntry.CONTENT_URI, contentValues);
+            }
         }
-
     }
 
     private void saveGroups(List<Group> groups) {

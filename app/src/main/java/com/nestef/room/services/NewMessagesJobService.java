@@ -58,6 +58,9 @@ public class NewMessagesJobService extends JobService {
 
                 PrefManager prefManager = PrefManager
                         .getInstance(getSharedPreferences(Constants.AUTH_SHARED_PREF, MODE_PRIVATE));
+                if (prefManager.getAuthToken() == null) {
+                    jobFinished(job, false);
+                }
                 mApiService = GitterServiceFactory.makeApiService(prefManager.getAuthToken());
 
                 Cursor[] cursors = getRooms();
@@ -75,8 +78,11 @@ public class NewMessagesJobService extends JobService {
                     cursor0.moveToPosition(i);
                     Room room = getRoomsFromCursor(cursor0);
                     try {
-                        UnreadResponse response = mApiService.getUnread(userId, room.id).execute().body();
-                        roomResponses.add(response);
+                        if (userId != null) {
+                            UnreadResponse response = mApiService.getUnread(userId, room.id).execute().body();
+
+                            roomResponses.add(response);
+                        }
                         rooms.add(room);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -88,8 +94,10 @@ public class NewMessagesJobService extends JobService {
                     cursor1.moveToPosition(i);
                     Room room = getRoomsFromCursor(cursor1);
                     try {
-                        UnreadResponse response = mApiService.getUnread(userId, room.id).execute().body();
-                        privateRoomResponses.add(response);
+                        if (userId != null) {
+                            UnreadResponse response = mApiService.getUnread(userId, room.id).execute().body();
+                            privateRoomResponses.add(response);
+                        }
                         privateRooms.add(room);
                     } catch (IOException e) {
                         e.printStackTrace();

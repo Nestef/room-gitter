@@ -67,13 +67,16 @@ class RoomViewFactory implements RemoteViewsService.RemoteViewsFactory {
                     .execute()
                     .body();
             List<Room> remove = new ArrayList<>();
-            for (Room room : mRooms) {
-                if (room.oneToOne) {
-                    remove.add(room);
+            if (mRooms != null) {
+                for (Room room : mRooms) {
+                    if (room.oneToOne) {
+                        remove.add(room);
+                    }
                 }
+
+                mRooms.removeAll(remove);
+                Collections.sort(mRooms);
             }
-            mRooms.removeAll(remove);
-            Collections.sort(mRooms);
         } catch (IOException i) {
             i.printStackTrace();
         }
