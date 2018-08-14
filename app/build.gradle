@@ -34,9 +34,9 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField ('String', 'OAuthId', '"0aadae9f7bcb70f0864cc15775f612701e3bcef7"')
-            buildConfigField ('String', 'OAuthSecret', '"0164ef468b58bdb8f07abecd6b101e6cd572a6d4"')
-            buildConfigField ('String', "RedirectUrl", '"app://releasetest"')
+            buildConfigField 'String', 'OAuthId', oauth_key
+            buildConfigField 'String', 'OAuthSecret', oauth_secret
+            buildConfigField 'String', "RedirectUrl", redirect_url
             signingConfig signingConfigs.release
         }
     }
@@ -116,6 +116,8 @@ dependencies {
 
     implementation 'io.reactivex.rxjava2:rxjava:2.1.14'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+
+    implementation 'com.github.marcoscgdev:EasyLicensesDialog:2.0.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

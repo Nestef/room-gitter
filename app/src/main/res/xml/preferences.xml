@@ -15,4 +15,7 @@
     <Preference
         android:key="@string/logout_pref_key"
         android:title="@string/logout_pref_title" />
+    <Preference
+        android:key="@string/licenses_pref_key"
+        android:title="@string/licenses_pref_title" />
 </PreferenceScreen>

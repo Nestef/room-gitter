@@ -32,6 +32,9 @@
     <string name="notification_pref_title">Disable Notifications</string>
     <string name="notification_pref_key" translatable="false">notifications</string>
     <string name="notification_pref_summary">Disable all notifications</string>
+    <string name="licenses_pref_key" translatable="false">licenses</string>
+    <string name="licenses_pref_title">Licenses</string>
+    <string name="license_dialog_title">Licenses</string>
     <!-- Messaging -->
     <string name="message_input_hint">Type a message</string>
     <string name="join_room_button">Join room</string>

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
+import com.marcoscg.easylicensesdialog.EasyLicensesDialogCompat;
 import com.nestef.room.R;
 import com.nestef.room.auth.AuthActivity;
 import com.nestef.room.data.PrefManager;
@@ -37,6 +38,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             getActivity().finish();
             return true;
         }));
+        findPreference(getString(R.string.licenses_pref_key)).setOnPreferenceClickListener(preference -> {
+            new EasyLicensesDialogCompat(getContext())
+                    .setTitle(getString(R.string.license_dialog_title))
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show();
+            return true;
+        });
     }
 
 }
