@@ -1,5 +1,7 @@
 package com.nestef.room.messaging;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -38,6 +40,7 @@ import com.nestef.room.model.Message;
 import com.nestef.room.model.Room;
 import com.nestef.room.preferences.ThemeChanger;
 import com.nestef.room.util.Constants;
+import com.nestef.room.widget.RoomWidgetProvider;
 
 import org.parceler.Parcels;
 
@@ -216,6 +219,7 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
         switch (item.getItemId()) {
             case R.id.leave_room_item:
                 mPresenter.leaveRoom();
+                updateWidget();
                 mPresenter.checkRoomMembership(mRoom);
                 return true;
             default:
@@ -292,9 +296,17 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
         mJoinLayout.setVisibility(View.VISIBLE);
         mJoinButton.setOnClickListener(v -> {
             mPresenter.joinRoom();
+            updateWidget();
             mPresenter.checkRoomMembership(mRoom);
         });
         isInputable = false;
+    }
+
+    private void updateWidget() {
+        ComponentName thisWidget = new ComponentName(getContext(), RoomWidgetProvider.class);
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getContext());
+        int[] ids = appWidgetManager.getAppWidgetIds(thisWidget);
+        appWidgetManager.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
     }
 
     @Override
