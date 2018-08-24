@@ -1,7 +1,5 @@
 package com.nestef.room.model;
 
-import android.support.annotation.NonNull;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -9,6 +7,8 @@ import org.parceler.Parcel;
 
 import java.util.Date;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 /**
  * Created by Noah Steffes on 4/16/18.

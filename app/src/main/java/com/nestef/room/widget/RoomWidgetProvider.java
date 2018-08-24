@@ -6,12 +6,13 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v4.app.TaskStackBuilder;
 import android.widget.RemoteViews;
 
 import com.nestef.room.R;
 import com.nestef.room.main.MainActivity;
 import com.nestef.room.util.Constants;
+
+import androidx.core.app.TaskStackBuilder;
 
 /**
  * Created by Noah Steffes on 5/24/18.

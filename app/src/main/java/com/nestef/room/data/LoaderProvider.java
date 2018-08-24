@@ -2,10 +2,11 @@ package com.nestef.room.data;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 
 import com.nestef.room.provider.RoomProviderContract;
+
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
 
 /**
  * Created by Noah Steffes on 5/22/18.

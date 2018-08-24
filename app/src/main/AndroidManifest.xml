@@ -3,6 +3,7 @@
     package="com.nestef.room">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
 
     <application
@@ -31,15 +32,6 @@
             android:name=".messaging.MessagingActivity"
             android:windowSoftInputMode="adjustResize"
             android:parentActivityName=".main.MainActivity" />
-        <activity android:name=".search.SearchActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
-
-        </activity>
         <activity
             android:name=".preferences.PreferencesActivity"
             android:parentActivityName=".main.MainActivity" />

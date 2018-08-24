@@ -6,12 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.preference.PreferenceManager;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.firebase.jobdispatcher.Constraint;
@@ -36,6 +30,12 @@ import org.parceler.Parcels;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.PreferenceManager;
 import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
     BottomNavigation mBottomNavigation;
     @BindInt(R.integer.is_tablet)
     int mIsTablet;
-    @android.support.annotation.Nullable
+    @androidx.annotation.Nullable
     @BindView(R.id.default_toolbar)
     Toolbar mDefaultToolbar;
 

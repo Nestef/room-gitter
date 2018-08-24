@@ -1,13 +1,14 @@
 package com.nestef.room.messaging;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 
 import com.nestef.room.R;
 import com.nestef.room.model.Room;
 import com.nestef.room.preferences.ThemeChanger;
 
 import org.parceler.Parcels;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MessagingActivity extends AppCompatActivity {
 

@@ -8,10 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationCompat.MessagingStyle;
-import android.support.v4.app.TaskStackBuilder;
-import android.support.v7.preference.PreferenceManager;
 
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
@@ -30,10 +26,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationCompat.MessagingStyle;
+import androidx.core.app.TaskStackBuilder;
+import androidx.preference.PreferenceManager;
 import ru.noties.markwon.Markwon;
 
-import static android.support.v4.app.NotificationCompat.GROUP_ALERT_SUMMARY;
 import static android.text.Html.fromHtml;
+import static androidx.core.app.NotificationCompat.GROUP_ALERT_SUMMARY;
 import static com.nestef.room.util.Constants.NOTIFICATION_CHANNEL_ID;
 import static com.nestef.room.util.Constants.NOTIFICATION_GROUP_ID;
 import static com.nestef.room.util.Constants.WIDGET_ROOM_ITEM;

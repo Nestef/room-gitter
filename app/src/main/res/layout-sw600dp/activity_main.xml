@@ -5,7 +5,7 @@
     android:baselineAligned="false"
     android:orientation="horizontal">
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -21,9 +21,9 @@
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/bbn_bottom_navigation_width"
             android:layout_marginTop="?actionBarSize" />
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="2"
@@ -33,7 +33,7 @@
             android:id="@+id/message_holder"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
 </LinearLayout>

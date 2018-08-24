@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.preference.PreferenceFragmentCompat;
 
 import com.marcoscg.easylicensesdialog.EasyLicensesDialogCompat;
 import com.nestef.room.R;
@@ -12,6 +11,8 @@ import com.nestef.room.auth.AuthActivity;
 import com.nestef.room.data.PrefManager;
 import com.nestef.room.provider.RoomProviderContract;
 import com.nestef.room.util.Constants;
+
+import androidx.preference.PreferenceFragmentCompat;
 
 /**
  * Created by Noah Steffes on 5/17/18.

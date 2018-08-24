@@ -3,12 +3,13 @@ package com.nestef.room.main;
 
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 
 import com.nestef.room.base.BasePresenter;
 import com.nestef.room.data.DataManager;
 import com.nestef.room.data.LoaderProvider;
+
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
 
 /**
  * Created by Noah Steffes on 4/11/18.
