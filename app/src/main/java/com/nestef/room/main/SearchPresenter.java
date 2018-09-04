@@ -12,7 +12,7 @@ import java.util.List;
 
 public class SearchPresenter extends BasePresenter<MainContract.SearchView> implements MainContract.SearchViewActions, SearchManager.SearchCallback {
 
-    SearchManager mManager;
+    private SearchManager mManager;
 
     SearchPresenter(SearchManager manager) {
         mManager = manager;

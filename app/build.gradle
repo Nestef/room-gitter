@@ -30,6 +30,7 @@ android {
             buildConfigField 'String', 'OAuthSecret', oauth_secret
             buildConfigField 'String', "RedirectUrl", redirect_url
             minifyEnabled false
+            testCoverageEnabled = true
         }
         release {
             minifyEnabled true
