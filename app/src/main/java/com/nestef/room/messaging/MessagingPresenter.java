@@ -4,10 +4,14 @@ import com.nestef.room.base.BasePresenter;
 import com.nestef.room.data.MessageManager;
 import com.nestef.room.model.Message;
 import com.nestef.room.model.Room;
+import com.nestef.room.model.UnreadResponse;
 
 import java.util.List;
 
 import io.reactivex.disposables.Disposable;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Noah Steffes on 3/23/18.
@@ -19,17 +23,16 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
 
     public String mUserId;
 
-    @Override
-    public void fetchUnreadIds() {
-        mManager.getUnreadMessages(mUserId, mRoomId, this);
-    }
+    private String mRoomId;
 
     @Override
     public void returnUnreadIds(List<String> messageIds) {
         markRead(messageIds);
     }
 
-    public String mRoomId;
+    MessagingPresenter(MessageManager messageManager) {
+        mManager = messageManager;
+    }
 
     private MessageManager mManager;
 
@@ -37,8 +40,19 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
 
     private Disposable mEventStream;
 
-    public MessagingPresenter(MessageManager messageManager) {
-        mManager = messageManager;
+    @Override
+    public void fetchUnreadIds() {
+        mManager.getUnreadMessages(mUserId, mRoomId, new Callback<UnreadResponse>() {
+            @Override
+            public void onResponse(Call<UnreadResponse> call, Response<UnreadResponse> response) {
+                returnUnreadIds(response.body().chat);
+            }
+
+            @Override
+            public void onFailure(Call<UnreadResponse> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     @Override
@@ -54,7 +68,17 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
     @Override
     public void fetchMessages() {
         if (mView.checkForConnection()) {
-            mManager.getMessages(mRoomId, this);
+            mManager.getMessages(mRoomId, new Callback<List<Message>>() {
+                @Override
+                public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
+                    returnMessages(response.body());
+                }
+
+                @Override
+                public void onFailure(Call<List<Message>> call, Throwable t) {
+                    fetchMessageError();
+                }
+            });
             if (mView != null) {
                 mView.showLoadingIndicator();
             }
@@ -77,7 +101,17 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
             if (mView != null) {
                 mView.showLoadingIndicator();
             }
-            mManager.getOlderMessages(mRoomId, beforeId, this);
+            mManager.getOlderMessages(mRoomId, beforeId, new Callback<List<Message>>() {
+                @Override
+                public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
+                    olderMessages(response.body());
+                }
+
+                @Override
+                public void onFailure(Call<List<Message>> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
         } else {
             mView.networkError();
         }
@@ -156,7 +190,17 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
 
     @Override
     public void checkRoomMembership(Room room) {
-        mManager.getRoom(this, room.id);
+        mManager.getRoom(room.id, new Callback<Room>() {
+            @Override
+            public void onResponse(Call<Room> call, Response<Room> response) {
+                returnRoom(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Room> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     @Override
