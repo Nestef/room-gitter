@@ -30,6 +30,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationCompat.MessagingStyle;
 import androidx.core.app.TaskStackBuilder;
 import androidx.preference.PreferenceManager;
+import retrofit2.Response;
 import ru.noties.markwon.Markwon;
 
 import static android.text.Html.fromHtml;
@@ -79,9 +80,10 @@ public class NewMessagesJobService extends JobService {
                     Room room = getRoomsFromCursor(cursor0);
                     try {
                         if (userId != null) {
-                            UnreadResponse response = mApiService.getUnread(userId, room.id).execute().body();
-
-                            roomResponses.add(response);
+                            Response<UnreadResponse> response = mApiService.getUnread(userId, room.id).execute();
+                            if (response.code() == 200) {
+                                roomResponses.add(response.body());
+                            }
                         }
                         rooms.add(room);
                     } catch (IOException e) {
@@ -184,9 +186,7 @@ public class NewMessagesJobService extends JobService {
         MessagingStyle messagingStyle = new MessagingStyle("")
                 .setConversationTitle(room.name);
         for (Message m : messages) {
-            if (m != null) {
-                messagingStyle.addMessage(Markwon.markdown(context, m.text), m.sent.getTime(), fromHtml("<b>" + m.fromUser.name + ":</b>"));
-            }
+            messagingStyle.addMessage(Markwon.markdown(context, m.text), m.sent.getTime(), fromHtml("<b>" + m.fromUser.name + ":</b>"));
         }
 
         Intent intent = new Intent(context, MainActivity.class);
