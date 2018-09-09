@@ -1,13 +1,16 @@
 package com.nestef.room.data;
 
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 
 import com.nestef.room.model.User;
 import com.nestef.room.services.GitterApiService;
 import com.nestef.room.services.GitterServiceFactory;
 
-import java.io.IOException;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.nestef.room.util.Constants.AUTH_TOKEN_PREF;
 import static com.nestef.room.util.Constants.USER_ID_PREF;
@@ -49,7 +52,24 @@ public class PrefManager {
         if (mService == null) {
             mService = GitterServiceFactory.makeApiService(getAuthToken());
         }
-        new UserIdAsyncTask().execute();
+        mService.getPersonalProfile().enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+
+
+                User user = response.body().get(0);
+                if (user != null) {
+                    SharedPreferences.Editor editor = mPreferences.edit();
+                    editor.putString(USER_ID_PREF, user.id);
+                    editor.apply();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     public void deleteAuthToken() {
@@ -64,23 +84,4 @@ public class PrefManager {
         return mPreferences.getString(USER_ID_PREF, null);
     }
 
-    class UserIdAsyncTask extends AsyncTask<Void, Void, User> {
-        @Override
-        protected User doInBackground(Void... voids) {
-            try {
-                return mService.getPersonalProfile().execute().body().get(0);
-            } catch (IOException i) {
-                i.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(User user) {
-            super.onPostExecute(user);
-            SharedPreferences.Editor editor = mPreferences.edit();
-            editor.putString(USER_ID_PREF, user.id);
-            editor.apply();
-        }
-    }
 }

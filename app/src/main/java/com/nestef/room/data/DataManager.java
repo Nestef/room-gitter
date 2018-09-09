@@ -2,7 +2,6 @@ package com.nestef.room.data;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.os.AsyncTask;
 
 import com.nestef.room.model.Group;
 import com.nestef.room.model.Room;
@@ -10,11 +9,14 @@ import com.nestef.room.provider.RoomProviderContract;
 import com.nestef.room.services.GitterApiService;
 import com.nestef.room.services.GitterServiceFactory;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Noah Steffes on 5/22/18.
@@ -27,14 +29,11 @@ public class DataManager {
 
     private ContentResolver mContentResolver;
 
-    private PrefManager mPrefManager;
-
     private DataCallback mCallback;
 
     private DataManager(ContentResolver contentResolver, PrefManager prefManager) {
         mContentResolver = contentResolver;
-        mPrefManager = prefManager;
-        mApiService = GitterServiceFactory.makeApiService(mPrefManager.getAuthToken());
+        mApiService = GitterServiceFactory.makeApiService(prefManager.getAuthToken());
     }
 
     public static DataManager getInstance(ContentResolver contentResolver, PrefManager prefManager) {
@@ -45,16 +44,51 @@ public class DataManager {
     }
 
     public void getRooms() {
-        new RoomAsyncTask().execute();
+        mApiService.getRooms().enqueue(new Callback<List<Room>>() {
+            @Override
+            public void onResponse(Call<List<Room>> call, Response<List<Room>> response) {
+                List<Room> rooms = response.body();
+                if (rooms != null) {
+                    saveRooms(rooms);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Room>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     public void getGroups() {
-        new GroupAsyncTask().execute();
+        mApiService.getGroups().enqueue(new Callback<List<Group>>() {
+            @Override
+            public void onResponse(Call<List<Group>> call, Response<List<Group>> response) {
+                List<Group> groups = response.body();
+                if (groups != null) {
+                    saveGroups(groups);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Group>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     public void getCommunityRooms(String groupId, DataCallback callback) {
-        mCallback = callback;
-        new CommunityAsyncTask().execute(groupId);
+        mApiService.getGroupRooms(groupId).enqueue(new Callback<List<Room>>() {
+            @Override
+            public void onResponse(Call<List<Room>> call, Response<List<Room>> response) {
+                callback.onCall(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<Room>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
 
@@ -136,67 +170,7 @@ public class DataManager {
         }
     }
 
-
-    class RoomAsyncTask extends AsyncTask<Void, Void, List<Room>> {
-        @Override
-        protected List<Room> doInBackground(Void... voids) {
-            try {
-                return mApiService.getRooms().execute().body();
-            } catch (IOException io) {
-                io.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<Room> rooms) {
-            super.onPostExecute(rooms);
-            if (rooms != null) {
-                saveRooms(rooms);
-            }
-        }
-    }
-
-    class GroupAsyncTask extends AsyncTask<Void, Void, List<Group>> {
-        @Override
-        protected List<Group> doInBackground(Void... voids) {
-            try {
-                return mApiService.getGroups().execute().body();
-            } catch (IOException io) {
-                io.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<Group> groups) {
-            super.onPostExecute(groups);
-            if (groups != null) {
-                saveGroups(groups);
-            }
-        }
-    }
-
     public interface DataCallback {
         void onCall(List<Room> data);
-    }
-
-    class CommunityAsyncTask extends AsyncTask<String, Void, List<Room>> {
-
-        @Override
-        protected List<Room> doInBackground(String... strings) {
-            try {
-                return mApiService.getGroupRooms(strings[0]).execute().body();
-            } catch (IOException i) {
-                i.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<Room> rooms) {
-            super.onPostExecute(rooms);
-            mCallback.onCall(rooms);
-        }
     }
 }

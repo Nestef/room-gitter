@@ -184,7 +184,9 @@ public class NewMessagesJobService extends JobService {
         MessagingStyle messagingStyle = new MessagingStyle("")
                 .setConversationTitle(room.name);
         for (Message m : messages) {
-            messagingStyle.addMessage(Markwon.markdown(context, m.text), m.sent.getTime(), fromHtml("<b>" + m.fromUser.name + ":</b>"));
+            if (m != null) {
+                messagingStyle.addMessage(Markwon.markdown(context, m.text), m.sent.getTime(), fromHtml("<b>" + m.fromUser.name + ":</b>"));
+            }
         }
 
         Intent intent = new Intent(context, MainActivity.class);
