@@ -5,7 +5,6 @@ import android.database.Cursor;
 import com.nestef.room.data.DataManager;
 import com.nestef.room.data.LoaderProvider;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -56,9 +55,4 @@ public class GroupsPresenterTest {
         verify(mView).showEmpty();
     }
 
-    @Test
-    public void testUnsetView() {
-        mGroupsPresenter.unsetView();
-        Assert.assertNull(mGroupsPresenter.);
-    }
 }
