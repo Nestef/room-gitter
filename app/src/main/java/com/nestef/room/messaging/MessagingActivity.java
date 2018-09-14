@@ -16,7 +16,7 @@ public class MessagingActivity extends AppCompatActivity {
 
     private final String MESSAGE_FRAGMENT_TAG = "message_fragment";
 
-    int mContainerId = R.id.messaging_fragment;
+    private int mContainerId = R.id.messaging_fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

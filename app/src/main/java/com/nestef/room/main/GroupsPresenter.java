@@ -1,69 +1,68 @@
 package com.nestef.room.main;
 
 
-import android.database.Cursor;
-import android.os.Bundle;
-
 import com.nestef.room.base.BasePresenter;
 import com.nestef.room.data.DataManager;
-import com.nestef.room.data.LoaderProvider;
+import com.nestef.room.model.Group;
 
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
+import java.util.List;
+
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LifecycleRegistry;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 
 /**
  * Created by Noah Steffes on 4/11/18.
  */
-public class GroupsPresenter extends BasePresenter<MainContract.GroupsView> implements MainContract.GroupsViewActions, LoaderManager.LoaderCallbacks<Cursor> {
+public class GroupsPresenter extends BasePresenter<MainContract.GroupsView> implements MainContract.GroupsViewActions, LifecycleOwner {
 
     private final static String TAG = "GroupsPresenter";
-    private static final int GROUP_LOADER = 143;
     private DataManager mDataManager;
-    private LoaderProvider mLoaderProvider;
-    private LoaderManager mLoaderManager;
+
+    private Observer<List<Group>> mObserver = groups -> {
+        if (groups != null) {
+            mView.hideLoadingIndicator();
+            mView.showGroups(groups);
+        } else {
+            mView.hideLoadingIndicator();
+            mView.showEmpty();
+        }
+    };
+
+    private LifecycleRegistry mLifecycleRegistry;
 
 
-    GroupsPresenter(DataManager dataManager, LoaderProvider loaderProvider, LoaderManager loaderManager) {
+    GroupsPresenter(DataManager dataManager) {
         mDataManager = dataManager;
-        mLoaderProvider = loaderProvider;
-        mLoaderManager = loaderManager;
     }
 
     @Override
     public void fetchGroups() {
         mView.showLoadingIndicator();
-        mDataManager.getGroups();
-        if (mLoaderManager.getLoader(GROUP_LOADER) == null) {
-            mLoaderManager.initLoader(GROUP_LOADER, null, this);
-        } else {
-            mLoaderManager.restartLoader(GROUP_LOADER, null, this);
+        //need to add databinding, viewmodel,
+        LiveData<List<Group>> groups = mDataManager.getGroups();
+        if (groups != null) {
+            groups.observe(this, mObserver);
         }
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return mLoaderProvider.createGroupLoader();
+    public void setView(MainContract.GroupsView view) {
+        super.setView(view);
+        mLifecycleRegistry = new LifecycleRegistry(this);
+        mLifecycleRegistry.markState(Lifecycle.State.STARTED);
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data != null) {
-            if (data.moveToLast()) {
-                mView.hideLoadingIndicator();
-                mView.showGroups(data);
-            } else {
-                mView.hideLoadingIndicator();
-                mView.showEmpty();
-            }
-        } else {
-            mView.hideLoadingIndicator();
-            mView.showEmpty();
-        }
-
+    public void unsetView() {
+        super.unsetView();
+        mLifecycleRegistry.markState(Lifecycle.State.DESTROYED);
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
+    public Lifecycle getLifecycle() {
+        return mLifecycleRegistry;
     }
 }

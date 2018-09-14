@@ -3,27 +3,27 @@ package com.nestef.room.services;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 import com.nestef.room.R;
 import com.nestef.room.data.PrefManager;
+import com.nestef.room.db.AppDatabase;
+import com.nestef.room.db.RoomDao;
 import com.nestef.room.main.MainActivity;
 import com.nestef.room.model.Message;
 import com.nestef.room.model.Room;
 import com.nestef.room.model.UnreadResponse;
-import com.nestef.room.provider.RoomProviderContract;
 import com.nestef.room.util.Constants;
 
 import org.parceler.Parcels;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import androidx.core.app.NotificationCompat;
@@ -46,9 +46,11 @@ public class NewMessagesJobService extends JobService {
 
     private static final String TAG = "NewMessagesJobService";
 
-    GitterApiService mApiService;
+    private GitterApiService mApiService;
 
-    boolean mGroupSummary = false;
+    private boolean mGroupSummary = false;
+
+    private RoomDao mDao;
 
     @Override
     public boolean onStartJob(final JobParameters job) {
@@ -59,58 +61,53 @@ public class NewMessagesJobService extends JobService {
 
                 PrefManager prefManager = PrefManager
                         .getInstance(getSharedPreferences(Constants.AUTH_SHARED_PREF, MODE_PRIVATE));
+                AppDatabase appDatabase = AppDatabase.getDatabase(this);
+                mDao = appDatabase.roomDao();
                 if (prefManager.getAuthToken() == null) {
                     jobFinished(job, false);
                 }
                 mApiService = GitterServiceFactory.makeApiService(prefManager.getAuthToken());
 
-                Cursor[] cursors = getRooms();
+                List<List<Room>> data = getRooms(mDao);
 
                 List<UnreadResponse> roomResponses = new ArrayList<>();
                 List<UnreadResponse> privateRoomResponses = new ArrayList<>();
-                List<Room> rooms = new ArrayList<>();
-                List<Room> privateRooms = new ArrayList<>();
+                List<Room> rooms = data.get(0);
+                List<Room> privateRooms = data.get(1);
                 String userId = prefManager.getUserId();
 
                 // for subscribed rooms
                 // make api call for unreadmessages
-                Cursor cursor0 = cursors[0];
-                for (int i = 0; i < cursor0.getCount(); i++) {
-                    cursor0.moveToPosition(i);
-                    Room room = getRoomsFromCursor(cursor0);
-                    try {
-                        if (userId != null) {
-                            Response<UnreadResponse> response = mApiService.getUnread(userId, room.id).execute();
-                            if (response.code() == 200) {
-                                roomResponses.add(response.body());
+                if (rooms != null) {
+                    for (int i = 0; i < rooms.size(); i++) {
+                        Room room = rooms.get(i);
+                        try {
+                            if (userId != null) {
+                                Response<UnreadResponse> response = mApiService.getUnread(userId, room.id).execute();
+                                if (response.code() == 200) {
+                                    roomResponses.add(response.body());
+                                }
                             }
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-                        rooms.add(room);
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
+                    processUnread(rooms, roomResponses, true);
                 }
-                Cursor cursor1 = cursors[1];
-                for (int i = 0; i < cursor1.getCount(); i++) {
-
-                    cursor1.moveToPosition(i);
-                    Room room = getRoomsFromCursor(cursor1);
-                    try {
-                        if (userId != null) {
-                            UnreadResponse response = mApiService.getUnread(userId, room.id).execute().body();
-                            privateRoomResponses.add(response);
+                if (privateRooms != null) {
+                    for (int i = 0; i < privateRooms.size(); i++) {
+                        Room room = privateRooms.get(i);
+                        try {
+                            if (userId != null) {
+                                UnreadResponse response = mApiService.getUnread(userId, room.id).execute().body();
+                                privateRoomResponses.add(response);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-                        privateRooms.add(room);
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
+                    processUnread(privateRooms, privateRoomResponses, false);
                 }
-                //close cursors
-                for (Cursor c : cursors) {
-                    c.close();
-                }
-                processUnread(rooms, roomResponses, true);
-                processUnread(privateRooms, privateRoomResponses, false);
 
                 if (mGroupSummary) {
                     final Notification summaryNotification = new NotificationCompat.Builder(getApplicationContext(), NOTIFICATION_CHANNEL_ID)
@@ -150,7 +147,7 @@ public class NewMessagesJobService extends JobService {
                         messages.add(m);
                     }
                     sendNotification(this, messages, room);
-                    updateRoom(roomtype, room.name, response.chat.size());
+                    updateRoom(room, response.chat.size());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -158,24 +155,9 @@ public class NewMessagesJobService extends JobService {
         }
     }
 
-    private void updateRoom(boolean roomType, String name, int unreadnumber) {
-        if (roomType) {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(RoomProviderContract.RoomEntry.COLUMN_UNREAD, unreadnumber);
-            getContentResolver().update(RoomProviderContract.RoomEntry.CONTENT_URI, contentValues, RoomProviderContract.RoomEntry.COLUMN_NAME + " =?", new String[]{name});
-        } else {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(RoomProviderContract.PrivateRoomEntry.COLUMN_UNREAD, unreadnumber);
-            getContentResolver().update(RoomProviderContract.PrivateRoomEntry.CONTENT_URI, contentValues, RoomProviderContract.PrivateRoomEntry.COLUMN_NAME + " =?", new String[]{name});
-        }
-    }
-
-    private Room getRoomsFromCursor(Cursor cursor) {
-        Room room = new Room();
-        room.id = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_ID));
-        room.unreadItems = cursor.getInt(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_UNREAD));
-        room.name = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_NAME));
-        return room;
+    private void updateRoom(Room room, int unreadCount) {
+        room.unreadItems = unreadCount;
+        mDao.updateRoom(room);
     }
 
     private void sendNotification(Context context, List<Message> messages, Room room) {
@@ -211,14 +193,10 @@ public class NewMessagesJobService extends JobService {
     }
 
 
-    private Cursor[] getRooms() {
-        Cursor cursor = getContentResolver().query(RoomProviderContract.RoomEntry.CONTENT_URI,
-                null, null, null,
-                null);
-        Cursor prCursor = getContentResolver().query(RoomProviderContract.PrivateRoomEntry.CONTENT_URI,
-                null, null, null,
-                null);
-        return new Cursor[]{cursor, prCursor};
+    private List<List<Room>> getRooms(RoomDao roomDao) {
+        List<Room> rooms = roomDao.getRooms().getValue();
+        List<Room> pRooms = roomDao.getPrivateRooms().getValue();
+        return new ArrayList<>(Arrays.asList(rooms, pRooms));
     }
 
     @Override

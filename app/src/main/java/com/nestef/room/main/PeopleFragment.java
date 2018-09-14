@@ -2,7 +2,6 @@ package com.nestef.room.main;
 
 
 import android.content.Context;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,12 +13,10 @@ import android.widget.TextView;
 
 import com.nestef.room.R;
 import com.nestef.room.data.DataManager;
-import com.nestef.room.data.LoaderProvider;
 import com.nestef.room.data.PrefManager;
+import com.nestef.room.db.AppDatabase;
 import com.nestef.room.model.Room;
-import com.nestef.room.provider.RoomProviderContract;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -61,7 +58,7 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView,
     private PeoplePresenter presenter;
     private RoomFragment.RoomSelectionCallback mCallback;
 
-    public PeopleFragment() {
+    PeopleFragment() {
     }
 
     public static PeopleFragment newInstance() {
@@ -75,9 +72,9 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView,
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new PeoplePresenter(DataManager.getInstance(getContext().getContentResolver(),
-                PrefManager.getInstance(getContext().getSharedPreferences(AUTH_SHARED_PREF, Context.MODE_PRIVATE))),
-                new LoaderProvider(getContext()), getLoaderManager());
+        AppDatabase db = AppDatabase.getDatabase(getContext());
+        presenter = new PeoplePresenter(DataManager.getInstance(
+                PrefManager.getInstance(getContext().getSharedPreferences(AUTH_SHARED_PREF, Context.MODE_PRIVATE)).getAuthToken(), db.roomDao(), db.groupDao()));
         if (!isTablet()) setHasOptionsMenu(true);
     }
 
@@ -123,28 +120,14 @@ public class PeopleFragment extends Fragment implements MainContract.PeopleView,
     }
 
     @Override
-    public void showChats(Cursor chats) {
+    public void showChats(List<Room> chats) {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        List<Room> rooms = new ArrayList<>();
-        for (int i = 0; i < chats.getCount(); i++) {
-            chats.moveToPosition(i);
-            Room room = getRoomsFromCursor(chats);
-            rooms.add(room);
-        }
-        roomCursorAdapter = new RoomAdapter(rooms, this, false);
+        roomCursorAdapter = new RoomAdapter(chats, this, false);
         mPeopleList.setLayoutManager(linearLayoutManager);
         mPeopleList.setAdapter(roomCursorAdapter);
         mPeopleList.setVisibility(View.VISIBLE);
     }
 
-    private Room getRoomsFromCursor(Cursor cursor) {
-        Room room = new Room();
-        room.id = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_ID));
-        room.unreadItems = cursor.getInt(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_UNREAD));
-        room.name = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_NAME));
-        room.avatarUrl = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_AVATARURL));
-        return room;
-    }
 
     @Override
     public void showLoadingIndicator() {

@@ -6,8 +6,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.nestef.room.R;
+import com.nestef.room.data.GlideApp;
 import com.nestef.room.model.Room;
 import com.nestef.room.model.User;
 
@@ -21,7 +21,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Noah Steffes on 8/2/18.
  */
-public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = "RoomAdapter";
     private final int ROOM = 0, USER = 1;
     private List<?> mRooms;
@@ -79,12 +79,12 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 } else {
                     viewHolder.unread.setText(String.valueOf(room.unreadItems));
                 }
-                Glide.with(viewHolder.itemView).load(room.avatarUrl).into(viewHolder.avatar);
+                GlideApp.with(viewHolder.itemView).load(room.avatarUrl).into(viewHolder.avatar);
             case USER:
                 User user = (User) mRooms.get(position);
                 UserViewHolder viewHolder1 = (UserViewHolder) holder;
                 viewHolder1.title.setText(user.getUsername());
-                Glide.with(viewHolder1.itemView).load(user.avatarUrl).into(viewHolder1.avatar);
+                GlideApp.with(viewHolder1.itemView).load(user.avatarUrl).into(viewHolder1.avatar);
             default:
         }
     }

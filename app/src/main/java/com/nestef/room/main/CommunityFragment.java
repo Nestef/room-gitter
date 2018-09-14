@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.nestef.room.R;
 import com.nestef.room.data.DataManager;
 import com.nestef.room.data.PrefManager;
+import com.nestef.room.db.AppDatabase;
 import com.nestef.room.model.Group;
 import com.nestef.room.model.Room;
 
@@ -45,13 +46,13 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
     private static final String GROUP = "Group";
 
     private static final String RECYCLER_STATE = "list_state";
-    Unbinder mUnbinder;
-    CommunityPresenter mPresenter;
-    RoomAdapter mJoinedAdapter;
+    private Unbinder mUnbinder;
+    private CommunityPresenter mPresenter;
+    private RoomAdapter mJoinedAdapter;
     private RoomFragment.RoomSelectionCallback mCallback;
-    Group mGroup;
-    Parcelable listSaveState;
-    LinearLayoutManager mLayoutManager;
+    private Group mGroup;
+    private Parcelable listSaveState;
+    private LinearLayoutManager mLayoutManager;
 
     @BindView(R.id.joined_room_list)
     RecyclerView mRoomList;
@@ -77,8 +78,9 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter = new CommunityPresenter(DataManager.getInstance(getContext().getContentResolver(),
-                PrefManager.getInstance(getContext().getSharedPreferences(AUTH_SHARED_PREF, Context.MODE_PRIVATE))));
+        AppDatabase db = AppDatabase.getDatabase(getContext());
+        mPresenter = new CommunityPresenter(DataManager.getInstance(
+                PrefManager.getInstance(getContext().getSharedPreferences(AUTH_SHARED_PREF, Context.MODE_PRIVATE)).getAuthToken(), db.roomDao(), db.groupDao()));
         mGroup = Parcels.unwrap(getArguments().getParcelable(GROUP));
         if (savedInstanceState != null) {
             listSaveState = savedInstanceState.getParcelable(RECYCLER_STATE);
@@ -160,6 +162,7 @@ public class CommunityFragment extends Fragment implements MainContract.Communit
     public void networkError() {
         Toast.makeText(getContext(), R.string.network_error, Toast.LENGTH_SHORT).show();
     }
+
     private boolean isTablet() {
         return mIsTablet == 1;
     }

@@ -60,9 +60,9 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
     private static final String GROUPS_FRAGMENT_TAG = "groups_fragment";
     private static final String COMMUNITY_FRAGMENT_TAG = "community_fragment";
 
-    int mFragmentId = R.id.fragment_switcher;
+    private int mFragmentId = R.id.fragment_switcher;
 
-    int mMessageFragmentId = R.id.message_holder;
+    private int mMessageFragmentId = R.id.message_holder;
 
     private RoomFragment mRoomFragment;
     private SearchFragment mSearchFragment;
@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
             if (isTablet()) {
                 setSupportActionBar(mDefaultToolbar);
                 mDefaultToolbar.inflateMenu(R.menu.main_actions);
-                mDefaultToolbar.setOnMenuItemClickListener(item -> handleMenuClick(item));
+                mDefaultToolbar.setOnMenuItemClickListener(this::handleMenuClick);
                 getSupportFragmentManager().beginTransaction().replace(mMessageFragmentId, MessagingFragment.newInstance(widgetItem)).commit();
             } else {
                 startMessagingActivity(widgetItem);
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.On
             if (isTablet()) {
                 setSupportActionBar(mDefaultToolbar);
                 mDefaultToolbar.inflateMenu(R.menu.main_actions);
-                mDefaultToolbar.setOnMenuItemClickListener(item -> handleMenuClick(item));
+                mDefaultToolbar.setOnMenuItemClickListener(this::handleMenuClick);
                 getSupportFragmentManager().beginTransaction().replace(mMessageFragmentId, new MessagingFragment()).commit();
             }
         }

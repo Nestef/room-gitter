@@ -49,14 +49,14 @@ public class SearchFragment extends Fragment implements MainContract.SearchView,
     @BindView(R.id.search_input)
     SearchView mSearchView;
 
-    Unbinder unbinder;
-    SearchPresenter mPresenter;
-    RoomAdapter mAdapter;
-    RoomFragment.RoomSelectionCallback mCallback;
-    Parcelable listSaveState;
-    LinearLayoutManager mLayoutManager;
+    private Unbinder unbinder;
+    private SearchPresenter mPresenter;
+    private RoomAdapter mAdapter;
+    private RoomFragment.RoomSelectionCallback mCallback;
+    private Parcelable listSaveState;
+    private LinearLayoutManager mLayoutManager;
 
-    public SearchFragment() {
+    SearchFragment() {
     }
 
     public static SearchFragment newInstance() {

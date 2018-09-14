@@ -1,17 +1,11 @@
 package com.nestef.room.main;
 
-import android.database.Cursor;
-
 import com.nestef.room.data.DataManager;
-import com.nestef.room.data.LoaderProvider;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
 
 import static org.mockito.Mockito.verify;
 
@@ -21,25 +15,19 @@ import static org.mockito.Mockito.verify;
 public class GroupsPresenterTest {
 
     private GroupsPresenter mGroupsPresenter;
-    @Mock
-    private LoaderProvider mLoaderProvider;
-    @Mock
-    private LoaderManager mLoaderManager;
+
     @Mock
     private DataManager mDataManager;
     @Mock
     private MainContract.GroupsView mView;
-    @Mock
-    private Loader<Cursor> mLoader;
-    @Mock
-    private Cursor cursor;
 
     @Before
     public void setupGroupsPresenter() {
         MockitoAnnotations.initMocks(this);
-        mGroupsPresenter = new GroupsPresenter(mDataManager, mLoaderProvider, mLoaderManager);
+        mGroupsPresenter = new GroupsPresenter(mDataManager);
         mGroupsPresenter.setView(mView);
     }
+
 
     @Test
     public void fetchGroups() {
@@ -48,11 +36,5 @@ public class GroupsPresenterTest {
         verify(mDataManager).getGroups();
     }
 
-    @Test
-    public void onLoadFinished() {
-        mGroupsPresenter.onLoadFinished(mLoader, cursor);
-        verify(mView).hideLoadingIndicator();
-        verify(mView).showEmpty();
-    }
 
 }

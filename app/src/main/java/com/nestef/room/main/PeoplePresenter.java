@@ -1,72 +1,68 @@
 package com.nestef.room.main;
 
-import android.database.Cursor;
-import android.os.Bundle;
-
 import com.nestef.room.base.BasePresenter;
 import com.nestef.room.data.DataManager;
-import com.nestef.room.data.LoaderProvider;
+import com.nestef.room.model.Room;
 
-import androidx.annotation.NonNull;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
+import java.util.List;
+
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LifecycleRegistry;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 
 /**
  * Created by Noah Steffes on 4/1/18.
  */
 
-public class PeoplePresenter extends BasePresenter<MainContract.PeopleView> implements MainContract.PeopleViewActions, LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String TAG = PeoplePresenter.class.getName();
+public class PeoplePresenter extends BasePresenter<MainContract.PeopleView> implements MainContract.PeopleViewActions, LifecycleOwner {
 
-    private static final int PEOPLE_LOADER = 1;
+    private static final String TAG = PeoplePresenter.class.getName();
 
     private DataManager mDataManager;
 
-    private LoaderProvider mLoaderProvider;
+    private Observer<List<Room>> mObserver = chats -> {
+        if (chats != null) {
+            mView.hideLoadingIndicator();
+            mView.showChats(chats);
+        } else {
+            mView.hideLoadingIndicator();
+            mView.showEmpty();
+        }
+    };
 
-    private LoaderManager mLoaderManager;
+    private LifecycleRegistry mLifecycleRegistry;
 
-    PeoplePresenter(DataManager dataManager, LoaderProvider loaderProvider, LoaderManager loaderManager) {
+    PeoplePresenter(DataManager dataManager) {
         mDataManager = dataManager;
-        mLoaderProvider = loaderProvider;
-        mLoaderManager = loaderManager;
     }
 
     @Override
     public void fetchChats() {
         mView.showLoadingIndicator();
-        mDataManager.getRooms();
-        if (mLoaderManager.getLoader(PEOPLE_LOADER) == null) {
-            mLoaderManager.initLoader(PEOPLE_LOADER, null, this);
-        } else {
-            mLoaderManager.restartLoader(PEOPLE_LOADER, null, this);
-        }
-    }
-
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return mLoaderProvider.createPrivateRoomLoader();
-    }
-
-    @Override
-    public void onLoadFinished(@NonNull Loader loader, Cursor data) {
-        if (data != null) {
-            if (data.moveToLast()) {
-                mView.hideLoadingIndicator();
-                mView.showChats(data);
-            } else {
-                mView.hideLoadingIndicator();
-                mView.showEmpty();
-            }
-        } else {
-            mView.hideLoadingIndicator();
-            mView.showEmpty();
+        mDataManager.fetchRooms();
+        LiveData<List<Room>> chats = mDataManager.getPrivateRooms();
+        if (chats != null) {
+            chats.observe(this, mObserver);
         }
     }
 
     @Override
-    public void onLoaderReset(@NonNull Loader loader) {
+    public void setView(MainContract.PeopleView view) {
+        super.setView(view);
+        mLifecycleRegistry = new LifecycleRegistry(this);
+        mLifecycleRegistry.markState(Lifecycle.State.STARTED);
+    }
 
+    @Override
+    public void unsetView() {
+        super.unsetView();
+        mLifecycleRegistry.markState(Lifecycle.State.DESTROYED);
+    }
+
+    @Override
+    public Lifecycle getLifecycle() {
+        return mLifecycleRegistry;
     }
 }

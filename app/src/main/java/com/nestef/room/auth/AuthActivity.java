@@ -32,7 +32,7 @@ public class AuthActivity extends AppCompatActivity implements AuthContract.Auth
 
     private static final String TAG = "AuthActivity";
 
-    AuthPresenter presenter;
+    private AuthPresenter presenter;
 
     @BindView(R.id.login_wv)
     WebView webView;

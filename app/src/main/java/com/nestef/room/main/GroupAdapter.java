@@ -6,8 +6,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.nestef.room.R;
+import com.nestef.room.data.GlideApp;
 import com.nestef.room.model.Group;
 
 import java.util.List;
@@ -44,7 +44,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
     public void onBindViewHolder(@NonNull GroupViewHolder holder, int position) {
         Group group = mGroups.get(position);
         holder.title.setText(group.name);
-        Glide.with(holder.itemView).load(group.avatarUrl).into(holder.avatar);
+        GlideApp.with(holder.itemView).load(group.avatarUrl).into(holder.avatar);
     }
 
     @Override

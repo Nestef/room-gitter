@@ -11,7 +11,7 @@ import java.util.List;
  * Created by Noah Steffes on 3/23/18.
  */
 
-public interface MessagingContract {
+interface MessagingContract {
     interface ViewActions {
 
         void setUserId(String userId);

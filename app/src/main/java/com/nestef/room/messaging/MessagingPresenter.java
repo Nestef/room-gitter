@@ -21,7 +21,7 @@ public class MessagingPresenter extends BasePresenter<MessagingContract.Messagin
 
     private static final String TAG = "MessagingPresenter";
 
-    public String mUserId;
+    private String mUserId;
 
     private String mRoomId;
 

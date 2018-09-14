@@ -6,8 +6,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.nestef.room.R;
+import com.nestef.room.data.GlideApp;
 import com.nestef.room.model.Room;
 
 import java.util.List;
@@ -65,7 +65,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         } else {
             holder.joined.setVisibility(View.GONE);
         }
-        Glide.with(holder.itemView).load(room.avatarUrl).into(holder.avatar);
+        GlideApp.with(holder.itemView).load(room.avatarUrl).into(holder.avatar);
     }
 
     @Override

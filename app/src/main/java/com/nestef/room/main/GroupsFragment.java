@@ -1,7 +1,6 @@
 package com.nestef.room.main;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,12 +12,10 @@ import android.widget.TextView;
 
 import com.nestef.room.R;
 import com.nestef.room.data.DataManager;
-import com.nestef.room.data.LoaderProvider;
 import com.nestef.room.data.PrefManager;
+import com.nestef.room.db.AppDatabase;
 import com.nestef.room.model.Group;
-import com.nestef.room.provider.RoomProviderContract;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -56,12 +53,12 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
     @BindView(R.id.group_empty_text)
     TextView mEmptyText;
 
-    GroupsFragment.OnCommunitySelection mCallback;
+    private GroupsFragment.OnCommunitySelection mCallback;
     private Unbinder mUnbinder;
     private GroupAdapter mGroupAdapter;
     private GroupsPresenter mPresenter;
 
-    public GroupsFragment() {
+    GroupsFragment() {
     }
 
     public static GroupsFragment newInstance() {
@@ -74,9 +71,9 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter = new GroupsPresenter(DataManager.getInstance(getContext().getContentResolver(),
-                PrefManager.getInstance(getContext().getSharedPreferences(AUTH_SHARED_PREF, Context.MODE_PRIVATE))),
-                new LoaderProvider(getContext()), getLoaderManager());
+        AppDatabase database = AppDatabase.getDatabase(getContext());
+        mPresenter = new GroupsPresenter(DataManager.getInstance(PrefManager.getInstance(getContext().getSharedPreferences(AUTH_SHARED_PREF, Context.MODE_PRIVATE)).getAuthToken(),
+                database.roomDao(), database.groupDao()));
         if (!isTablet()) setHasOptionsMenu(true);
     }
 
@@ -110,29 +107,13 @@ public class GroupsFragment extends Fragment implements MainContract.GroupsView,
     }
 
     @Override
-    public void showGroups(Cursor groups) {
+    public void showGroups(List<Group> groups) {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        List<Group> groups1 = new ArrayList<>();
-        for (int i = 0; i < groups.getCount(); i++) {
-            groups.moveToPosition(i);
-            Group group = getGroupFromCursor(groups);
-            groups1.add(group);
-        }
         mEmptyText.setVisibility(View.INVISIBLE);
         mGroupList.setVisibility(View.VISIBLE);
         mGroupList.setLayoutManager(linearLayoutManager);
-        mGroupAdapter = new GroupAdapter(groups1, this);
+        mGroupAdapter = new GroupAdapter(groups, this);
         mGroupList.setAdapter(mGroupAdapter);
-    }
-
-    private Group getGroupFromCursor(Cursor cursor) {
-        Group group = new Group();
-        group.name = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.GroupEntry.COLUMN_NAME));
-        group.avatarUrl = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.GroupEntry.COLUMN_AVATARURL));
-        group.uri = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.GroupEntry.COLUMN_URI));
-        group.homeUri = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.GroupEntry.COLUMN_HOMEURI));
-        group.id = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.GroupEntry.COLUMN_ID));
-        return group;
     }
 
     @Override

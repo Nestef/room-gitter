@@ -1,6 +1,5 @@
 package com.nestef.room.preferences;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,7 +8,7 @@ import com.marcoscg.easylicensesdialog.EasyLicensesDialogCompat;
 import com.nestef.room.R;
 import com.nestef.room.auth.AuthActivity;
 import com.nestef.room.data.PrefManager;
-import com.nestef.room.provider.RoomProviderContract;
+import com.nestef.room.db.AppDatabase;
 import com.nestef.room.util.Constants;
 
 import androidx.preference.PreferenceFragmentCompat;
@@ -37,11 +36,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             p.deleteAuthToken();
             p.deleteUserId();
             //Delete all database entries
-            Context context = getContext();
-            ContentResolver contentResolver = context.getContentResolver();
-            contentResolver.delete(RoomProviderContract.RoomEntry.CONTENT_URI, null, null);
-            contentResolver.delete(RoomProviderContract.PrivateRoomEntry.CONTENT_URI, null, null);
-            contentResolver.delete(RoomProviderContract.GroupEntry.CONTENT_URI, null, null);
+            AppDatabase appDatabase = AppDatabase.getDatabase(getContext());
+            appDatabase.groupDao().deleteAllGroups();
+            appDatabase.roomDao().deleteAllRooms();
             //Restart application
             Intent intent = new Intent();
             intent.setClass(getContext(), AuthActivity.class);

@@ -1,6 +1,5 @@
 package com.nestef.room.messaging;
 
-import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,8 +30,4 @@ public class MarkdownBottomSheetFragment extends BottomSheetDialogFragment {
         return view;
     }
 
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        return super.onCreateDialog(savedInstanceState);
-    }
 }

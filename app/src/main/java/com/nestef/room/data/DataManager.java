@@ -1,19 +1,16 @@
 package com.nestef.room.data;
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
-
+import com.nestef.room.db.GroupDao;
+import com.nestef.room.db.RoomDao;
 import com.nestef.room.model.Group;
 import com.nestef.room.model.Room;
-import com.nestef.room.provider.RoomProviderContract;
 import com.nestef.room.services.GitterApiService;
 import com.nestef.room.services.GitterServiceFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.Executors;
 
+import androidx.lifecycle.LiveData;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -27,29 +24,33 @@ public class DataManager {
 
     private final GitterApiService mApiService;
 
-    private ContentResolver mContentResolver;
-
     private DataCallback mCallback;
 
-    private DataManager(ContentResolver contentResolver, PrefManager prefManager) {
-        mContentResolver = contentResolver;
-        mApiService = GitterServiceFactory.makeApiService(prefManager.getAuthToken());
+    private RoomDao mRoomDao;
+
+    private GroupDao mGroupDao;
+
+    private DataManager(String authToken, RoomDao roomDao, GroupDao groupDao) {
+        mApiService = GitterServiceFactory.makeApiService(authToken);
+        mRoomDao = roomDao;
+        mGroupDao = groupDao;
     }
 
-    public static DataManager getInstance(ContentResolver contentResolver, PrefManager prefManager) {
+    public static DataManager getInstance(String authToken, RoomDao roomDao, GroupDao groupDao) {
         if (sInstance == null) {
-            sInstance = new DataManager(contentResolver, prefManager);
+            sInstance = new DataManager(authToken, roomDao, groupDao);
         }
         return sInstance;
     }
 
-    public void getRooms() {
+    public void fetchRooms() {
         mApiService.getRooms().enqueue(new Callback<List<Room>>() {
             @Override
             public void onResponse(Call<List<Room>> call, Response<List<Room>> response) {
                 List<Room> rooms = response.body();
                 if (rooms != null) {
-                    saveRooms(rooms);
+                    Executors.newSingleThreadExecutor().execute(() -> saveRooms(rooms));
+
                 }
             }
 
@@ -60,13 +61,21 @@ public class DataManager {
         });
     }
 
-    public void getGroups() {
+    public LiveData<List<Room>> getRooms() {
+        return mRoomDao.getRooms();
+    }
+
+    public LiveData<List<Room>> getPrivateRooms() {
+        return mRoomDao.getPrivateRooms();
+    }
+
+    public LiveData<List<Group>> getGroups() {
         mApiService.getGroups().enqueue(new Callback<List<Group>>() {
             @Override
             public void onResponse(Call<List<Group>> call, Response<List<Group>> response) {
                 List<Group> groups = response.body();
                 if (groups != null) {
-                    saveGroups(groups);
+                    Executors.newSingleThreadExecutor().execute(() -> saveGroups(groups));
                 }
             }
 
@@ -75,6 +84,7 @@ public class DataManager {
                 t.printStackTrace();
             }
         });
+        return mGroupDao.getGroups();
     }
 
     public void getCommunityRooms(String groupId, DataCallback callback) {
@@ -94,80 +104,14 @@ public class DataManager {
 
     private void saveRooms(List<Room> rooms) {
         //Clear cached rooms
-        mContentResolver.delete(RoomProviderContract.RoomEntry.CONTENT_URI, null, null);
-        mContentResolver.delete(RoomProviderContract.PrivateRoomEntry.CONTENT_URI, null, null);
-
-        //Separate private rooms
-        Map<Boolean, List<Room>> split = new HashMap<>();
-        for (Room room : rooms) {
-            List<Room> list = split.get(room.oneToOne);
-            if (list == null) {
-                list = new ArrayList<>();
-                split.put(room.oneToOne, list);
-            }
-            list.add(room);
-        }
-
+        mRoomDao.deleteAllRooms();
         //Add rooms to database
-        if (split.get(false) != null) {
-            for (Room room : split.get(false)) {
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(RoomProviderContract.RoomEntry.COLUMN_ID,
-                        room.id);
-                contentValues.put(RoomProviderContract.RoomEntry.COLUMN_NAME,
-                        room.name);
-                contentValues.put(RoomProviderContract.RoomEntry.COLUMN_AVATARURL,
-                        room.avatarUrl);
-                contentValues.put(RoomProviderContract.RoomEntry.COLUMN_UNREAD,
-                        room.unreadItems);
-                contentValues.put(RoomProviderContract.RoomEntry.COLUMN_USER_COUNT,
-                        room.userCount);
-                contentValues.put(RoomProviderContract.RoomEntry.COLUMN_FAVOURITE,
-                        room.favourite);
-                contentValues.put(RoomProviderContract.RoomEntry.COLUMN_MEMBER, String.valueOf(room.roomMember));
-                mContentResolver
-                        .insert(RoomProviderContract.RoomEntry.CONTENT_URI, contentValues);
-            }
-        }
-        if (split.get(true) != null) {
-            for (Room room : split.get(true)) {
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(RoomProviderContract.PrivateRoomEntry.COLUMN_ID,
-                        room.id);
-                contentValues.put(RoomProviderContract.PrivateRoomEntry.COLUMN_NAME,
-                        room.name);
-                contentValues.put(RoomProviderContract.PrivateRoomEntry.COLUMN_AVATARURL,
-                        room.avatarUrl);
-                contentValues.put(RoomProviderContract.PrivateRoomEntry.COLUMN_UNREAD,
-                        room.unreadItems);
-                contentValues.put(RoomProviderContract.PrivateRoomEntry.COLUMN_USER_COUNT,
-                        room.userCount);
-                contentValues.put(RoomProviderContract.PrivateRoomEntry.COLUMN_FAVOURITE,
-                        room.favourite);
-                contentValues.put(RoomProviderContract.PrivateRoomEntry.COLUMN_MEMBER, String.valueOf(room.roomMember));
-                mContentResolver
-                        .insert(RoomProviderContract.PrivateRoomEntry.CONTENT_URI, contentValues);
-            }
-        }
+        mRoomDao.insertRooms(rooms);
     }
 
     private void saveGroups(List<Group> groups) {
-        mContentResolver.delete(RoomProviderContract.GroupEntry.CONTENT_URI, null, null);
-        for (Group group : groups) {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(RoomProviderContract.GroupEntry.COLUMN_ID,
-                    group.id);
-            contentValues.put(RoomProviderContract.GroupEntry.COLUMN_NAME,
-                    group.name);
-            contentValues.put(RoomProviderContract.GroupEntry.COLUMN_AVATARURL,
-                    group.avatarUrl);
-            contentValues.put(RoomProviderContract.GroupEntry.COLUMN_URI,
-                    group.uri);
-            contentValues.put(RoomProviderContract.GroupEntry.COLUMN_HOMEURI,
-                    group.homeUri);
-            mContentResolver.insert(RoomProviderContract.GroupEntry.CONTENT_URI, contentValues);
-
-        }
+        mGroupDao.deleteAllGroups();
+        mGroupDao.insertGroups(groups);
     }
 
     public interface DataCallback {

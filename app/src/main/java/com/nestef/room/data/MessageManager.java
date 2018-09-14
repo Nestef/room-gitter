@@ -41,14 +41,14 @@ public class MessageManager {
         }
     };
 
-    private MessageManager(PrefManager prefManager) {
-        mApiService = GitterServiceFactory.makeApiService(prefManager.getAuthToken());
-        mStreamingService = GitterServiceFactory.makeStreamingService(prefManager.getAuthToken());
+    private MessageManager(String authToken) {
+        mApiService = GitterServiceFactory.makeApiService(authToken);
+        mStreamingService = GitterServiceFactory.makeStreamingService(authToken);
     }
 
-    public static MessageManager getInstance(PrefManager prefManager) {
+    public static MessageManager getInstance(String authToken) {
         if (sInstance == null) {
-            sInstance = new MessageManager(prefManager);
+            sInstance = new MessageManager(authToken);
         }
         return sInstance;
     }

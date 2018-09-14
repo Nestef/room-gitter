@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
 
 public class PatternEditableBuilder {
     // Records the pattern spans to apply to a TextView
-    ArrayList<SpannablePatternItem> patterns;
+    private ArrayList<SpannablePatternItem> patterns;
 
     /* ----- Constructors ------- */
     public PatternEditableBuilder() {
@@ -46,7 +46,7 @@ public class PatternEditableBuilder {
 
     /* These are the `addPattern` overloaded signatures */
     // Each allows us to add a span pattern with different arguments
-    public PatternEditableBuilder addPattern(Pattern pattern, SpannableStyleListener spanStyles, SpannableClickedListener listener) {
+    private PatternEditableBuilder addPattern(Pattern pattern, SpannableStyleListener spanStyles, SpannableClickedListener listener) {
         patterns.add(new SpannablePatternItem(pattern, spanStyles, listener));
         return this;
     }
@@ -66,7 +66,7 @@ public class PatternEditableBuilder {
         return this;
     }
 
-    public PatternEditableBuilder addPattern(Pattern pattern, int textColor, SpannableClickedListener listener) {
+    private PatternEditableBuilder addPattern(Pattern pattern, int textColor, SpannableClickedListener listener) {
         SpannableStyleListener styles = new SpannableStyleListener(textColor) {
             @Override
             public void onSpanStyled(TextPaint ds) {
@@ -91,7 +91,7 @@ public class PatternEditableBuilder {
 
     // This builds the pattern span into a `SpannableStringBuilder`
     // Requires a CharSequence to be passed in to be applied to
-    public SpannableStringBuilder build(CharSequence editable) {
+    private SpannableStringBuilder build(CharSequence editable) {
         SpannableStringBuilder ssb = new SpannableStringBuilder(editable);
         for (SpannablePatternItem item : patterns) {
             Matcher matcher = item.pattern.matcher(ssb);
@@ -114,12 +114,12 @@ public class PatternEditableBuilder {
     /* This stores the style listener for a pattern item
        Used to style a particular category of spans */
     public static abstract class SpannableStyleListener {
-        public int spanTextColor;
+        int spanTextColor;
 
         public SpannableStyleListener() {
         }
 
-        public SpannableStyleListener(int spanTextColor) {
+        SpannableStyleListener(int spanTextColor) {
             this.spanTextColor = spanTextColor;
         }
 
@@ -130,12 +130,12 @@ public class PatternEditableBuilder {
 
     /* This stores a particular pattern item
        complete with pattern, span styles, and click listener */
-    public class SpannablePatternItem {
-        public SpannableStyleListener styles;
-        public Pattern pattern;
-        public SpannableClickedListener listener;
+    class SpannablePatternItem {
+        SpannableStyleListener styles;
+        Pattern pattern;
+        SpannableClickedListener listener;
 
-        public SpannablePatternItem(Pattern pattern, SpannableStyleListener styles, SpannableClickedListener listener) {
+        SpannablePatternItem(Pattern pattern, SpannableStyleListener styles, SpannableClickedListener listener) {
             this.pattern = pattern;
             this.styles = styles;
             this.listener = listener;
@@ -146,10 +146,10 @@ public class PatternEditableBuilder {
        to handle user clicks to our pattern spans
        applying the styles and invoking click listener.
      */
-    public class StyledClickableSpan extends ClickableSpan {
+    class StyledClickableSpan extends ClickableSpan {
         SpannablePatternItem item;
 
-        public StyledClickableSpan(SpannablePatternItem item) {
+        StyledClickableSpan(SpannablePatternItem item) {
             this.item = item;
         }
 

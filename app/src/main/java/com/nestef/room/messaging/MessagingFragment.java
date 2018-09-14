@@ -63,15 +63,15 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     private static final String ROOM_KEY = "room";
     private static final String RECYCLER_STATE = "list_state";
 
-    Unbinder mUnbinder;
-    MessagingPresenter mPresenter;
-    MessageAdapter mMessageAdapter;
-    LinearLayoutManager mLayoutManager;
-    Room mRoom;
+    private Unbinder mUnbinder;
+    private MessagingPresenter mPresenter;
+    private MessageAdapter mMessageAdapter;
+    private LinearLayoutManager mLayoutManager;
+    private Room mRoom;
 
-    Parcelable listSaveState;
-    boolean loading;
-    boolean isInputable = false;
+    private Parcelable listSaveState;
+    private boolean loading;
+    private boolean isInputable = false;
 
     @BindView(R.id.message_list)
     RecyclerView mMessageList;
@@ -111,11 +111,16 @@ public class MessagingFragment extends Fragment implements MessagingContract.Mes
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter = new MessagingPresenter(MessageManager.getInstance(PrefManager.getInstance(getContext().getSharedPreferences(Constants.AUTH_SHARED_PREF, Context.MODE_PRIVATE))));
+        mPresenter = new MessagingPresenter(MessageManager
+                .getInstance(PrefManager
+                        .getInstance(getContext().getSharedPreferences(Constants.AUTH_SHARED_PREF, Context.MODE_PRIVATE))
+                        .getAuthToken()));
         if (getArguments() != null) {
             mRoom = Parcels.unwrap(getArguments().getParcelable(ROOM_KEY));
             mPresenter.setRoomId(mRoom.id);
-            mPresenter.setUserId(PrefManager.getInstance(getContext().getSharedPreferences(Constants.AUTH_SHARED_PREF, Context.MODE_PRIVATE)).getUserId());
+            mPresenter.setUserId(PrefManager
+                    .getInstance(getContext().getSharedPreferences(Constants.AUTH_SHARED_PREF, Context.MODE_PRIVATE))
+                    .getUserId());
         }
         if (savedInstanceState != null) {
             listSaveState = savedInstanceState.getParcelable(RECYCLER_STATE);

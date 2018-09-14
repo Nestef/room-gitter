@@ -1,7 +1,6 @@
 package com.nestef.room.main;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,12 +12,10 @@ import android.widget.TextView;
 
 import com.nestef.room.R;
 import com.nestef.room.data.DataManager;
-import com.nestef.room.data.LoaderProvider;
 import com.nestef.room.data.PrefManager;
+import com.nestef.room.db.AppDatabase;
 import com.nestef.room.model.Room;
-import com.nestef.room.provider.RoomProviderContract;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -60,7 +57,7 @@ public class RoomFragment extends Fragment implements MainContract.RoomView, Roo
     private RoomPresenter mPresenter;
     private RoomSelectionCallback mCallback;
 
-    public RoomFragment() {
+    RoomFragment() {
     }
 
     public static RoomFragment newInstance() {
@@ -73,9 +70,9 @@ public class RoomFragment extends Fragment implements MainContract.RoomView, Roo
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter = new RoomPresenter(DataManager.getInstance(getContext().getContentResolver(),
-                PrefManager.getInstance(getContext().getSharedPreferences(AUTH_SHARED_PREF, Context.MODE_PRIVATE))),
-                new LoaderProvider(getContext()), getLoaderManager());
+        AppDatabase appDatabase = AppDatabase.getDatabase(getContext());
+        mPresenter = new RoomPresenter(DataManager.getInstance(
+                PrefManager.getInstance(getContext().getSharedPreferences(AUTH_SHARED_PREF, Context.MODE_PRIVATE)).getAuthToken(), appDatabase.roomDao(), appDatabase.groupDao()));
         if (!isTablet()) setHasOptionsMenu(true);
     }
 
@@ -124,29 +121,15 @@ public class RoomFragment extends Fragment implements MainContract.RoomView, Roo
     }
 
     @Override
-    public void showRooms(Cursor rooms) {
+    public void showRooms(List<Room> rooms) {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        List<Room> rooms1 = new ArrayList<>();
-        for (int i = 0; i < rooms.getCount(); i++) {
-            rooms.moveToPosition(i);
-            Room room = getRoomsFromCursor(rooms);
-            rooms1.add(room);
-        }
         mEmptyMessage.setVisibility(View.GONE);
         mRoomList.setLayoutManager(linearLayoutManager);
         mRoomList.setVisibility(View.VISIBLE);
-        mRoomCursorAdapter = new RoomAdapter(rooms1, this, false);
+        mRoomCursorAdapter = new RoomAdapter(rooms, this, false);
         mRoomList.setAdapter(mRoomCursorAdapter);
     }
 
-    private Room getRoomsFromCursor(Cursor cursor) {
-        Room room = new Room();
-        room.id = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_ID));
-        room.unreadItems = cursor.getInt(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_UNREAD));
-        room.name = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_NAME));
-        room.avatarUrl = cursor.getString(cursor.getColumnIndexOrThrow(RoomProviderContract.RoomEntry.COLUMN_AVATARURL));
-        return room;
-    }
     @Override
     public void showLoadingIndicator() {
         mEmptyMessage.setVisibility(View.GONE);
