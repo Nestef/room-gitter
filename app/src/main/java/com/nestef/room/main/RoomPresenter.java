@@ -42,7 +42,7 @@ public class RoomPresenter extends BasePresenter<MainContract.RoomView> implemen
     @Override
     public void fetchRooms() {
         mView.showLoadingIndicator();
-        mDataManager.getRooms();
+        mDataManager.fetchRooms();
         LiveData<List<Room>> rooms = mDataManager.getRooms();
         if (rooms != null) {
             rooms.observe(this, mObserver);

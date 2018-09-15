@@ -32,7 +32,8 @@ public class PeoplePresenterTest {
     public void fetchChats() {
         mPeoplePresenter.fetchChats();
         verify(mView).showLoadingIndicator();
-        verify(mDataManager).getRooms();
+        verify(mDataManager).fetchRooms();
+        verify(mDataManager).getPrivateRooms();
     }
 
 }

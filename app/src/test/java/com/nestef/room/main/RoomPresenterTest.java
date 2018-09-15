@@ -32,6 +32,7 @@ public class RoomPresenterTest {
     public void fetchRooms() {
         mRoomPresenter.fetchRooms();
         verify(mView).showLoadingIndicator();
+        verify(mDataManager).fetchRooms();
         verify(mDataManager).getRooms();
     }
 }
