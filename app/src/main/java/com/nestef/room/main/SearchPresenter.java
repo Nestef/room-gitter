@@ -14,7 +14,7 @@ public class SearchPresenter extends BasePresenter<MainContract.SearchView> impl
 
     private SearchManager mManager;
 
-    SearchPresenter(SearchManager manager) {
+    public SearchPresenter(SearchManager manager) {
         mManager = manager;
     }
 

@@ -34,7 +34,7 @@ public class PeoplePresenter extends BasePresenter<MainContract.PeopleView> impl
 
     private LifecycleRegistry mLifecycleRegistry;
 
-    PeoplePresenter(DataManager dataManager) {
+    public PeoplePresenter(DataManager dataManager) {
         mDataManager = dataManager;
     }
 

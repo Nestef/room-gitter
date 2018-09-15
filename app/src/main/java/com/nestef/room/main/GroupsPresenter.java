@@ -34,7 +34,7 @@ public class GroupsPresenter extends BasePresenter<MainContract.GroupsView> impl
     private LifecycleRegistry mLifecycleRegistry;
 
 
-    GroupsPresenter(DataManager dataManager) {
+    public GroupsPresenter(DataManager dataManager) {
         mDataManager = dataManager;
     }
 

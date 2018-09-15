@@ -14,7 +14,7 @@ public class CommunityPresenter extends BasePresenter<MainContract.CommunityView
 
     private DataManager mDataManager;
 
-    CommunityPresenter(DataManager dataManager) {
+    public CommunityPresenter(DataManager dataManager) {
         mDataManager = dataManager;
     }
 

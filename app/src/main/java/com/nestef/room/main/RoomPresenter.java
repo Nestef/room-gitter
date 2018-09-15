@@ -35,7 +35,7 @@ public class RoomPresenter extends BasePresenter<MainContract.RoomView> implemen
         }
     };
 
-    RoomPresenter(DataManager dataManager) {
+    public RoomPresenter(DataManager dataManager) {
         mDataManager = dataManager;
     }
 
