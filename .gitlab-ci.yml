@@ -37,7 +37,7 @@ unitTests:
   stage: test
   script:
     - ./gradlew test
-    - cat app/build/reports/coverage/debug/index.html
+    - cat app/build/reports/jacoco/jacocoUnitTestDebugTestReport/index.html
 
 #functionalTests:
 #  stage: androidTest
